@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { Button } from 'react-native-web';
 
 // import * as EmailValidator from 'email-validator';
 
@@ -52,6 +53,9 @@ export default class LoginScreen extends Component {
     }
 
     render(){
+
+        const navigation = this.props.navigation;
+
         return(
             <View style={styles.container}>
 
@@ -153,7 +157,10 @@ export default class LoginScreen extends Component {
                     </>
             
                     <View>
-                        <Text style={styles.signin}>Have an account? Login</Text>
+                        <Button
+                            title="Have an account? Login"
+                            onPress={() => navigation.goBack()}
+                        />
                     </View>
                 </View>
             </View>
@@ -166,8 +173,8 @@ export default class LoginScreen extends Component {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      width: "80%",
-      alignItems: "stretch",
+      width: "100%",
+      alignItems: "center",
       justifyContent: "center"
     },
     formContainer: {

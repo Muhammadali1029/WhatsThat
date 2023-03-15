@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
+import { NavigationContainer} from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 
 
 import LoginScreen from './components/login';
 import SignUpScreen from './components/signup';
 import HomeScreen from './components/home';
 
+
+
+const Stack = createNativeStackNavigator();
 
 export default class App extends Component {
   constructor(props){
@@ -14,13 +20,14 @@ export default class App extends Component {
 
   render(){
     return (
-      
-        {/* <View style={styles.container}> */}
-          {/* <LoginScreen /> */}
-          {/* <SignUpScreen /> */}
-          {/* <HomeScreen /> */}
-          {/* <ProfileScreen /> */}
-        {/* </View> */}     
+      <NavigationContainer>{
+        <Stack.Navigator>
+            <Stack.Screen name="login" component={LoginScreen} />
+            <Stack.Screen name="signup" component={SignUpScreen} />
+            <Stack.Screen name="home" component={HomeScreen} />
+        </Stack.Navigator>
+      }
+      </NavigationContainer>
     )
   }
 }
@@ -31,5 +38,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-  },
+  }
 });

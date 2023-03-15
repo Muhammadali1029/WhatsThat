@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 
 
-export default class HomeScreen extends Component {
+export default class ProfileScreen extends Component {
     // constructor(props){
 
     // }

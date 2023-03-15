@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { Button } from 'react-native-web';
 
-// import * as EmailValidator from 'email-validator';
+import * as EmailValidator from 'email-validator';
 
 export default class LoginScreen extends Component {
 
@@ -27,10 +28,10 @@ export default class LoginScreen extends Component {
             return;
         }
 
-        // if(!EmailValidator.validate(this.state.email)){
-        //     this.setState({error: "Must enter valid email"})
-        //     return;
-        // }
+        if(!EmailValidator.validate(this.state.email)){
+            this.setState({error: "Must enter valid email"})
+            return;
+        }
 
         const PASSWORD_REGEX = new RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")
         if(!PASSWORD_REGEX.test(this.state.password)){
@@ -45,6 +46,9 @@ export default class LoginScreen extends Component {
     }
 
     render(){
+        
+        const navigation = this.props.navigation;
+
         return (
             <View style={styles.container}>
 
@@ -97,7 +101,10 @@ export default class LoginScreen extends Component {
                     </>
             
                     <View>
-                        <Text style={styles.signup}>Need an account?</Text>
+                        <Button
+                            title = "Need an account?"
+                            onPress={() => navigation.navigate('signup')}
+                        />
                     </View>
                 </View>
             </View>
@@ -109,8 +116,8 @@ export default class LoginScreen extends Component {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      width: "80%",
-      alignItems: "stretch",
+      width: "100%",
+      alignItems: "center",
       justifyContent: "center"
     },
     formContainer: {
