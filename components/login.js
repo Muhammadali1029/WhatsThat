@@ -10,10 +10,10 @@ export default class LoginScreen extends Component {
         super(props);
 
         this.state = {
-            isLoading: true,
             email: "",
             password: "",
             error: "", 
+            isLoading: true,
             submitted: false
         };
 
@@ -21,6 +21,7 @@ export default class LoginScreen extends Component {
     }
 
     _onPressButton(){
+        const navigation = this.props.navigation;
         this.setState({submitted: true})
         this.setState({error: ""})
 
@@ -51,13 +52,14 @@ export default class LoginScreen extends Component {
 
         return fetch("http://localhost:3333/api/1.0.0/login", {
             method: 'post',
-            header: {
+            headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(to_send)
         })
         .then((response) => {
             console.log("Login details sent to api");
+            navigation.navigate('Home');
         })
         .catch((error) => {
             console.log(error);
