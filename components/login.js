@@ -4,9 +4,9 @@ import { Button } from 'react-native-web';
 import * as EmailValidator from 'email-validator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+
 export default class LoginScreen extends Component 
 {
-
     constructor(props)
     {
         super(props);
@@ -25,7 +25,6 @@ export default class LoginScreen extends Component
 
     _onPressButton()
     {
-        const navigation = this.props.navigation;
         this.setState({submitted: true})
         this.setState({error: ""})
 
@@ -99,7 +98,7 @@ export default class LoginScreen extends Component
                 await AsyncStorage.setItem("whatsthat_session_token", rJson.token)
             
                 this.setState({"submitted": false});
-                navigation.navigate("homenav")
+                this.props.navigation.navigate("homenav")
             }
             catch
             {
@@ -112,11 +111,30 @@ export default class LoginScreen extends Component
         })
     }
 
+    // componentDidMount()
+    // {
+    //     this.unsubscribe = this.props.navigation.addListener('focus', () =>
+    //     {
+    //     this.checkLoggedIn();
+    //     });
+    // }
+
+    // componentWillUnmount()
+    // {
+    //     this.unsubscribe();
+    // }
+
+    // checkLoggedIn = async () =>
+    // {
+    //     const value = await AsyncStorage.getItem('whatsthat_session_token');
+    //     if (value != null)
+    //     {
+    //     navigation.navigate('homenav');
+    //     }
+    // };
+    
     render()
     {
-        
-        const navigation = this.props.navigation;
-
         return (
             <View style={styles.container}>
 
@@ -171,7 +189,7 @@ export default class LoginScreen extends Component
                     <View>
                         <Button
                             title = "Need an account?"
-                            onPress={() => navigation.navigate('signup')}
+                            onPress={() => this.props.navigation.navigate('signup')}
                         />
                     </View>
                 </View>

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { NavigationContainer} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-// import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 
@@ -16,6 +15,7 @@ import SettingsScreen from './components/settings';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const AuthStack = createNativeStackNavigator();
+
 
 const HomeNav = () => {
   return(

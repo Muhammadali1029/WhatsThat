@@ -98,7 +98,7 @@ export default class LoginScreen extends Component
             console.log(rJson)
             this.setState({"error": "User added successfully"});
             this.setState({"submitted": false});
-            navigation.navigate('login');
+            this.props.navigation.navigate('login');
         })
         .catch((error) => 
         {
@@ -108,8 +108,6 @@ export default class LoginScreen extends Component
 
     render()
     {
-        const navigation = this.props.navigation;
-
         return (
             <View style={styles.container}>
 
@@ -213,7 +211,7 @@ export default class LoginScreen extends Component
                     <View>
                         <Button
                             title="Have an account? Login"
-                            onPress={() => navigation.navigate('login')}
+                            onPress={() => this.props.navigation.navigate('login')}
                         />
                     </View>
                 </View>
