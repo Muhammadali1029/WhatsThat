@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { Button } from 'react-native-web';
 
-// import * as EmailValidator from 'email-validator';
+import * as EmailValidator from 'email-validator';
 
 
 export default class LoginScreen extends Component {
@@ -17,6 +17,7 @@ export default class LoginScreen extends Component {
             password: "",
             confirm_password: "",
             error: "", 
+            isLoading: true,
             submitted: false
         }
 
@@ -24,6 +25,7 @@ export default class LoginScreen extends Component {
     }
 
     _onPressButton(){
+ 
         this.setState({submitted: true})
         this.setState({error: ""})
 
@@ -32,10 +34,10 @@ export default class LoginScreen extends Component {
             return;
         }
 
-        // if(!EmailValidator.validate(this.state.email)){
-        //     this.setState({error: "Must enter valid email"})
-        //     return;
-        // }
+        if(!EmailValidator.validate(this.state.email)){
+            this.setState({error: "Must enter valid email"})
+            return;
+        }
 
         const PASSWORD_REGEX = new RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")
         if(!PASSWORD_REGEX.test(this.state.password)){
@@ -50,6 +52,27 @@ export default class LoginScreen extends Component {
         console.log("Button clicked: " + this.state.first_name + " " + this.state.last_name + " " + this.state.email + " " + this.state.password)
         console.log("Validated and ready to send to the API")
 
+        let to_send = {
+            first_name: this.state.first_name,
+            last_name: this.state.last_name,
+            email: this.state.email,
+            password: this.state.password
+        };
+
+        return fetch("http://localhost:3333/api/1.0.0/user", {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(to_send)
+        })
+        .then((response) => {
+            console.log("Signup details sent to api");
+            navigation.navigate('login');
+        })
+        .catch((error) => {
+            console.log(error);
+        })
     }
 
     render(){
