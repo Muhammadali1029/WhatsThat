@@ -5,12 +5,14 @@ import { Button } from 'react-native-web';
 import * as EmailValidator from 'email-validator';
 
 
-export default class LoginScreen extends Component {
-
-    constructor(props){
+export default class LoginScreen extends Component 
+{
+    constructor(props)
+    {
         super(props);
 
-        this.state = {
+        this.state = 
+        {
             first_name: "",
             last_name: "",
             email: "",
@@ -24,62 +26,91 @@ export default class LoginScreen extends Component {
         this._onPressButton = this._onPressButton.bind(this)
     }
 
-    _onPressButton(){
- 
+    _onPressButton()
+    {
         this.setState({submitted: true})
         this.setState({error: ""})
 
-        if(!(this.state.first_name && this.state.last_name && this.state.email && this.state.password && this.state.confirm_password)){
+        if(!(this.state.first_name && this.state.last_name && this.state.email && this.state.password && this.state.confirm_password))
+        {
             this.setState({error: "Must enter all details"})
             return;
         }
 
-        if(!EmailValidator.validate(this.state.email)){
+        if(!EmailValidator.validate(this.state.email))
+        {
             this.setState({error: "Must enter valid email"})
             return;
         }
 
         const PASSWORD_REGEX = new RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")
-        if(!PASSWORD_REGEX.test(this.state.password)){
+        if(!PASSWORD_REGEX.test(this.state.password))
+        {
             this.setState({error: "Password isn't strong enough (One upper, one lower, one special, one number, at least 8 characters long)"})
             return;
         }
         
-        if (this.state.password != this.state.confirm_password){
+        if (this.state.password != this.state.confirm_password)
+        {
             this.setState({error: "Password does not match, re-enter"})
         }
 
         console.log("Button clicked: " + this.state.first_name + " " + this.state.last_name + " " + this.state.email + " " + this.state.password)
         console.log("Validated and ready to send to the API")
 
-        let to_send = {
+        let to_send = 
+        {
             first_name: this.state.first_name,
             last_name: this.state.last_name,
             email: this.state.email,
             password: this.state.password
         };
 
-        return fetch("http://localhost:3333/api/1.0.0/user", {
+        return fetch("http://localhost:3333/api/1.0.0/user", 
+        {
             method: 'post',
-            headers: {
+            headers: 
+            {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(to_send)
         })
-        .then((response) => {
+        .then((response) => 
+        {
             console.log("Signup details sent to api");
+
+            if(response.status === 201)
+            {
+                console.log("Account created")
+                return response.json();
+            }
+            else if(response.status === 400)
+            {
+                throw "Account already exists"
+            }
+            else 
+            {
+                throw "Something went wrong"
+            }
+        })
+        .then((rJson) =>
+        {
+            console.log(rJson)
+            this.setState({"error": "User added successfully"});
+            this.setState({"submitted": false});
             navigation.navigate('login');
         })
-        .catch((error) => {
+        .catch((error) => 
+        {
             console.log(error);
         })
     }
 
-    render(){
-
+    render()
+    {
         const navigation = this.props.navigation;
 
-        return(
+        return (
             <View style={styles.container}>
 
                 <View style={styles.formContainer}>
@@ -182,7 +213,7 @@ export default class LoginScreen extends Component {
                     <View>
                         <Button
                             title="Have an account? Login"
-                            onPress={() => navigation.goBack()}
+                            onPress={() => navigation.navigate('login')}
                         />
                     </View>
                 </View>
@@ -193,48 +224,61 @@ export default class LoginScreen extends Component {
 }
 
 
-const styles = StyleSheet.create({
-    container: {
+const styles = StyleSheet.create
+({
+    container: 
+    {
       flex: 1,
       width: "100%",
       alignItems: "center",
       justifyContent: "center"
     },
-    formContainer: {
+    formContainer: 
+    {
   
     },
-    first_name:{
+    first_name:
+    {
         marginBottom: 5
     },
-    last_name:{
+    last_name:
+    {
         marginBottom: 10
     },
-    email:{
+    email:
+    {
       marginBottom: 15
     },
-    password:{
+    password:
+    {
       marginBottom: 20
     },
-    confirm_password:{
+    confirm_password:
+    {
         marginBottom: 25
     },
-    createbtn:{
+    createbtn:
+    {
   
     },
-    signin:{
+    signin:
+    {
       justifyContent: "center",
       textDecorationLine: "underline"
     },
-    button: {
+    button: 
+    {
       marginBottom: 30,
       backgroundColor: '#2196F3'
     },
-    buttonText: {
+    buttonText: 
+    {
       textAlign: 'center',
       padding: 20,
       color: 'white'
     },
-    error: {
+    error: 
+    {
         color: "red",
         fontWeight: '900'
     }
