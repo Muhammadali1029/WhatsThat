@@ -10,7 +10,6 @@ export default class LoginScreen extends Component
     constructor(props)
     {
         super(props);
-
         this.state = 
         {
             email: "",
@@ -67,11 +66,6 @@ export default class LoginScreen extends Component
                 body: JSON.stringify(to_send)
             })
 
-        // .then((response) => {
-        //     console.log("Login details sent to api");
-        //     navigation.navigate('homenav');
-        // })
-
         .then((response) => 
         {
             console.log("Login details sent to api");
@@ -98,7 +92,7 @@ export default class LoginScreen extends Component
                 await AsyncStorage.setItem("whatsthat_session_token", rJson.token)
             
                 this.setState({"submitted": false});
-                this.props.navigation.navigate("homenav")
+                this.props.navigation.navigate('homenav')
             }
             catch
             {
@@ -110,28 +104,28 @@ export default class LoginScreen extends Component
             console.log(error);
         })
     }
+    
+    componentDidMount()
+    {
+        this.unsubscribe = this.props.navigation.addListener('focus', () =>
+        {
+        this.checkLoggedIn();
+        });
+    }
 
-    // componentDidMount()
-    // {
-    //     this.unsubscribe = this.props.navigation.addListener('focus', () =>
-    //     {
-    //     this.checkLoggedIn();
-    //     });
-    // }
+    componentWillUnmount()
+    {
+        this.unsubscribe();
+    }
 
-    // componentWillUnmount()
-    // {
-    //     this.unsubscribe();
-    // }
-
-    // checkLoggedIn = async () =>
-    // {
-    //     const value = await AsyncStorage.getItem('whatsthat_session_token');
-    //     if (value != null)
-    //     {
-    //     navigation.navigate('homenav');
-    //     }
-    // };
+    checkLoggedIn = async () =>
+    {
+        const value = await AsyncStorage.getItem('whatsthat_session_token');
+        if (value != null)
+        {
+        this.props.navigation.navigate('homenav');
+        }
+    };
     
     render()
     {
