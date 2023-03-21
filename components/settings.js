@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Button } from 'react-native-web';
 
 import ProfileScreen from './profile';
 
@@ -58,16 +59,18 @@ export default class SettingsScreen extends Component
                 <View>
                     <View style={styles.container}>
                         <Text>Settings</Text>
+
+                        <View styl={styles.button}>
+                            <Button
+                                title = "Profile"
+                                onPress={() => this.props.navigation.navigate('profile')}
+                            />
+                        </View>
+
                         <View style={styles.logoutbtn}>
                             <TouchableOpacity onPress={this.logout}>
                                 <View style={styles.button}>
                                     <Text style={styles.buttonText}>Logout</Text>
-                                </View>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity onPress={this.props.navigation.navigate(ProfileScreen)}>
-                                <View style={styles.button}>
-                                    <Text style={styles.buttonText}>Profile</Text>
                                 </View>
                             </TouchableOpacity>
                         </View>
@@ -90,6 +93,7 @@ const styles = StyleSheet.create
     button: 
     {
       marginBottom: 30,
+      marginTop: 30,
       backgroundColor: '#2196F3'
     }
 })

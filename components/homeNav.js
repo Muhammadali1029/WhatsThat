@@ -38,10 +38,16 @@ export default class HomeNav extends Component
     render()
     {
         return (
-            <Tab.Navigator>
-                <Tab.Screen name="home" component={HomeScreen} options={{headerShown: false}} />
-                <Tab.Screen name="contacts" component={ContactsScreen} options={{headerShown: false}} />
-                <Tab.Screen name="settingsNav" component={SettingsScreenStack} options={{headerShown: false}} />
+            <Tab.Navigator
+                screenOptions=
+                {{
+                    headerShown: false,
+                    initialRouteName:'home'
+                }}
+            >
+                <Tab.Screen name="home" component={HomeScreen}/>
+                <Tab.Screen name="contacts" component={ContactsScreen}/>
+                <Tab.Screen name="settingsNav" component={SettingsScreenStack}/>
             </Tab.Navigator>
         )
     }
