@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import HomeScreen from './home';
 import ContactsScreen from './contacts';
-import SettingsScreen from './settings';
+import SettingsScreenStack from './settingsNav';
 
 
 const Tab = createBottomTabNavigator();
@@ -41,7 +41,7 @@ export default class HomeNav extends Component
             <Tab.Navigator>
                 <Tab.Screen name="home" component={HomeScreen} options={{headerShown: false}} />
                 <Tab.Screen name="contacts" component={ContactsScreen} options={{headerShown: false}} />
-                <Tab.Screen name="settings" component={SettingsScreen} options={{headerShown: false}} />
+                <Tab.Screen name="settingsNav" component={SettingsScreenStack} options={{headerShown: false}} />
             </Tab.Navigator>
         )
     }

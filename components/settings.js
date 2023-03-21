@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import ProfileScreen from './profile';
 
 export default class SettingsScreen extends Component 
 {
@@ -61,6 +62,12 @@ export default class SettingsScreen extends Component
                             <TouchableOpacity onPress={this.logout}>
                                 <View style={styles.button}>
                                     <Text style={styles.buttonText}>Logout</Text>
+                                </View>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity onPress={this.props.navigation.navigate(ProfileScreen)}>
+                                <View style={styles.button}>
+                                    <Text style={styles.buttonText}>Profile</Text>
                                 </View>
                             </TouchableOpacity>
                         </View>

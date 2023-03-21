@@ -3,11 +3,9 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'reac
 
 
 export default class ProfileScreen extends Component {
-    // constructor(props){
-
-    // }
-
-    render(){
+ 
+    render()
+    {
         return (
             <View style={StyleSheet.container}>
                 <View style={StyleSheet.title}>
