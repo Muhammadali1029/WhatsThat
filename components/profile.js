@@ -25,7 +25,6 @@ export default class ProfileScreen extends Component
     getData = async () =>
     {   
         console.log("Profile request sent to api")
-        // userId = await AsyncStorage.getItem('whatsthat_user_id');
         return fetch("http://localhost:3333/api/1.0.0/user/"+ (await AsyncStorage.getItem('whatsthat_user_id')),
         {
             method: 'get',
@@ -45,7 +44,7 @@ export default class ProfileScreen extends Component
             ({
                 isLoading: false,
                 profileData: responseJson
-            })
+            });
         })
         .catch((error) =>
         {
@@ -67,31 +66,14 @@ export default class ProfileScreen extends Component
         else
         {
             return (
-                // <View style={StyleSheet.container}>
-                //     <View style={StyleSheet.title}>
-                //         <Text>Profile</Text>
-                //     </View>
-
-                //     <View style={StyleSheet.info}>
-                //         <Text>Name</Text>
-                //         <Text>Email</Text>
-                //     </View>
-                    
-                //     <View style={StyleSheet.nav}>
-                //         <TouchableOpacity onPress={this._onPressButton}>
-                //             <View style={styles.button}>
-                //                 <Text style={styles.buttonText}>Edit</Text>
-                //             </View>
-                //         </TouchableOpacity>
-                //     </View>
-                // </View>
-
                 <View style={styles.container}>
                     <Text>Profile Details</Text>
                     <View>
+                        <Text>Name: {this.state.profileData.first_name} {this.state.profileData.last_name}</Text>
+                        <Text>Email: {this.state.profileData.email}</Text>
                         <FlatList
                             data={this.state.profileData}
-                            renderItem = {(item) => 
+                            renderItem = {({item}) => 
                             (
                                 <View>
                                     <Text>{item.first_name} {item.last_name}</Text>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
 import { Button } from 'react-native-web';
 import * as EmailValidator from 'email-validator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -15,7 +15,7 @@ export default class LoginScreen extends Component
             email: "",
             password: "",
             error: "", 
-            isLoading: true,
+            isLoading: false,
             submitted: false
         };
 
@@ -24,6 +24,7 @@ export default class LoginScreen extends Component
 
     _onPressButton()
     {
+        this.setState({isLoading: false})
         this.setState({submitted: true})
         this.setState({error: ""})
 
@@ -91,7 +92,12 @@ export default class LoginScreen extends Component
                 await AsyncStorage.setItem("whatsthat_user_id", rJson.id)
                 await AsyncStorage.setItem("whatsthat_session_token", rJson.token)
             
-                this.setState({"submitted": false});
+                // this.setState({"submitted": false});
+                this.setState
+                ({
+                    isLoading: false,
+                    submitted: false
+                });
                 this.props.navigation.navigate('homenav')
             }
             catch
@@ -188,9 +194,8 @@ export default class LoginScreen extends Component
                     </View>
                 </View>
             </View>
-        )
+        )   
     }
-
 }
 
 const styles = StyleSheet.create
