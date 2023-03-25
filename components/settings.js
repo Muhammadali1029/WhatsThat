@@ -63,7 +63,7 @@ export default class SettingsScreen extends Component
                         <View styl={styles.button}>
                             <Button
                                 title = "Profile"
-                                onPress={() => this.props.navigation.navigate('profile')}
+                                onPress={() => this.props.navigation.navigate('profileNav')}
                             />
                         </View>
 

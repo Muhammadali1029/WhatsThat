@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { FlatList } from 'react-native-web';
+import { Button } from 'react-native-web';
 
 
 export default class ProfileScreen extends Component 
@@ -71,18 +71,12 @@ export default class ProfileScreen extends Component
                     <View>
                         <Text>Name: {this.state.profileData.first_name} {this.state.profileData.last_name}</Text>
                         <Text>Email: {this.state.profileData.email}</Text>
-                        <FlatList
-                            data={this.state.profileData}
-                            renderItem = {({item}) => 
-                            (
-                                <View>
-                                    <Text>{item.first_name} {item.last_name}</Text>
-                                    <Text>{item.email}</Text>
-                                </View>
-                            )}
-                            keyExtractor={({user_id}, index) => user_id}
-                        />
                     </View>
+
+                    <Button 
+                        title = "Edit Profile Details"
+                        onPress={() => this.props.navigation.navigate('editProfile')}
+                    />
                 </View>
             )
         }

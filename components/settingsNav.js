@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 
 import SettingsScreen from './settings';
-import ProfileScreen from './profile';
+import ProfileScreenStack from './profileNav';
 
 
 const SettingsStack = createNativeStackNavigator();
@@ -23,7 +23,7 @@ export default class SettingsScreenStack extends Component
                 }}
             >
                 <SettingsStack.Screen name="settings" component={SettingsScreen} />
-                <SettingsStack.Screen name="profile" component={ProfileScreen} />
+                <SettingsStack.Screen name="profileNav" component={ProfileScreenStack} />
             </SettingsStack.Navigator>
         )
     }
