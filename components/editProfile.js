@@ -13,7 +13,7 @@ export default class EditProfileScreen extends Component
         this.state = 
         {
             isLoading: true,
-            profileData: [],
+            profileData: {},
 
             orig_first_name: '',
             orig_last_name: '',
@@ -24,7 +24,8 @@ export default class EditProfileScreen extends Component
             last_name: '',
             email: '',
             password: '',
-            confirm_password: ''
+            confirm_password: '',
+            error: ''
         };
     }
 
@@ -32,6 +33,7 @@ export default class EditProfileScreen extends Component
     componentDidMount()
     {
         this.getData();
+        console.log(this.state.profileData)
 
         this.setState
         ({
@@ -74,7 +76,7 @@ export default class EditProfileScreen extends Component
 
     updateProfile = async () =>
     {
-        let to_send = [];
+        let to_send = {};
 
         if (this.state.first_name != this.state.orig_first_name)
         {
@@ -96,12 +98,24 @@ export default class EditProfileScreen extends Component
             to_send['password'] = this.state.password;
         }
 
+        // const PASSWORD_REGEX = new RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")
+        // if(!PASSWORD_REGEX.test(this.state.password))
+        // {
+        //     this.setState({error: "Password isn't strong enough (One upper, one lower, one special, one number, at least 8 characters long)"})
+        //     return;
+        // }
+
+        // if (this.state.password != this.state.confirm_password)
+        // {
+        //     this.setState({error: "Password does not match, re-enter"})
+        // }
+
         console.log(JSON.stringify(to_send));
 
         return fetch("http://localhost:3333/api/1.0.0/user/" + (await AsyncStorage.getItem('whatsthat_user_id')),
         {
             method: 'PATCH',
-            header: 
+            headers: 
             {
                 'Content-Type': 'application/json',
                 'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
@@ -180,7 +194,6 @@ export default class EditProfileScreen extends Component
             )
         }
     }
-
 }
 
 

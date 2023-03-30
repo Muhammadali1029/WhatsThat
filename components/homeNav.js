@@ -17,7 +17,7 @@ export default class HomeNav extends Component
     {
         this.unsubscribe = this.props.navigation.addListener('focus', () =>
         {
-        this.checkLoggedIn();
+            this.checkLoggedIn();
         });
     }
 

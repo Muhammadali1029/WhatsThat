@@ -96,6 +96,8 @@ export default class ContactsScreen extends Component
         })
     }
 
+    
+
     render()
     {
         if(this.state.isLoading)
