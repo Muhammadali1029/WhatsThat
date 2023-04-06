@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 import HomeScreen from './home';
-import ContactsScreen from './contacts';
+import ContactsNav from './contactsNav';
 import SettingsScreenStack from './settingsNav';
 
 
@@ -46,7 +46,7 @@ export default class HomeNav extends Component
                 }}
             >
                 <Tab.Screen name="home" component={HomeScreen}/>
-                <Tab.Screen name="contacts" component={ContactsScreen}/>
+                <Tab.Screen name="contactsNav" component={ContactsNav}/>
                 <Tab.Screen name="settingsNav" component={SettingsScreenStack}/>
             </Tab.Navigator>
         )

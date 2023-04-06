@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FlatList } from 'react-native-web';
-import { Button } from 'react-native-web';
+
 
 
 
@@ -14,48 +14,57 @@ export default class ContactsScreen extends Component
 
         this.state = 
         {
-            isLoading: true,
-            contactsData: [],
+            isLoading: false,
             userID: ""
-
         };
     }
 
-    componentDidMount()
+    searchAllUsers = async () =>
     {
-        this.getData();
+        useEffect(() =>
+        {
+            console.log("All search request sent to api");
+
+            
+        })
     }
 
-    getData = async () =>
-    {   
-        console.log("Contacts request sent to api")
-        return fetch("http://localhost:3333/api/1.0.0/contacts",
+    usersScreen = () => 
+    {
+        const [searchTerm, setSearchTerm] = useState('');
+        const [users, setUsers] = useState([]);
+
+        useEffect(() => 
         {
-            method: 'get',
-            headers: 
+            const searchAllUsers = async () => 
             {
-                'Content-Type': 'application/json',
-                'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
-            }
-        })
-
-        .then((response) => response.json())
-        .then((responseJson) => 
-        {
-            console.log("Data returned from api");
-            console.log(responseJson);
-            this.setState
-            ({
-                isLoading: false,
-                contactsData: responseJson
-            });
-        })
-        .catch((error) =>
-        {
-            console.log(error);
-        });
+              console.log("All search request sent to API");
+          
+              try 
+              {
+                const response = await fetch(`http://localhost:3333/api/1.0.0/search?q=${searchTerm}&search_in=all`,
+                {
+                    method: "get",
+                    headers: 
+                    {
+                      "Content-Type": "application/json",
+                      "X-Authorization": await AsyncStorage.getItem("whatsthat_session_token")
+                    }
+                });
+                const responseJson = await response.json();
+                console.log("Data returned from api");
+                console.log(responseJson);
+                setUsers(responseJson);
+              } 
+              catch (error) 
+              {
+                console.log(error);
+              }
+            };
+            searchAllUsers();
+        }, [searchTerm]);
     }
-
+    
     addToConatacts = async () =>
     {
         return fetch("http://localhost:3333/api/1.0.0/user/"+ this.state.userID + "/contact", 
@@ -94,7 +103,7 @@ export default class ContactsScreen extends Component
         .catch((error) => 
         {
             console.log(error);
-        })
+        });
     }
 
     
@@ -114,34 +123,30 @@ export default class ContactsScreen extends Component
         {
             return (
                 <View style={styles.container}>
-                    {/* <View>
+                    <View>
                     <Text>Add a user to Contacts</Text>
                     <View>
-                        <Text>User ID:</Text>
+                        <Text>Name, Email or UserID</Text>
                         <TextInput
                             style={{height: 40, borderWidth: 1, width: "100%"}}
-                            placeholder="Enter User ID"
-                            onChangeText={userID => this.setState({userID})}
-                            defaultValue={this.state.userID}
+                            placeholder="Enter..."
+                            onChangeText={searchTerm => this.setState({searchTerm})}
+                            defaultValue={this.state.searchTerm}
                         />
                     </View>
 
                     <View style={styles.addbtn}>
-                        <TouchableOpacity onPress={this.addToConatacts}>
+                        <TouchableOpacity onPress={this.usersScreen()}>
                             <View style={styles.button}>
-                                <Text style={styles.buttonText}>Add</Text>
+                                <Text style={styles.buttonText}>Search</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
-                    </View> */}
-                    <Text>Contacts</Text>
-                    <Button 
-                        title = "Add New Contact"
-                        onPress={() => this.props.navigation.navigate('addContact', {UserID: this.state.userID})}
-                    />
+                    </View>
+                    <Text>Users:</Text>
                     <View>
                         <FlatList
-                            data={this.state.contactsData}
+                            data={this.state.usersData}
                             renderItem = {({item}) => 
                             (
                                 <View>
@@ -163,7 +168,7 @@ const styles = StyleSheet.create({
         flex: 1,
         width: "100%",
         alignItems: "center",
-        justifyContent: "center"
+        justifyContent: "start"
     },
     search: {
        
@@ -184,3 +189,32 @@ const styles = StyleSheet.create({
       color: 'white'
     },
   });
+
+
+
+
+  
+    // searchAllUsers = async (search) =>
+    // {   
+    //     console.log("All search request sent to api")
+    //     return fetch("http://localhost:3333/api/1.0.0/search?q=" + search + "&search_in=all",
+    //     {
+    //         method: 'get',
+    //         headers:
+    //         {
+    //             'Content-Type': 'application/json',
+    //             'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
+    //         }
+    //     })
+    //     .then((response) => response.json())
+    //     .then((responseJson) =>
+    //     {
+    //         console.log("Data returned from api");
+    //         console.log(responseJson);
+    //         this.setState({usersData: responseJson});
+    //     })
+    //     .catch((error) => 
+    //     {
+    //         console.log(error);
+    //     });
+    // }

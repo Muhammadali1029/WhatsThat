@@ -3,6 +3,8 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator}
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Button } from 'react-native-web';
 
+import * as EmailValidator from 'email-validator';
+
 
 export default class EditProfileScreen extends Component 
 {
@@ -12,107 +14,84 @@ export default class EditProfileScreen extends Component
 
         this.state = 
         {
-            isLoading: true,
-            profileData: {},
-
-            orig_first_name: '',
-            orig_last_name: '',
-            orig_email: '',
-            orig_password: '',
+            isLoading: false,
+            original_profile_data: [],
 
             first_name: '',
             last_name: '',
             email: '',
             password: '',
             confirm_password: '',
-            error: ''
+            
+            error: '',
+            submitted: false
         };
     }
 
 
     componentDidMount()
     {
-        this.getData();
-        console.log(this.state.profileData)
-
         this.setState
         ({
-            orig_first_name: this.state.profileData.first_name,
-            orig_last_name: this.state.profileData.last_name,
-            orig_email: this.state.profileData.email,
-            orig_password: this.state.profileData.password
-        })
-    }
-
-    getData = async () =>
-    {   
-        console.log("Profile request sent to api")
-        return fetch("http://localhost:3333/api/1.0.0/user/"+ (await AsyncStorage.getItem('whatsthat_user_id')),
+            original_profile_data: this.props.route.params.profileData, 
+            first_name: this.props.route.params.profileData.first_name,
+            last_name: this.props.route.params.profileData.last_name,
+            email: this.props.route.params.profileData.email,
+        }, () => 
         {
-            method: 'get',
-            headers: 
-            {
-                'Content-Type': 'application/json',
-                'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
-            }
+            console.log("Profile Data: " )
+            console.log(this.state)
         })
-
-        .then((response) => response.json())
-        .then((responseJson) => 
-        {
-            console.log("Data returned from api");
-            console.log(responseJson);
-            this.setState
-            ({
-                isLoading: false,
-                profileData: responseJson
-            });
-        })
-        .catch((error) =>
-        {
-            console.log(error);
-        });
     }
 
     updateProfile = async () =>
     {
+        this.setState({submitted: true})
+        this.setState({error: ""})
+
         let to_send = {};
 
-        if (this.state.first_name != this.state.orig_first_name)
+        if (this.state.first_name != this.state.original_profile_data.first_name)
         {
             to_send['first_name'] = this.state.first_name;
         }
 
-        if (this.state.last_name != this.state.orig_last_name)
+        if (this.state.last_name != this.state.original_profile_data.last_name)
         {
             to_send['last_name'] = this.state.last_name;
         }
 
-        if (this.state.email != this.state.orig_email)
+        if (this.state.email != this.state.original_profile_data.email)
         {
+            if(!EmailValidator.validate(this.state.email))
+            {
+                this.setState({error: "Must enter valid email"})
+                return;
+            }
+            
             to_send['email'] = this.state.email;
         }
 
-        if (this.state.password != this.state.password)
+        if (this.state.password != "")
         {
+            const PASSWORD_REGEX = new RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")
+            if(!PASSWORD_REGEX.test(this.state.password))
+            {
+                this.setState({error: "Password isn't strong enough (One upper, one lower, one special, one number, at least 8 characters long)"})
+                return;
+            }
+
             to_send['password'] = this.state.password;
         }
 
-        // const PASSWORD_REGEX = new RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")
-        // if(!PASSWORD_REGEX.test(this.state.password))
-        // {
-        //     this.setState({error: "Password isn't strong enough (One upper, one lower, one special, one number, at least 8 characters long)"})
-        //     return;
-        // }
-
-        // if (this.state.password != this.state.confirm_password)
-        // {
-        //     this.setState({error: "Password does not match, re-enter"})
-        // }
+        if (this.state.password != this.state.confirm_password)
+        {
+            this.setState({error: "Password does not match, re-enter"})
+        }
 
         console.log(JSON.stringify(to_send));
 
-        return fetch("http://localhost:3333/api/1.0.0/user/" + (await AsyncStorage.getItem('whatsthat_user_id')),
+        return fetch("http://localhost:3333/api/1.0.0/user/" + this.state.original_profile_data.user_id,
         {
             method: 'PATCH',
             headers: 
@@ -132,6 +111,8 @@ export default class EditProfileScreen extends Component
             {
                 console.log('Failed');
             }
+
+            this.setState({ isLoading: false });
         })
         .catch((error) => 
         {
@@ -156,35 +137,43 @@ export default class EditProfileScreen extends Component
                 <View style={styles.container}>
                     <Text>Edit Profile Details</Text>
                     
+                    <Text>First Name</Text>
                     <TextInput
-                        placeholder = "Enter First Name..."
-                        onChangeText = {(first_name) => this.setState({first_name})}
-                        value = {this.state.first_name}    
+                        value = {this.state.first_name}
+                        onChangeText = {(val) => this.setState({"first_name": val})}
                     />
 
+                    <Text>Last Name</Text>
                     <TextInput
-                        placeholder = "Enter Last Name..."
-                        onChangeText = {(last_name) => this.setState({last_name})}
                         value = {this.state.last_name}    
+                        onChangeText = {(val) => this.setState({"last_name": val})}
+                    />
+                    
+                    <Text>Email</Text>
+                    <TextInput
+                        value = {this.state.email}
+                        onChangeText = {(val) => this.setState({"email": val})}    
                     />
 
+                    <Text>Password</Text>
                     <TextInput
-                        placeholder = "Enter email..."
-                        onChangeText = {(email) => this.setState({email})}
-                        value = {this.state.email}    
+                        placeholder="Enter password"
+                        onChangeText={password => this.setState({password})}
+                        defaultValue={this.state.password}  
                     />
 
+                    <Text>Confirm Password</Text>
                     <TextInput
-                        placeholder = "Enter new Password..."
-                        onChangeText = {(password) => this.setState({password})}
-                        value = {this.state.password}    
+                        placeholder="Re-enter password"
+                        onChangeText={confirm_password => this.setState({confirm_password})}
+                        defaultValue={this.state.confirm_password}
                     />
-
-                    <TextInput
-                        placeholder = "Re-enter Password..."
-                        onChangeText = {(confirm_password) => this.setState({confirm_password})}
-                        value = {this.state.confirm_password}    
-                    />
+                    <>
+                        {
+                            this.state.submitted && !this.state.confirm_password &&
+                            <Text style={styles.error}>*Confirm Password is required</Text>
+                        }
+                    </>
 
                     <Button 
                         title = "Update"

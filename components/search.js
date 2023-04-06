@@ -4,7 +4,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Button } from 'react-native-web';
 
 
-export default class ProfileScreen extends Component 
+
+export default class Search extends Component 
 {
     constructor(props)
     {
@@ -12,8 +13,7 @@ export default class ProfileScreen extends Component
 
         this.state = 
         {
-            isLoading: true,
-            profileData: []
+            isLoading: true
         };
     }
 
