@@ -15,54 +15,36 @@ export default class ContactsScreen extends Component
         this.state = 
         {
             isLoading: false,
-            userID: ""
+            userID: "",
+            searchTerm: "",
+            usersData: []
         };
     }
 
-    searchAllUsers = async () =>
-    {
-        useEffect(() =>
+
+    searchAllUsers = async (searchTerm) =>
+    {   
+        console.log("All search request sent to api")
+        return fetch("http://localhost:3333/api/1.0.0/search?q=" + searchTerm + "&search_in=all",
         {
-            console.log("All search request sent to api");
-
-            
-        })
-    }
-
-    usersScreen = () => 
-    {
-        const [searchTerm, setSearchTerm] = useState('');
-        const [users, setUsers] = useState([]);
-
-        useEffect(() => 
-        {
-            const searchAllUsers = async () => 
+            method: 'get',
+            headers:
             {
-              console.log("All search request sent to API");
-          
-              try 
-              {
-                const response = await fetch(`http://localhost:3333/api/1.0.0/search?q=${searchTerm}&search_in=all`,
-                {
-                    method: "get",
-                    headers: 
-                    {
-                      "Content-Type": "application/json",
-                      "X-Authorization": await AsyncStorage.getItem("whatsthat_session_token")
-                    }
-                });
-                const responseJson = await response.json();
-                console.log("Data returned from api");
-                console.log(responseJson);
-                setUsers(responseJson);
-              } 
-              catch (error) 
-              {
-                console.log(error);
-              }
-            };
-            searchAllUsers();
-        }, [searchTerm]);
+                'Content-Type': 'application/json',
+                'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
+            }
+        })
+        .then((response) => response.json())
+        .then((responseJson) =>
+        {
+            console.log("Data returned from api");
+            console.log(responseJson);
+            this.setState({usersData: responseJson});
+        })
+        .catch((error) => 
+        {
+            console.log(error);
+        });
     }
     
     addToConatacts = async () =>
@@ -136,7 +118,7 @@ export default class ContactsScreen extends Component
                     </View>
 
                     <View style={styles.addbtn}>
-                        <TouchableOpacity onPress={this.usersScreen()}>
+                        <TouchableOpacity onPress={() => this.searchAllUsers(this.state.searchTerm)}>
                             <View style={styles.button}>
                                 <Text style={styles.buttonText}>Search</Text>
                             </View>

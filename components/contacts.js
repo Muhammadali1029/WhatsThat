@@ -26,6 +26,7 @@ export default class ContactsScreen extends Component
         this.getData();
     }
 
+
     getData = async () =>
     {   
         console.log("Contacts request sent to api")
