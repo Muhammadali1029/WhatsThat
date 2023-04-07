@@ -1,7 +1,7 @@
 import React, { Component, useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { FlatList } from 'react-native-web';
+import { FlatList, Button } from 'react-native-web';
 
 
 
@@ -47,26 +47,24 @@ export default class ContactsScreen extends Component
         });
     }
     
-    addToConatacts = async () =>
+    addToConatacts = async (userID) =>
     {
-        return fetch("http://localhost:3333/api/1.0.0/user/"+ this.state.userID + "/contact", 
+        return fetch("http://localhost:3333/api/1.0.0/user/"+ userID + "/contact", 
+        {
+            method: 'post',
+            headers: 
             {
-                method: 'post',
-                headers: 
-                {
-                    'Content-Type': 'application/json',
-                    'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
-                }
-            },
-            this.getData()
-        )
+                'Content-Type': 'application/json',
+                'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
+            }
+        })
 
         .then(async (response) => 
         {
-            console.log("Logout sent to api");
+            console.log("Add to contacts sent to api");
             if(response.status === 200)
             {   
-                console.log("User added to contacts")
+                console.log("User " + userID + " added to contacts")
             }
             else if(response.status === 400)
             {
@@ -132,7 +130,13 @@ export default class ContactsScreen extends Component
                             renderItem = {({item}) => 
                             (
                                 <View>
-                                    <Text>{item.first_name} {item.last_name}</Text>
+                                    <Text>{item.given_name} {item.family_name}</Text>
+                                    {/* <TouchableOpacity onPress={() => console.log("Added "+ item.user_id)}> */}
+                                    <TouchableOpacity onPress={() => this.addToConatacts(item.user_id)}>
+                                        <View style={styles.button}>
+                                            <Text style={styles.buttonText}>Add to contacts</Text>
+                                        </View>
+                                    </TouchableOpacity>
                                 </View>
                             )}
                             keyExtractor={({user_id}, index) => user_id}
@@ -140,7 +144,7 @@ export default class ContactsScreen extends Component
                     </View>
                 </View>
             )
-        }
+        } 
     }
 }
 
@@ -162,7 +166,6 @@ const styles = StyleSheet.create({
       marginBottom: 5
     },
     button: {
-      marginBottom: 30,
       backgroundColor: '#2196F3'
     },
     buttonText: {
