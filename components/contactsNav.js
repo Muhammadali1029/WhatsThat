@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import ContactsScreen from './contacts';
 import AddContactsScreen from './addContact';
+import BlockedScreen from './blocked';
 
 
 const ContactsStack = createNativeStackNavigator();
@@ -24,6 +25,7 @@ export default class ContactsScreenStack extends Component
             >
                 <ContactsStack.Screen name="contact" component={ContactsScreen} />
                 <ContactsStack.Screen name="addContact" component={AddContactsScreen} />
+                <ContactsStack.Screen name="blocked" component={BlockedScreen} />
             </ContactsStack.Navigator>
         )
     }

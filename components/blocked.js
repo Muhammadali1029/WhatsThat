@@ -6,7 +6,7 @@ import { Button } from 'react-native-web';
 
 
 
-export default class ContactsScreen extends Component 
+export default class BlockedScreen extends Component 
 {
     constructor(props)
     {
@@ -15,9 +15,7 @@ export default class ContactsScreen extends Component
         this.state = 
         {
             isLoading: true,
-            contactsData: [],
-            userID: ""
-
+            blockedData: []
         };
     }
 
@@ -28,8 +26,8 @@ export default class ContactsScreen extends Component
 
     getData = async () =>
     {   
-        console.log("Contacts request sent to api")
-        return fetch("http://localhost:3333/api/1.0.0/contacts",
+        console.log("Blocked request sent to api")
+        return fetch("http://localhost:3333/api/1.0.0/blocked",
         {
             method: 'get',
             headers: 
@@ -47,7 +45,7 @@ export default class ContactsScreen extends Component
             this.setState
             ({
                 isLoading: false,
-                contactsData: responseJson
+                blockedData: responseJson
             });
         })
         .catch((error) =>
@@ -56,9 +54,9 @@ export default class ContactsScreen extends Component
         });
     }
 
-    removeFromConatacts = async (userID) =>
+    unblockUser = async (userID) =>
     {
-        return fetch("http://localhost:3333/api/1.0.0/user/"+ userID + "/contact", 
+        return fetch("http://localhost:3333/api/1.0.0/user/"+ userID + "/block", 
         {
             method: 'DELETE',
             headers: 
@@ -70,48 +68,14 @@ export default class ContactsScreen extends Component
 
         .then(async (response) => 
         {
-            console.log("Remove from contacts sent to api");
+            console.log("Unblock User request sent to api");
             if(response.status === 200)
             {   
-                console.log("User " + userID + " removed from contacts")
+                console.log("User " + userID + " Unblocked")
             }
             else if(response.status === 400)
             {
-                console.log("You cannot remove yourself")
-            }
-            else if(response.status === 404)
-            {
-                console.log("User does not exist")
-            }
-            else
-            {
-                throw "Something went wrong"
-            }
-        })
-    }
-    
-    blockUser = async (userID) =>
-    {
-        return fetch("http://localhost:3333/api/1.0.0/user/"+ userID + "/block", 
-        {
-            method: 'POST',
-            headers: 
-            {
-                'Content-Type': 'application/json',
-                'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
-            }
-        })
-
-        .then(async (response) => 
-        {
-            console.log("Block User sent to api");
-            if(response.status === 200)
-            {   
-                console.log("User " + userID + " Blocked")
-            }
-            else if(response.status === 400)
-            {
-                console.log("You cannot Block yourself")
+                console.log("You cannot unblock yourself")
             }
             else if(response.status === 404)
             {
@@ -139,32 +103,17 @@ export default class ContactsScreen extends Component
         {
             return (
                 <View style={styles.container}>
-                    <View style={styles.blockedbtn}>
-                        <Button
-                            title = "View Blocked Users"
-                            onPress={() => this.props.navigation.navigate('blocked')}
-                        />
-                    </View>
-                    <Text>Contacts</Text>
-                    <Button 
-                        title = "Add New Contact"
-                        onPress={() => this.props.navigation.navigate('addContact', {UserID: this.state.userID})}
-                    />
+                    <Text>Blocked Users</Text>
                     <View>
                         <FlatList
-                            data={this.state.contactsData}
+                            data={this.state.blockedData}
                             renderItem = {({item}) => 
                             (
                                 <View>
                                     <Text>{item.first_name} {item.last_name}</Text>
-                                    <TouchableOpacity onPress={() => this.removeFromConatacts(item.user_id)}>
+                                    <TouchableOpacity onPress={() => this.unblockUser(item.user_id)}>
                                         <View style={styles.button}>
-                                            <Text style={styles.buttonText}>Remove</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => this.blockUser(item.user_id)}>
-                                        <View style={styles.button}>
-                                            <Text style={styles.buttonText}>Block</Text>
+                                            <Text style={styles.buttonText}>Unblock</Text>
                                         </View>
                                     </TouchableOpacity>
                                 </View>
@@ -196,6 +145,7 @@ const styles = StyleSheet.create({
       marginBottom: 5
     },
     button: {
+      marginBottom: 30,
       backgroundColor: '#2196F3'
     },
     buttonText: {
@@ -203,8 +153,4 @@ const styles = StyleSheet.create({
       padding: 20,
       color: 'white'
     },
-    blockedbtn:
-    {
-        justifyContent: "flex-start"
-    }
   });
