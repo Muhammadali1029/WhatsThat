@@ -26,7 +26,6 @@ export default class ContactsScreen extends Component
         this.getData();
     }
 
-
     getData = async () =>
     {   
         console.log("Contacts request sent to api")
@@ -57,30 +56,28 @@ export default class ContactsScreen extends Component
         });
     }
 
-    addToConatacts = async () =>
+    RemoveFromConatacts = async (userID) =>
     {
-        return fetch("http://localhost:3333/api/1.0.0/user/"+ this.state.userID + "/contact", 
+        return fetch("http://localhost:3333/api/1.0.0/user/"+ userID + "/contact", 
+        {
+            method: 'DELETE',
+            headers: 
             {
-                method: 'post',
-                headers: 
-                {
-                    'Content-Type': 'application/json',
-                    'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
-                }
-            },
-            this.getData()
-        )
+                'Content-Type': 'application/json',
+                'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
+            }
+        })
 
         .then(async (response) => 
         {
-            console.log("Logout sent to api");
+            console.log("Remove from contacts sent to api");
             if(response.status === 200)
             {   
-                console.log("User added to contacts")
+                console.log("User " + userID + " removed from contacts")
             }
             else if(response.status === 400)
             {
-                console.log("You cannot add yourself")
+                console.log("You cannot remove yourself")
             }
             else if(response.status === 404)
             {
@@ -91,14 +88,7 @@ export default class ContactsScreen extends Component
                 throw "Something went wrong"
             }
         })
-
-        .catch((error) => 
-        {
-            console.log(error);
-        })
     }
-
-    
 
     render()
     {
@@ -115,26 +105,6 @@ export default class ContactsScreen extends Component
         {
             return (
                 <View style={styles.container}>
-                    {/* <View>
-                    <Text>Add a user to Contacts</Text>
-                    <View>
-                        <Text>User ID:</Text>
-                        <TextInput
-                            style={{height: 40, borderWidth: 1, width: "100%"}}
-                            placeholder="Enter User ID"
-                            onChangeText={userID => this.setState({userID})}
-                            defaultValue={this.state.userID}
-                        />
-                    </View>
-
-                    <View style={styles.addbtn}>
-                        <TouchableOpacity onPress={this.addToConatacts}>
-                            <View style={styles.button}>
-                                <Text style={styles.buttonText}>Add</Text>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-                    </View> */}
                     <Text>Contacts</Text>
                     <Button 
                         title = "Add New Contact"
@@ -147,6 +117,12 @@ export default class ContactsScreen extends Component
                             (
                                 <View>
                                     <Text>{item.first_name} {item.last_name}</Text>
+                                    {/* <TouchableOpacity onPress={() => console.log("Removed " + item.user_id)}> */}
+                                    <TouchableOpacity onPress={() => this.RemoveFromConatacts(item.user_id)}>
+                                        <View style={styles.button}>
+                                            <Text style={styles.buttonText}>Remove</Text>
+                                        </View>
+                                    </TouchableOpacity>
                                 </View>
                             )}
                             keyExtractor={({user_id}, index) => user_id}

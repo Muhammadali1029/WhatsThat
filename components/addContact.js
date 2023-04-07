@@ -131,7 +131,6 @@ export default class ContactsScreen extends Component
                             (
                                 <View>
                                     <Text>{item.given_name} {item.family_name}</Text>
-                                    {/* <TouchableOpacity onPress={() => console.log("Added "+ item.user_id)}> */}
                                     <TouchableOpacity onPress={() => this.addToConatacts(item.user_id)}>
                                         <View style={styles.button}>
                                             <Text style={styles.buttonText}>Add to contacts</Text>
