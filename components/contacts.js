@@ -5,7 +5,6 @@ import { FlatList } from 'react-native-web';
 import { Button } from 'react-native-web';
 
 
-
 export default class ContactsScreen extends Component 
 {
     constructor(props)
@@ -24,6 +23,13 @@ export default class ContactsScreen extends Component
     componentDidMount()
     {
         this.getData();
+    }
+    componentDidUpdate(prevProps, prevState) 
+    {
+        if (prevState.contactsData.length !== this.state.contactsData.length) 
+        {
+          this.getData();
+        }
     }
 
     getData = async () =>
@@ -74,6 +80,7 @@ export default class ContactsScreen extends Component
             if(response.status === 200)
             {   
                 console.log("User " + userID + " removed from contacts")
+                this.getData();
             }
             else if(response.status === 400)
             {
@@ -108,6 +115,7 @@ export default class ContactsScreen extends Component
             if(response.status === 200)
             {   
                 console.log("User " + userID + " Blocked")
+                this.getData();
             }
             else if(response.status === 400)
             {
