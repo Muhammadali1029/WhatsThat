@@ -65,6 +65,17 @@ export default class ContactsScreen extends Component
             if(response.status === 200)
             {   
                 console.log("User " + userID + " added to contacts")
+                this.getData();
+                const updatedUsersData = this.state.usersData.map(user => {
+                    if (user.user_id === userID) {
+                        return {
+                            ...user,
+                            is_contact: true
+                        };
+                    }
+                    return user;
+                });
+                this.setState({ usersData: updatedUsersData });
             }
             else if(response.status === 400)
             {
@@ -131,11 +142,19 @@ export default class ContactsScreen extends Component
                             (
                                 <View>
                                     <Text>{item.given_name} {item.family_name}</Text>
-                                    <TouchableOpacity onPress={() => this.addToConatacts(item.user_id)}>
-                                        <View style={styles.button}>
-                                            <Text style={styles.buttonText}>Add to contacts</Text>
+                                    { item.is_contact ? 
+                                    (
+                                        <View style={styles.buttonDisabled}>
+                                            <Text style={styles.buttonText}>Added to contacts</Text>
                                         </View>
-                                    </TouchableOpacity>
+                                    ) : 
+                                    (
+                                        <TouchableOpacity onPress={() => this.addToConatacts(item.user_id)}>
+                                            <View style={styles.button}>
+                                                <Text style={styles.buttonText}>Add to contacts</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    )}
                                 </View>
                             )}
                             keyExtractor={({user_id}, index) => user_id}
@@ -172,6 +191,21 @@ const styles = StyleSheet.create({
       padding: 20,
       color: 'white'
     },
+    buttonDisabled: 
+    {
+        backgroundColor: "#d3d3d3",
+        padding: 10,
+        borderRadius: 5,
+        alignItems: "center",
+        justifyContent: "center",
+        marginVertical: 10
+    },
+    buttonTextDisabled: 
+    {
+        color: "#808080",
+        fontWeight: "bold",
+        fontSize: 16
+    }
   });
 
 
