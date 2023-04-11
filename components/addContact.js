@@ -6,7 +6,7 @@ import { FlatList, Button } from 'react-native-web';
 
 
 
-export default class ContactsScreen extends Component 
+export default class AddContactsScreen extends Component 
 {
     constructor(props)
     {
@@ -16,8 +16,7 @@ export default class ContactsScreen extends Component
         {
             isLoading: false,
             userID: "",
-            searchTerm: "",
-            usersData: []
+            searchTerm: ""
         };
     }
 
@@ -47,7 +46,7 @@ export default class ContactsScreen extends Component
         });
     }
     
-    addToConatacts = async (userID) =>
+    addToContacts = async (userID) =>
     {
         return fetch("http://localhost:3333/api/1.0.0/user/"+ userID + "/contact", 
         {
@@ -65,17 +64,7 @@ export default class ContactsScreen extends Component
             if(response.status === 200)
             {   
                 console.log("User " + userID + " added to contacts")
-                this.getData();
-                const updatedUsersData = this.state.usersData.map(user => {
-                    if (user.user_id === userID) {
-                        return {
-                            ...user,
-                            is_contact: true
-                        };
-                    }
-                    return user;
-                });
-                this.setState({ usersData: updatedUsersData });
+                this.props.route.params.getData();
             }
             else if(response.status === 400)
             {
@@ -141,7 +130,12 @@ export default class ContactsScreen extends Component
                             renderItem = {({item}) => 
                             (
                                 <View>
-                                    <Text>{item.given_name} {item.family_name}</Text>
+                                    {/* <Text>{item.given_name} {item.family_name}</Text> */}
+                                    <TouchableOpacity onPress={() => console.log("Profile screen")}>
+                                        <View style={styles.profilebtn}>
+                                            <Text style={styles.buttonText}>{item.given_name} {item.family_name}</Text>
+                                        </View>
+                                    </TouchableOpacity>
                                     { item.is_contact ? 
                                     (
                                         <View style={styles.buttonDisabled}>
@@ -149,7 +143,7 @@ export default class ContactsScreen extends Component
                                         </View>
                                     ) : 
                                     (
-                                        <TouchableOpacity onPress={() => this.addToConatacts(item.user_id)}>
+                                        <TouchableOpacity onPress={() => this.addToContacts(item.user_id)}>
                                             <View style={styles.button}>
                                                 <Text style={styles.buttonText}>Add to contacts</Text>
                                             </View>
@@ -160,6 +154,10 @@ export default class ContactsScreen extends Component
                             keyExtractor={({user_id}, index) => user_id}
                         />
                     </View>
+                    <Button
+                        title="Go Back"
+                        onPress = {() => this.props.navigation.navigate('contacts')} 
+                    />
                 </View>
             )
         } 
@@ -185,6 +183,9 @@ const styles = StyleSheet.create({
     },
     button: {
       backgroundColor: '#2196F3'
+    },
+    profilebtn: {
+        backgroundColor: 'red'
     },
     buttonText: {
       textAlign: 'center',

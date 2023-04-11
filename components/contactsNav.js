@@ -23,7 +23,7 @@ export default class ContactsScreenStack extends Component
                     initialRouteName:'contacts'
                 }}
             >
-                <ContactsStack.Screen name="contact" component={ContactsScreen} />
+                <ContactsStack.Screen name="contacts" component={ContactsScreen} />
                 <ContactsStack.Screen name="addContact" component={AddContactsScreen} />
                 <ContactsStack.Screen name="blocked" component={BlockedScreen} />
             </ContactsStack.Navigator>

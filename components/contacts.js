@@ -156,14 +156,18 @@ export default class ContactsScreen extends Component
                     <Text>Contacts</Text>
                     <Button 
                         title = "Add New Contact"
-                        onPress={() => this.props.navigation.navigate('addContact', {UserID: this.state.userID})}
+                        onPress={() => this.props.navigation.navigate('addContact', 
+                        {
+                            UserID: this.state.userID,
+                            getData: this.getData
+                        })}
                     />
-                    <View>
+                    <View style={styles.contactsList}>
                         <FlatList
                             data={this.state.contactsData}
                             renderItem = {({item}) => 
                             (
-                                <View>
+                                <View style={styles.contacts}>
                                     <Text>{item.first_name} {item.last_name}</Text>
                                     <TouchableOpacity onPress={() => this.removeFromConatacts(item.user_id)}>
                                         <View style={styles.button}>
@@ -189,30 +193,32 @@ export default class ContactsScreen extends Component
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        width: "100%",
-        alignItems: "center",
-        justifyContent: "center"
+      backgroundColor: '#F5F5F5',
+      borderRadius: 10,
+      paddingHorizontal: 20,
+      paddingVertical: 10,
+      marginVertical: 10,
     },
-    search: {
-       
+    contactsList: {
+      marginTop: 20,
+      flex: 1,
+      alignSelf: 'stretch',
     },
-    info: {
-       
-    },
-    nav:{
-      marginBottom: 5
+    contacts: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 10,
     },
     button: {
-      backgroundColor: '#2196F3'
+      backgroundColor: 'red',
+      padding: 10,
+      borderRadius: 5,
+      marginHorizontal: 5,
     },
     buttonText: {
+      color: 'white',
       textAlign: 'center',
-      padding: 20,
-      color: 'white'
     },
-    blockedbtn:
-    {
-        justifyContent: "flex-start"
-    }
   });
+  
