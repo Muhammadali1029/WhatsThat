@@ -15,8 +15,9 @@ export default class AddContactsScreen extends Component
         this.state = 
         {
             isLoading: false,
-            userID: "",
-            searchTerm: ""
+            searchTerm: "",
+            searchedUsersData: [],
+            contactsData: []
         };
     }
 
@@ -38,7 +39,13 @@ export default class AddContactsScreen extends Component
         {
             console.log("Data returned from api");
             console.log(responseJson);
-            this.setState({usersData: responseJson});
+            // this.setState({usersData: responseJson});
+            const updatedUsersData = responseJson.map((user) => {
+                const isContact = this.state.contactsData.some((contact) => contact.user_id === user.user_id);
+                return { ...user, isContact };
+            });
+    
+            this.setState({ usersData: updatedUsersData });
         })
         .catch((error) => 
         {
@@ -129,14 +136,14 @@ export default class AddContactsScreen extends Component
                             data={this.state.usersData}
                             renderItem = {({item}) => 
                             (
-                                <View>
+                                <View style={styles.container}>
                                     {/* <Text>{item.given_name} {item.family_name}</Text> */}
                                     <TouchableOpacity onPress={() => console.log("Profile screen")}>
                                         <View style={styles.profilebtn}>
                                             <Text style={styles.buttonText}>{item.given_name} {item.family_name}</Text>
                                         </View>
                                     </TouchableOpacity>
-                                    { item.is_contact ? 
+                                    { item.isContact ? 
                                     (
                                         <View style={styles.buttonDisabled}>
                                             <Text style={styles.buttonText}>Added to contacts</Text>
@@ -150,6 +157,22 @@ export default class AddContactsScreen extends Component
                                         </TouchableOpacity>
                                     )}
                                 </View>
+
+                                // <View style={styles.buttonContainer}>
+                                // { item.isContact ? 
+                                // (
+                                //     <View style={styles.buttonDisabled}>
+                                //         <Text style={styles.buttonText}>Already in contacts</Text>
+                                //     </View>
+                                // ) : 
+                                // (
+                                //     <TouchableOpacity onPress={() => this.addToContacts(item.user_id)}>
+                                //         <View style={styles.button}>
+                                //             <Text style={styles.buttonText}>Add to contacts</Text>
+                                //         </View>
+                                //     </TouchableOpacity>
+                                // )}
+                                // </View>
                             )}
                             keyExtractor={({user_id}, index) => user_id}
                         />

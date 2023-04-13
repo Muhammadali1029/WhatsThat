@@ -16,7 +16,6 @@ export default class ContactsScreen extends Component
             isLoading: true,
             contactsData: [],
             userID: ""
-
         };
     }
 
@@ -150,7 +149,11 @@ export default class ContactsScreen extends Component
                     <View style={styles.blockedbtn}>
                         <Button
                             title = "View Blocked Users"
-                            onPress={() => this.props.navigation.navigate('blocked')}
+                            onPress={() => this.props.navigation.navigate('blocked',
+                            {
+                                getData: this.getData,
+                                removeFromContacts: this.removeFromConatacts
+                            })}
                         />
                     </View>
                     <Text>Contacts</Text>
@@ -158,7 +161,7 @@ export default class ContactsScreen extends Component
                         title = "Add New Contact"
                         onPress={() => this.props.navigation.navigate('addContact', 
                         {
-                            UserID: this.state.userID,
+                            contactsData: this.state.contactsData,
                             getData: this.getData
                         })}
                     />

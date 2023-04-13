@@ -24,6 +24,14 @@ export default class BlockedScreen extends Component
         this.getData();
     }
 
+    componentDidUpdate(prevProps, prevState) 
+    {
+        if (prevState.blockedData.length !== this.state.blockedData.length) 
+        {
+          this.getData();
+        }
+    }
+
     getData = async () =>
     {   
         console.log("Blocked request sent to api")
@@ -72,6 +80,9 @@ export default class BlockedScreen extends Component
             if(response.status === 200)
             {   
                 console.log("User " + userID + " Unblocked")
+                this.getData();
+                this.props.route.params.getData();
+                this.props.route.params.removeFromContacts(userID);
             }
             else if(response.status === 400)
             {
