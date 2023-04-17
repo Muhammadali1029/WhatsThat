@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-import HomeScreen from './home';
+import ChatsNav from './chatsNav';
 import ContactsNav from './contactsNav';
 import SettingsScreenStack from './settingsNav';
 
@@ -42,10 +42,10 @@ export default class HomeNav extends Component
                 screenOptions=
                 {{
                     headerShown: false,
-                    initialRouteName:'home'
+                    initialRouteName:'chatsNav'
                 }}
             >
-                <Tab.Screen name="home" component={HomeScreen}/>
+                <Tab.Screen name="chatsNav" component={ChatsNav}/>
                 <Tab.Screen name="contactsNav" component={ContactsNav}/>
                 <Tab.Screen name="settingsNav" component={SettingsScreenStack}/>
             </Tab.Navigator>

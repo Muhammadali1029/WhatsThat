@@ -22,6 +22,14 @@ export default class HomeScreen extends Component
       this.getData();
   }
 
+  componentDidUpdate(prevProps, prevState) 
+  {
+    if (prevState.chatsData.length !== this.state.chatsData.length) 
+    {
+      this.getData();
+    }
+  }
+
   getData = async () =>
   {   
       console.log("Chats request sent to api")
@@ -66,14 +74,30 @@ export default class HomeScreen extends Component
     {
       return (
         <View style={styles.container}>
+          <View>
+            <Button
+              title = "New Chat"
+              onPress={() => this.props.navigation.navigate('createChatScreen',
+              {
+                getData: this.getData
+              })}
+            />
+          </View>
             <Text>Chats</Text>
             <FlatList
               data={this.state.chatsData}
               renderItem = {({item}) => 
               (
                   <View style={styles.chats}>
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate('singleChatScreen',
+                      {
+                       chatName: item.name,
+                       chatID: item.chat_id
+                      }
+                    )}>
                       <Text>{item.name}</Text>
-                      <Text>{item.last_message.author.first_name} {item.last_message.author.last_name}: {item.last_message.message}</Text>
+                      {/* <Text>{item.last_message.author.first_name} {item.last_message.author.last_name}: {item.last_message.message}</Text> */}
+                    </TouchableOpacity>
                   </View>
               )}
               keyExtractor={({chat_id}, index) => chat_id}
@@ -94,14 +118,15 @@ const styles = StyleSheet.create({
   //   justifyContent: 'center',
   //   padding: 20,
   // },
-  // chats: {
-  //   flexDirection: 'row',
-  //   justifyContent: 'space-between',
-  //   alignItems: 'center',
-  //   marginVertical: 10,
-  //   padding: 10,
-  //   borderRadius: 5,
-  //   backgroundColor: '#F2F2F2',
-  //   width: '100%',
-  // },
+  chats: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 10,
+    padding: 10,
+    borderRadius: 5,
+    backgroundColor: '#F2F2F2',
+    width: '100%',
+    borderWidth: 1
+  },
 });
