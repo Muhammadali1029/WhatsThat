@@ -1,7 +1,7 @@
 import React, { Component, useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { FlatList, Button } from 'react-native-web';
+import { FlatList, Button, ScrollView } from 'react-native-web';
 
 
 

@@ -89,12 +89,7 @@ export default class HomeScreen extends Component
               renderItem = {({item}) => 
               (
                   <View style={styles.chats}>
-                    <TouchableOpacity onPress={() => this.props.navigation.navigate('singleChatScreen',
-                      {
-                       chatName: item.name,
-                       chatID: item.chat_id
-                      }
-                    )}>
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate('singleChatScreen', { item })}>
                       <Text>{item.name}</Text>
                       {/* <Text>{item.last_message.author.first_name} {item.last_message.author.last_name}: {item.last_message.message}</Text> */}
                     </TouchableOpacity>
