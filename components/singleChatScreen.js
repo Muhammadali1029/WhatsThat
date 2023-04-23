@@ -15,7 +15,9 @@ export default class SingleChatScreen extends Component
             chatData: [],
             newMessage: "",
             editMessage: "",
-            showModal: false
+            showModal: false, 
+            messageId: "",
+            selectedMessage: ""
         };
     }
 
@@ -104,16 +106,16 @@ export default class SingleChatScreen extends Component
         });
     }
 
-    editMessage = async (messageID) =>
+    editMessage = async () =>
     {
         console.log("edit button pressed")
-        console.log(messageID)
+        console.log(this.state.messageID)
 
         let to_send =
         {   
             message: this.state.editMessage
         };    
-        return fetch("http://localhost:3333/api/1.0.0/chat/"+this.props.route.params.item.chat_id+"/message/"+messageID,
+        return fetch("http://localhost:3333/api/1.0.0/chat/"+this.props.route.params.item.chat_id+"/message/"+this.state.messageId,
         {
             method: 'PATCH',
             headers: 
@@ -144,6 +146,40 @@ export default class SingleChatScreen extends Component
         });
     }
 
+    deleteMessage = async () =>
+    {
+        console.log("Delete button pressed");
+        return fetch("http://localhost:3333/api/1.0.0/chat/"+this.props.route.params.item.chat_id+"/message/"+this.state.messageId,
+        {
+            method: 'DELETE',
+            headers: 
+            {
+                'Content-Type': 'application/json',
+                'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
+            }
+        })
+
+        .then((response) => 
+        {
+            console.log("Delete Message sent to api");
+            if(response.status === 200)
+            {   
+                console.log("message deleted successfully")
+                this.getData()
+                return response.json();
+            }
+            else 
+            {
+                throw "Something went wrong"
+            }
+        })
+
+        .catch((error) =>
+        {
+            console.log(error);
+        });
+    }
+
     render()
     {
         return (
@@ -158,7 +194,19 @@ export default class SingleChatScreen extends Component
                             renderItem = {({item}) => 
                             (   
                                 <View style={styles.chats}>
-                                    <TouchableOpacity onLongPress={() => {this.setState({showModal:true}), console.log(item.message_id)}}>
+                                    <TouchableOpacity onLongPress={async () => 
+                                    {   
+                                        console.log(item.message_id, "User ID: " + await AsyncStorage.getItem('whatsthat_user_id'), "Message Creator ID: " + item.author.user_id), 
+                                        this.setState
+                                        ({
+                                            messageId: item.message_id,
+                                            selectedMessage: item.message
+                                        })
+                                        if (item.author.user_id == await AsyncStorage.getItem('whatsthat_user_id'))
+                                        {
+                                            this.setState({showModal:true})
+                                        }
+                                    }}>
                                         <Text>{item.author.first_name} {item.author.last_name}: {item.message}</Text>
                                     </TouchableOpacity>
                                     <Modal
@@ -170,17 +218,16 @@ export default class SingleChatScreen extends Component
                                                 <View>
                                                     <TextInput 
                                                         style={styles.messageBox}
-                                                        placeholder= {item.message}
+                                                        placeholder= {this.state.selectedMessage}
                                                         onChangeText={editMessage => this.setState({editMessage})}
-                                                        defaultValue={this.state.editMessage}
                                                     />
                                                     
                                                     <Button
                                                         title = "Confirm Edit"
                                                         onPress = {() => 
                                                         {
-                                                            this.editMessage(item.message_id), 
-                                                            console.log(item.message_id),
+                                                            this.editMessage(), 
+                                                            console.log("Edited Message ID: " + this.state.messageId),
                                                             this.setState({showModal:false})
                                                         }}
                                                     />
@@ -188,7 +235,12 @@ export default class SingleChatScreen extends Component
                                                 
                                                 <Button
                                                     title = "Delete"
-                                                    onPress = {() => {console.log("Delete Pressed")}}
+                                                    onPress = {() => 
+                                                    {
+                                                        this.deleteMessage(),
+                                                        console.log("Deleted Message ID: " + this.state.messageId),
+                                                        this.setState({showModal:false})
+                                                    }}
                                                 />
 
                                                 <Button
@@ -214,7 +266,13 @@ export default class SingleChatScreen extends Component
                         <Button
                             style={styles.button}
                             title = "Send"
-                            onPress={() => this.sendMessage(this.state.newMessage)}
+                            onPress={() => 
+                            {
+                                if(this.state.newMessage != "")
+                                {
+                                    this.sendMessage(this.state.newMessage)
+                                }}
+                            }
                         />
                     </View>
                 </View>
@@ -245,7 +303,7 @@ const styles = StyleSheet.create
     {
         height: 40, 
         borderWidth: 1, 
-        width: "80%",
+        width: "60%",
         marginTop: 10
     },
     sendMessageContainer:
