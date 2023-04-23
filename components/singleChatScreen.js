@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Alert} from 'react-native';
+import React, { Component, useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Modal} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Button, FlatList } from 'react-native-web';
 
@@ -13,7 +13,9 @@ export default class SingleChatScreen extends Component
         this.state = 
         {
             chatData: [],
-            newMessage: ""
+            newMessage: "",
+            editMessage: "",
+            showModal: false
         };
     }
 
@@ -102,30 +104,44 @@ export default class SingleChatScreen extends Component
         });
     }
 
-    hold = () =>
+    editMessage = async (messageID) =>
     {
-        Alert.alert(
-            'Edit or Delete',
-            'Choose an option',
-            [
-                {
-                text: 'Edit',
-                onPress: () => console.log('Edit option selected'),
-                },
-                {
-                text: 'Delete',
-                onPress: () => console.log('Delete option selected'),
-                style: 'destructive',
-                },
-                {
-                text: 'Cancel',
-                onPress: () => console.log('Cancel option selected'),
-                style: 'cancel',
-                },
-            ],
-            { cancelable: true }
-            );
-            console.log("Pressed")
+        console.log("edit button pressed")
+        console.log(messageID)
+
+        let to_send =
+        {   
+            message: this.state.editMessage
+        };    
+        return fetch("http://localhost:3333/api/1.0.0/chat/"+this.props.route.params.item.chat_id+"/message/"+messageID,
+        {
+            method: 'PATCH',
+            headers: 
+            {
+                'Content-Type': 'application/json',
+                'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
+            },
+            body: JSON.stringify(to_send)
+        })
+        .then((response) => 
+        {
+            console.log("Edit Message sent to api");
+            if(response.status === 200)
+            {   
+                console.log("message eddited successfully")
+                this.getData()
+                return response.json();
+            }
+            else 
+            {
+                throw "Something went wrong"
+            }
+        })
+
+        .catch((error) =>
+        {
+            console.log(error);
+        });
     }
 
     render()
@@ -140,11 +156,48 @@ export default class SingleChatScreen extends Component
                             data={this.state.chatData.messages}
                             inverted = {true}
                             renderItem = {({item}) => 
-                            (
+                            (   
                                 <View style={styles.chats}>
-                                    <TouchableOpacity onLongPress={() => this.hold()}>
+                                    <TouchableOpacity onLongPress={() => {this.setState({showModal:true}), console.log(item.message_id)}}>
                                         <Text>{item.author.first_name} {item.author.last_name}: {item.message}</Text>
                                     </TouchableOpacity>
+                                    <Modal
+                                        transparent = {true}
+                                        visible = {this.state.showModal}
+                                    >   
+                                        <View style={styles.modalBackground}>
+                                            <View style={styles.modal}>   
+                                                <View>
+                                                    <TextInput 
+                                                        style={styles.messageBox}
+                                                        placeholder= {item.message}
+                                                        onChangeText={editMessage => this.setState({editMessage})}
+                                                        defaultValue={this.state.editMessage}
+                                                    />
+                                                    
+                                                    <Button
+                                                        title = "Confirm Edit"
+                                                        onPress = {() => 
+                                                        {
+                                                            this.editMessage(item.message_id), 
+                                                            console.log(item.message_id),
+                                                            this.setState({showModal:false})
+                                                        }}
+                                                    />
+                                                </View>
+                                                
+                                                <Button
+                                                    title = "Delete"
+                                                    onPress = {() => {console.log("Delete Pressed")}}
+                                                />
+
+                                                <Button
+                                                    title = "Cancel"
+                                                    onPress = {() => this.setState({showModal:false})}
+                                                />
+                                            </View>
+                                        </View>
+                                    </Modal>
                                 </View>
                             )}
                             keyExtractor={({message_id}, index) => message_id}
@@ -202,5 +255,20 @@ const styles = StyleSheet.create
     button:
     {
         width: '20%'
+    },
+    modalBackground:
+    {
+        backgroundColor: "",
+        flex: 1
+    },
+    modal:
+    {
+        backgroundColor: "#ffffff",
+        margin: 50,
+        padding: 40, 
+        borderRadius: 10,
+        flex: 1,
+        height: 50,
+        width: '70%'
     }
 });
