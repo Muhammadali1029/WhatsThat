@@ -1,37 +1,38 @@
 import React, { Component } from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity, StyleSheet, Alert,
+  View, Text, TextInput, TouchableOpacity, StyleSheet,
 } from 'react-native';
 import { Button } from 'react-native-web';
+import PropTypes from 'prop-types';
 
 import * as EmailValidator from 'email-validator';
 
-export default class LoginScreen extends Component
+export default class SignUpScreen extends Component
 {
   constructor(props)
   {
     super(props);
 
     this.state = {
-      first_name: '',
-      last_name: '',
+      firstName: '',
+      lastName: '',
       email: '',
       password: '',
-      confirm_password: '',
+      confirmPassword: '',
       error: '',
-      isLoading: true,
       submitted: false,
     };
 
-    this._onPressButton = this._onPressButton.bind(this);
+    this.onPressButton = this.onPressButton.bind(this);
   }
 
-  _onPressButton()
+  onPressButton()
   {
     this.setState({ submitted: true });
     this.setState({ error: '' });
 
-    if (!(this.state.first_name && this.state.last_name && this.state.email && this.state.password && this.state.confirm_password))
+    if (!(this.state.firstName && this.state.lastName && this.state.email
+    && this.state.password && this.state.confirmPassword))
     {
       this.setState({ error: 'Must enter all details' });
       return;
@@ -43,24 +44,24 @@ export default class LoginScreen extends Component
       return;
     }
 
-    const PASSWORD_REGEX = new RegExp('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$');
+    const PASSWORD_REGEX = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
     if (!PASSWORD_REGEX.test(this.state.password))
     {
       this.setState({ error: "Password isn't strong enough (One upper, one lower, one special, one number, at least 8 characters long)" });
       return;
     }
 
-    if (this.state.password != this.state.confirm_password)
+    if (this.state.password !== this.state.confirmPassword)
     {
       this.setState({ error: 'Password does not match, re-enter' });
     }
 
-    console.log(`Button clicked: ${this.state.first_name} ${this.state.last_name} ${this.state.email} ${this.state.password}`);
+    console.log(`Button clicked: ${this.state.firstName} ${this.state.lastName} ${this.state.email} ${this.state.password}`);
     console.log('Validated and ready to send to the API');
 
-    const to_send = {
-      first_name: this.state.first_name,
-      last_name: this.state.last_name,
+    const toSend = {
+      firstName: this.state.firstName,
+      lastName: this.state.lastName,
       email: this.state.email,
       password: this.state.password,
     };
@@ -73,7 +74,7 @@ export default class LoginScreen extends Component
             {
               'Content-Type': 'application/json',
             },
-        body: JSON.stringify(to_send),
+        body: JSON.stringify(toSend),
       },
     )
       .then((response) =>
@@ -113,34 +114,30 @@ export default class LoginScreen extends Component
       <View style={styles.container}>
 
         <View style={styles.formContainer}>
-          <View style={styles.first_name}>
+          <View style={styles.firstName}>
             <Text>First Name:</Text>
             <TextInput
               style={{ height: 40, borderWidth: 1, width: '100%' }}
               placeholder="Enter first name"
-              onChangeText={(first_name) => this.setState({ first_name })}
-              defaultValue={this.state.first_name}
+              onChangeText={(firstName) => this.setState({ firstName })}
+              defaultValue={this.state.firstName}
             />
 
-            <>
-              {this.state.submitted && !this.state.first_name
-                                && <Text style={styles.error}>*First Name is required</Text>}
-            </>
+            {this.state.submitted && !this.state.firstName
+            && <Text style={styles.error}>*First Name is required</Text>}
           </View>
 
-          <View style={styles.last_name}>
+          <View style={styles.lastName}>
             <Text>Last Name:</Text>
             <TextInput
               style={{ height: 40, borderWidth: 1, width: '100%' }}
               placeholder="Enter last name"
-              onChangeText={(last_name) => this.setState({ last_name })}
-              defaultValue={this.state.last_name}
+              onChangeText={(lastName) => this.setState({ lastName })}
+              defaultValue={this.state.lastName}
             />
 
-            <>
-              {this.state.submitted && !this.state.last_name
-                                && <Text style={styles.error}>*Last Name is required</Text>}
-            </>
+            {this.state.submitted && !this.state.lastName
+            && <Text style={styles.error}>*Last Name is required</Text>}
           </View>
 
           <View style={styles.email}>
@@ -152,10 +149,8 @@ export default class LoginScreen extends Component
               defaultValue={this.state.email}
             />
 
-            <>
-              {this.state.submitted && !this.state.email
-                                && <Text style={styles.error}>*Email is required</Text>}
-            </>
+            {this.state.submitted && !this.state.email
+            && <Text style={styles.error}>*Email is required</Text>}
           </View>
 
           <View style={styles.password}>
@@ -168,40 +163,36 @@ export default class LoginScreen extends Component
               secureTextEntry
             />
 
-            <>
-              {this.state.submitted && !this.state.password
-                                && <Text style={styles.error}>*Password is required</Text>}
-            </>
+            {this.state.submitted && !this.state.password
+            && <Text style={styles.error}>*Password is required</Text>}
+
           </View>
 
-          <View style={styles.confirm_password}>
+          <View style={styles.confirmPassword}>
             <Text>Confirm Password:</Text>
             <TextInput
               style={{ height: 40, borderWidth: 1, width: '100%' }}
               placeholder="Re-enter password"
-              onChangeText={(confirm_password) => this.setState({ confirm_password })}
-              defaultValue={this.state.confirm_password}
+              onChangeText={(confirmPassword) => this.setState({ confirmPassword })}
+              defaultValue={this.state.confirmPassword}
               secureTextEntry
             />
 
-            <>
-              {this.state.submitted && !this.state.confirm_password
-                                && <Text style={styles.error}>*Confirm Password is required</Text>}
-            </>
+            {this.state.submitted && !this.state.confirm_password
+            && <Text style={styles.error}>*Confirm Password is required</Text>}
+
           </View>
 
           <View style={styles.createbtn}>
-            <TouchableOpacity onPress={this._onPressButton}>
+            <TouchableOpacity onPress={this.onPressButton}>
               <View style={styles.button}>
                 <Text style={styles.buttonText}>Create Account</Text>
               </View>
             </TouchableOpacity>
           </View>
 
-          <>
-            {this.state.error
-                            && <Text style={styles.error}>{this.state.error}</Text>}
-          </>
+          {this.state.error
+          && <Text style={styles.error}>{this.state.error}</Text>}
 
           <View>
             <Button
@@ -215,6 +206,13 @@ export default class LoginScreen extends Component
   }
 }
 
+SignUpScreen.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+    addListener: PropTypes.func.isRequired,
+  }).isRequired,
+};
+
 const styles = StyleSheet.create({
   container:
     {
@@ -227,11 +225,11 @@ const styles = StyleSheet.create({
     {
 
     },
-  first_name:
+  firstName:
     {
       marginBottom: 5,
     },
-  last_name:
+  lastName:
     {
       marginBottom: 10,
     },
@@ -243,7 +241,7 @@ const styles = StyleSheet.create({
     {
       marginBottom: 20,
     },
-  confirm_password:
+  confirmPassword:
     {
       marginBottom: 25,
     },

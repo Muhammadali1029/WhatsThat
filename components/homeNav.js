@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import PropTypes from 'prop-types';
 
 import ChatsNav from './chatsNav';
 import ContactsNav from './contactsNav';
@@ -8,26 +9,32 @@ import SettingsScreenStack from './settingsNav';
 
 const Tab = createBottomTabNavigator();
 
-export default class HomeNav extends Component {
-  componentDidMount() 
+export default class HomeNav extends Component
+{
+  componentDidMount()
   {
-    this.unsubscribe = this.props.navigation.addListener('focus', () => {
+    this.unsubscribe = this.props.navigation.addListener('focus', () =>
+    {
       this.checkLoggedIn();
     });
   }
 
-  componentWillUnmount() {
+  componentWillUnmount()
+  {
     this.unsubscribe();
   }
 
-  checkLoggedIn = async () => {
+  checkLoggedIn = async () =>
+  {
     const value = await AsyncStorage.getItem('whatsthat_session_token');
-    if (value == null) {
+    if (value == null)
+    {
       this.props.navigation.navigate('login');
     }
   };
 
-  render() {
+  render()
+  {
     return (
       <Tab.Navigator
         screenOptions={{
@@ -42,3 +49,10 @@ export default class HomeNav extends Component {
     );
   }
 }
+
+HomeNav.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+    addListener: PropTypes.func.isRequired,
+  }).isRequired,
+};

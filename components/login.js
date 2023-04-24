@@ -103,7 +103,6 @@ export default class LoginScreen extends Component
           await AsyncStorage.setItem('whatsthat_user_id', rJson.id);
           await AsyncStorage.setItem('whatsthat_session_token', rJson.token);
 
-          // this.setState({"submitted": false});
           this.setState({
             submitted: false,
           });
@@ -144,10 +143,9 @@ export default class LoginScreen extends Component
               defaultValue={this.state.email}
             />
 
-            <>
-              {this.state.submitted && !this.state.email
-                                && <Text style={styles.error}>*Email is required</Text>}
-            </>
+            {this.state.submitted && !this.state.email
+            && <Text style={styles.error}>*Email is required</Text>}
+
           </View>
 
           <View style={styles.password}>
@@ -160,24 +158,20 @@ export default class LoginScreen extends Component
               secureTextEntry
             />
 
-            <>
-              {this.state.submitted && !this.state.password
-                                && <Text style={styles.error}>*Password is required</Text>}
-            </>
+            {this.state.submitted && !this.state.password
+            && <Text style={styles.error}>*Password is required</Text>}
           </View>
 
           <View style={styles.loginbtn}>
-            <TouchableOpacity onPress={this._onPressButton}>
+            <TouchableOpacity onPress={this.onPressButton}>
               <View style={styles.button}>
                 <Text style={styles.buttonText}>Login</Text>
               </View>
             </TouchableOpacity>
           </View>
 
-          <>
-            {this.state.error
-                            && <Text style={styles.error}>{this.state.error}</Text>}
-          </>
+          {this.state.error
+          && <Text style={styles.error}>{this.state.error}</Text>}
 
           <View>
             <Button

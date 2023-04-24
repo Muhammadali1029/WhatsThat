@@ -31,5 +31,6 @@ module.exports = {
     'consistent-return': 'off',
     'no-console': 'off',
     'no-throw-literal': 'off',
+    'no-use-before-define': ['error', { variables: false }],
   },
 };
