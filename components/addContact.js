@@ -5,7 +5,6 @@ import { FlatList, Button, ScrollView } from 'react-native-web';
 
 
 
-
 export default class AddContactsScreen extends Component 
 {
     constructor(props)
@@ -111,7 +110,7 @@ export default class AddContactsScreen extends Component
             return (
                 <View style={styles.container}>
                     <View>
-                    <Text>Add a user to Contacts</Text>
+                        <Text>Add a user to Contacts</Text>
                     <View>
                         <Text>Name, Email or UserID</Text>
                         <TextInput

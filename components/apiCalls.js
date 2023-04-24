@@ -80,7 +80,7 @@ export default class APICalls extends Component
                 'Content-Type': 'application/json',
                 'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
             }
-        })
+        }) 
 
         .then(async (response) => 
         {

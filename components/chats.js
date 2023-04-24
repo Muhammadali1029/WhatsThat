@@ -46,7 +46,7 @@ export default class HomeScreen extends Component
       .then((response) => response.json())
       .then((responseJson) => 
       {
-          console.log("Data returned from api");
+          console.log("Chats List Data returned from api");
           console.log(responseJson);
           this.setState
           ({
