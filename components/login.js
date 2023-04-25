@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-// eslint-disable-next-line object-curly-newline
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import {
+  View, Text, TextInput, TouchableOpacity, StyleSheet,
+} from 'react-native';
 import { Button } from 'react-native-web';
 import * as EmailValidator from 'email-validator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -11,6 +12,7 @@ export default class LoginScreen extends Component
   constructor(props)
   {
     super(props);
+
     this.state = {
       email: '',
       password: '',
@@ -23,7 +25,8 @@ export default class LoginScreen extends Component
 
   componentDidMount()
   {
-    this.unsubscribe = this.props.navigation.addListener('focus', () =>
+    const { navigation } = this.props;
+    this.unsubscribe = navigation.addListener('focus', () =>
     {
       this.checkLoggedIn();
     });
@@ -36,34 +39,37 @@ export default class LoginScreen extends Component
 
   onPressButton()
   {
+    const { email, password } = this.state;
+    const { navigation } = this.props;
+
     this.setState({ submitted: true });
     this.setState({ error: '' });
 
-    if (!(this.state.email && this.state.password))
+    if (!(email && password))
     {
       this.setState({ error: 'Must enter email and password' });
       return;
     }
 
-    if (!EmailValidator.validate(this.state.email))
+    if (!EmailValidator.validate(email))
     {
       this.setState({ error: 'Must enter valid email' });
       return;
     }
 
     const PASSWORD_REGEX = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
-    if (!PASSWORD_REGEX.test(this.state.password))
+    if (!PASSWORD_REGEX.test(password))
     {
       this.setState({ error: "Password isn't strong enough (One upper, one lower, one special, one number, at least 8 characters long)" });
       return;
     }
 
-    console.log(`Button clicked: ${this.state.email} ${this.state.password}`);
+    console.log(`Button clicked: ${email} ${password}`);
     console.log('Validated and ready to send to the API');
 
     const toSend = {
-      email: this.state.email,
-      password: this.state.password,
+      email,
+      password,
     };
 
     return fetch(
@@ -106,7 +112,7 @@ export default class LoginScreen extends Component
           this.setState({
             submitted: false,
           });
-          this.props.navigation.navigate('homenav');
+          navigation.navigate('homenav');
         }
         catch
         {
@@ -121,29 +127,34 @@ export default class LoginScreen extends Component
 
   checkLoggedIn = async () =>
   {
+    const { navigation } = this.props;
     const value = await AsyncStorage.getItem('whatsthat_session_token');
     if (value != null)
     {
-      this.props.navigation.navigate('homenav');
+      navigation.navigate('homenav');
     }
   };
 
   render()
   {
+    const {
+      email, password, submitted, error,
+    } = this.state;
+    const { navigation } = this.props;
+
     return (
       <View style={styles.container}>
-
         <View style={styles.formContainer}>
           <View style={styles.email}>
             <Text>Email:</Text>
             <TextInput
               style={{ height: 40, borderWidth: 1, width: '100%' }}
               placeholder="Enter email"
-              onChangeText={(email) => this.setState({ email })}
-              defaultValue={this.state.email}
+              onChangeText={(e) => this.setState({ email: e })}
+              defaultValue={email}
             />
 
-            {this.state.submitted && !this.state.email
+            {submitted && !email
             && <Text style={styles.error}>*Email is required</Text>}
 
           </View>
@@ -153,12 +164,12 @@ export default class LoginScreen extends Component
             <TextInput
               style={{ height: 40, borderWidth: 1, width: '100%' }}
               placeholder="Enter password"
-              onChangeText={(password) => this.setState({ password })}
-              defaultValue={this.state.password}
+              onChangeText={(p) => this.setState({ password: p })}
+              defaultValue={password}
               secureTextEntry
             />
 
-            {this.state.submitted && !this.state.password
+            {submitted && !password
             && <Text style={styles.error}>*Password is required</Text>}
           </View>
 
@@ -170,13 +181,13 @@ export default class LoginScreen extends Component
             </TouchableOpacity>
           </View>
 
-          {this.state.error
-          && <Text style={styles.error}>{this.state.error}</Text>}
+          {error
+          && <Text style={styles.error}>{error}</Text>}
 
           <View>
             <Button
               title="Need an account?"
-              onPress={() => this.props.navigation.navigate('signup')}
+              onPress={() => navigation.navigate('signup')}
             />
           </View>
         </View>

@@ -27,7 +27,6 @@ module.exports = {
     'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx'] }],
     'brace-style': ['error', 'allman'],
     'react/prefer-stateless-function': ['error', { ignorePureComponents: false }],
-    'react/destructuring-assignment': ['error', 'never'],
     'consistent-return': 'off',
     'no-console': 'off',
     'no-throw-literal': 'off',
