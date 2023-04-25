@@ -157,7 +157,10 @@ export default class CreateChatScreen extends Component
 
   render()
   {
-    const { chatName, chatId, submitted, usersData } = this.state;
+    const {
+      chatName, chatId, submitted, usersData,
+    } = this.state;
+
     return (
       <View>
         <Text>Create New Chat</Text>
