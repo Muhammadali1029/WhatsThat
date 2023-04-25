@@ -6,10 +6,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Button, FlatList } from 'react-native-web';
 import PropTypes from 'prop-types';
 
-const { route } = this.props;
-const { params } = route;
-const { item } = params;
-
 export default class SingleChatScreen extends Component
 {
   constructor(props)
@@ -42,6 +38,9 @@ export default class SingleChatScreen extends Component
 
   getData = async () =>
   {
+    const { route } = this.props;
+    const { params } = route;
+    const { item } = params;
     const { chatData } = this.state;
 
     console.log('message screen request sent to api');
@@ -75,6 +74,9 @@ export default class SingleChatScreen extends Component
 
   sendMessage = async () =>
   {
+    const { route } = this.props;
+    const { params } = route;
+    const { item } = params;
     const { newMessage } = this.state;
 
     console.log('send message request sent to api');
@@ -117,6 +119,9 @@ export default class SingleChatScreen extends Component
 
   editMessage = async () =>
   {
+    const { route } = this.props;
+    const { params } = route;
+    const { item } = params;
     const { messageId, editMessage } = this.state;
 
     console.log('edit button pressed');
@@ -158,7 +163,11 @@ export default class SingleChatScreen extends Component
 
   deleteMessage = async () =>
   {
+    const { route } = this.props;
+    const { params } = route;
+    const { item } = params;
     const { messageId } = this.state;
+
     console.log('Delete button pressed');
     return fetch(
       `http://localhost:3333/api/1.0.0/chat/${item.chat_id}/message/${messageId}`,
@@ -193,6 +202,9 @@ export default class SingleChatScreen extends Component
 
   render()
   {
+    const { route } = this.props;
+    const { params } = route;
+    const { item } = params;
     const {
       chatData, showModal, selectedMessage, messageId, newMessage,
     } = this.state;
@@ -200,7 +212,6 @@ export default class SingleChatScreen extends Component
     return (
       <View style={styles.chat}>
         <Text style={styles.headers}>{chatData.name}</Text>
-
         <View>
           <View>
             <FlatList
