@@ -56,7 +56,10 @@ export default class ProfileScreen extends Component
 
   render()
   {
-    if (this.state.isLoading)
+    const { isLoading, profileData } = this.state;
+    const { navigation } = this.props;
+
+    if (isLoading)
     {
       return (
         <View style={styles.container}>
@@ -71,19 +74,19 @@ export default class ProfileScreen extends Component
         <View>
           <Text>
             Name:
-            {this.state.profileData.first_name}
+            {profileData.first_name}
             {' '}
-            {this.state.profileData.last_name}
+            {profileData.last_name}
           </Text>
           <Text>
             Email:
-            {this.state.profileData.email}
+            {profileData.email}
           </Text>
         </View>
 
         <Button
           title="Edit Profile Details"
-          onPress={() => this.props.navigation.navigate('editProfile', { profileData: this.state.profileData })}
+          onPress={() => navigation.navigate('editProfile', { profileData })}
         />
       </View>
     );

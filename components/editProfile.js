@@ -31,11 +31,14 @@ export default class EditProfileScreen extends Component
 
   componentDidMount()
   {
+    const { route } = this.props;
+    const { profileData } = route.params;
+
     this.setState({
-      originalProfileData: this.props.route.params.profileData,
-      firstName: this.props.route.params.profileData.first_name,
-      lastName: this.props.route.params.profileData.last_name,
-      email: this.props.route.params.profileData.email,
+      originalProfileData: profileData,
+      firstName: profileData.first_name,
+      lastName: profileData.last_name,
+      email: profileData.email,
     }, () =>
     {
       console.log('Profile Data: ');
@@ -45,45 +48,48 @@ export default class EditProfileScreen extends Component
 
   updateProfile = async () =>
   {
+    const {
+      firstName, lastName, email, password, confirmPassword, originalProfileData,
+    } = this.state;
+
     this.setState({ submitted: true });
     this.setState({ error: '' });
 
     const toSend = {};
 
-    if (this.state.firstName !== this.state.originalProfileData.first_name)
+    if (firstName !== originalProfileData.first_name)
     {
-      toSend.first_name = this.state.firstName;
+      toSend.first_name = firstName;
     }
 
-    if (this.state.lastName !== this.state.originalProfileData.last_name)
+    if (lastName !== originalProfileData.last_name)
     {
-      toSend.last_name = this.state.lastName;
+      toSend.last_name = lastName;
     }
 
-    if (this.state.email !== this.state.originalProfileData.email)
+    if (email !== originalProfileData.email)
     {
-      if (!EmailValidator.validate(this.state.email))
+      if (!EmailValidator.validate(email))
       {
         this.setState({ error: 'Must enter valid email' });
         return;
       }
-
-      toSend.email = this.state.email;
+      toSend.email = email;
     }
 
-    if (this.state.password !== '')
+    if (password !== '')
     {
       const PASSWORD_REGEX = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
-      if (!PASSWORD_REGEX.test(this.state.password))
+      if (!PASSWORD_REGEX.test(password))
       {
         this.setState({ error: "Password isn't strong enough (One upper, one lower, one special, one number, at least 8 characters long)" });
         return;
       }
 
-      toSend.password = this.state.password;
+      toSend.password = password;
     }
 
-    if (this.state.password !== this.state.confirmPassword)
+    if (password !== confirmPassword)
     {
       this.setState({ error: 'Password does not match, re-enter' });
     }
@@ -91,7 +97,7 @@ export default class EditProfileScreen extends Component
     console.log(JSON.stringify(toSend));
 
     return fetch(
-      `http://localhost:3333/api/1.0.0/user/${this.state.originalProfileData.user_id}`,
+      `http://localhost:3333/api/1.0.0/user/${originalProfileData.user_id}`,
       {
         method: 'PATCH',
         headers:
@@ -123,7 +129,11 @@ export default class EditProfileScreen extends Component
 
   render()
   {
-    if (this.state.isLoading)
+    const {
+      firstName, lastName, email, password, confirmPassword, isLoading, submitted,
+    } = this.state;
+
+    if (isLoading)
     {
       return (
         <View style={styles.container}>
@@ -138,37 +148,37 @@ export default class EditProfileScreen extends Component
 
         <Text>First Name</Text>
         <TextInput
-          value={this.state.firstName}
+          value={firstName}
           onChangeText={(val) => this.setState({ firstName: val })}
         />
 
         <Text>Last Name</Text>
         <TextInput
-          value={this.state.lastName}
+          value={lastName}
           onChangeText={(val) => this.setState({ lastName: val })}
         />
 
         <Text>Email</Text>
         <TextInput
-          value={this.state.email}
+          value={email}
           onChangeText={(val) => this.setState({ email: val })}
         />
 
         <Text>Password</Text>
         <TextInput
           placeholder="Enter password"
-          onChangeText={(password) => this.setState({ password })}
-          defaultValue={this.state.password}
+          onChangeText={(p) => this.setState({ password: p })}
+          defaultValue={password}
         />
 
         <Text>Confirm Password</Text>
         <TextInput
           placeholder="Re-enter password"
-          onChangeText={(confirmPassword) => this.setState({ confirmPassword })}
-          defaultValue={this.state.confirmPassword}
+          onChangeText={(cP) => this.setState({ confirmPassword: cP })}
+          defaultValue={confirmPassword}
         />
 
-        {this.state.submitted && !this.state.confirmPassword
+        {submitted && !confirmPassword
         && <Text style={styles.error}>*Confirm Password is required</Text>}
 
         <Button

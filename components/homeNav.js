@@ -13,7 +13,8 @@ export default class HomeNav extends Component
 {
   componentDidMount()
   {
-    this.unsubscribe = this.props.navigation.addListener('focus', () =>
+    const { navigation } = this.props;
+    this.unsubscribe = navigation.addListener('focus', () =>
     {
       this.checkLoggedIn();
     });
@@ -29,7 +30,8 @@ export default class HomeNav extends Component
     const value = await AsyncStorage.getItem('whatsthat_session_token');
     if (value == null)
     {
-      this.props.navigation.navigate('login');
+      const { navigation } = this.props;
+      navigation.navigate('login');
     }
   };
 
