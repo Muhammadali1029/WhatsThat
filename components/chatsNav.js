@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import ChatsScreen from './chats';
 import CreateChatScreen from './createChat';
-import SingleChatScreen from './singleChatScreen';
+import SingleChatNav from './singleChatNav';
 
 const ChatsStack = createNativeStackNavigator();
 
@@ -21,7 +21,7 @@ export default class ChatsScreenStack extends Component
       >
         <ChatsStack.Screen name="chats" component={ChatsScreen} />
         <ChatsStack.Screen name="createChatScreen" component={CreateChatScreen} />
-        <ChatsStack.Screen name="singleChatScreen" component={SingleChatScreen} />
+        <ChatsStack.Screen name="singleChatScreenNav" component={SingleChatNav} />
       </ChatsStack.Navigator>
     );
   }

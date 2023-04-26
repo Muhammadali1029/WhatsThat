@@ -40,12 +40,12 @@ export default class SingleChatScreen extends Component
   {
     const { route } = this.props;
     const { params } = route;
-    const { item } = params;
+    const { chatItem } = params;
     const { chatData } = this.state;
 
     console.log('message screen request sent to api');
     return fetch(
-      `http://localhost:3333/api/1.0.0/chat/${item.chat_id}`,
+      `http://localhost:3333/api/1.0.0/chat/${chatItem.chat_id}`,
       {
         method: 'get',
         headers:
@@ -76,7 +76,7 @@ export default class SingleChatScreen extends Component
   {
     const { route } = this.props;
     const { params } = route;
-    const { item } = params;
+    const { chatItem } = params;
     const { newMessage } = this.state;
 
     console.log('send message request sent to api');
@@ -86,7 +86,7 @@ export default class SingleChatScreen extends Component
     };
 
     return fetch(
-      `http://localhost:3333/api/1.0.0/chat/${item.chat_id}/message`,
+      `http://localhost:3333/api/1.0.0/chat/${chatItem.chat_id}/message`,
       {
         method: 'post',
         headers:
@@ -121,7 +121,7 @@ export default class SingleChatScreen extends Component
   {
     const { route } = this.props;
     const { params } = route;
-    const { item } = params;
+    const { chatItem } = params;
     const { messageId, editMessage } = this.state;
 
     console.log('edit button pressed');
@@ -131,7 +131,7 @@ export default class SingleChatScreen extends Component
       message: editMessage,
     };
     return fetch(
-      `http://localhost:3333/api/1.0.0/chat/${item.chat_id}/message/${messageId}`,
+      `http://localhost:3333/api/1.0.0/chat/${chatItem.chat_id}/message/${messageId}`,
       {
         method: 'PATCH',
         headers:
@@ -165,12 +165,12 @@ export default class SingleChatScreen extends Component
   {
     const { route } = this.props;
     const { params } = route;
-    const { item } = params;
+    const { chatItem } = params;
     const { messageId } = this.state;
 
     console.log('Delete button pressed');
     return fetch(
-      `http://localhost:3333/api/1.0.0/chat/${item.chat_id}/message/${messageId}`,
+      `http://localhost:3333/api/1.0.0/chat/${chatItem.chat_id}/message/${messageId}`,
       {
         method: 'DELETE',
         headers:
@@ -204,27 +204,35 @@ export default class SingleChatScreen extends Component
   {
     const { route } = this.props;
     const { params } = route;
-    const { item } = params;
+    const { chatItem } = params;
     const {
       chatData, showModal, selectedMessage, messageId, newMessage,
     } = this.state;
+    const { navigation } = this.props;
 
     return (
       <View style={styles.chat}>
-        <Text style={styles.headers}>{chatData.name}</Text>
+        <TouchableOpacity onPress={() =>
+        {
+          navigation.navigate('chatInfoScreen', { chatData });
+          console.log({ chatData });
+        }}
+        >
+          <Text style={styles.headers}>{chatData.name}</Text>
+        </TouchableOpacity>
         <View>
           <View>
             <FlatList
               data={chatData.messages}
               inverted
-              renderItem={({ chatItem }) => (
+              renderItem={({ item }) => (
                 <View style={styles.chats}>
                   <TouchableOpacity onLongPress={async () =>
                   {
-                    console.log(chatItem.message_id, `User ID: ${await AsyncStorage.getItem('whatsthat_user_id')}`, `Message Creator ID: ${chatItem.author.user_id}`);
+                    console.log(item.message_id, `User ID: ${await AsyncStorage.getItem('whatsthat_user_id')}`, `Message Creator ID: ${chatItem.author.user_id}`);
                     this.setState({
-                      messageId: chatItem.message_id,
-                      selectedMessage: chatItem.message,
+                      messageId: item.message_id,
+                      selectedMessage: item.message,
                     });
                     if (item.author.user_id === await AsyncStorage.getItem('whatsthat_user_id'))
                     {
@@ -316,7 +324,8 @@ export default class SingleChatScreen extends Component
 
 SingleChatScreen.propTypes = {
   route: PropTypes.shape({
-    params: PropTypes.func.isRequired,
+    // eslint-disable-next-line react/forbid-prop-types
+    params: PropTypes.object.isRequired,
   }).isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,

@@ -95,7 +95,7 @@ export default class ChatsScreen extends Component
           data={chatsData}
           renderItem={({ item }) => (
             <View style={styles.chats}>
-              <TouchableOpacity onPress={() => navigation.navigate('singleChatScreen', { item })}>
+              <TouchableOpacity onPress={() => navigation.navigate('singleChatScreenNav', { screen: 'singleChatScreen', params: { chatItem: item } })}>
                 <Text>{item.name}</Text>
                 {/* <Text>
                   {item.last_message.author.first_name}

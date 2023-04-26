@@ -194,7 +194,8 @@ export default class AddContactsScreen extends Component
 
 AddContactsScreen.propTypes = {
   route: PropTypes.shape({
-    params: PropTypes.func.isRequired,
+    // eslint-disable-next-line react/forbid-prop-types
+    params: PropTypes.object.isRequired,
   }).isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
