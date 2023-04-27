@@ -14,7 +14,7 @@ export default class ChatsScreen extends Component
 
     this.state = {
       isLoading: true,
-      chatsData: [],
+      allChatsData: [],
     };
   }
 
@@ -25,8 +25,8 @@ export default class ChatsScreen extends Component
 
   componentDidUpdate(prevProps, prevState)
   {
-    const { chatsData } = this.state;
-    if (prevState.chatsData.length !== chatsData.length)
+    const { allChatsData } = this.state;
+    if (prevState.allChatsData.length !== allChatsData.length)
     {
       this.getData();
     }
@@ -54,7 +54,7 @@ export default class ChatsScreen extends Component
         console.log(responseJson);
         this.setState({
           isLoading: false,
-          chatsData: responseJson,
+          allChatsData: responseJson,
         });
       })
       .catch((error) =>
@@ -65,7 +65,7 @@ export default class ChatsScreen extends Component
 
   render()
   {
-    const { isLoading, chatsData } = this.state;
+    const { isLoading, allChatsData } = this.state;
     const { navigation } = this.props;
 
     if (isLoading)
@@ -92,7 +92,7 @@ export default class ChatsScreen extends Component
         </View>
         <Text>Chats</Text>
         <FlatList
-          data={chatsData}
+          data={allChatsData}
           renderItem={({ item }) => (
             <View style={styles.chats}>
               <TouchableOpacity onPress={() => navigation.navigate('singleChatScreenNav', { screen: 'singleChatScreen', params: { chatItem: item } })}>
@@ -119,6 +119,10 @@ ChatsScreen.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
+  // route: PropTypes.shape({
+  //   // eslint-disable-next-line react/forbid-prop-types
+  //   params: PropTypes.object.isRequired,
+  // }).isRequired,
 };
 
 const styles = StyleSheet.create({

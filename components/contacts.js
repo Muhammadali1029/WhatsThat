@@ -6,6 +6,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FlatList, Button } from 'react-native-web';
 import PropTypes from 'prop-types';
 
+import getRequest from './getRequest';
+
 export default class ContactsScreen extends Component
 {
   constructor(props)
@@ -20,7 +22,10 @@ export default class ContactsScreen extends Component
 
   componentDidMount()
   {
+    const { navigation } = this.props;
+    const { navigate } = navigation;
     this.getData();
+    navigate('homeNav')
   }
 
   componentDidUpdate(prevProps, prevState)
@@ -34,34 +39,54 @@ export default class ContactsScreen extends Component
 
   getData = async () =>
   {
-    console.log('Contacts request sent to api');
-    return fetch(
+    getRequest(
       'http://localhost:3333/api/1.0.0/contacts',
+      await AsyncStorage.getItem('whatsthat_session_token'),
+      (resJson) =>
       {
-        method: 'get',
-        headers:
-            {
-              'Content-Type': 'application/json',
-              'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
-            },
-      },
-    )
-
-      .then((response) => response.json())
-      .then((responseJson) =>
-      {
-        console.log('Data returned from api');
-        console.log(responseJson);
+        console.log('Contacts Data returned from api');
+        console.log(resJson);
         this.setState({
           isLoading: false,
-          contactsData: responseJson,
+          contactsData: resJson,
         });
-      })
-      .catch((error) =>
+      },
+      (status) =>
       {
-        console.log(error);
-      });
+        console.log(status);
+      },
+    );
   };
+  // getData = async () =>
+  // {
+  //   console.log('Contacts request sent to api');
+  //   return fetch(
+  //     'http://localhost:3333/api/1.0.0/contacts',
+  //     {
+  //       method: 'get',
+  //       headers:
+  //           {
+  //             'Content-Type': 'application/json',
+  //             'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
+  //           },
+  //     },
+  //   )
+
+  //     .then((response) => response.json())
+  //     .then((responseJson) =>
+  //     {
+  //       console.log('Data returned from api');
+  //       console.log(responseJson);
+  //       this.setState({
+  //         isLoading: false,
+  //         contactsData: responseJson,
+  //       });
+  //     })
+  //     .catch((error) =>
+  //     {
+  //       console.log(error);
+  //     });
+  // };
 
   removeFromConatacts = async (userID) => fetch(
     `http://localhost:3333/api/1.0.0/user/${userID}/contact`,

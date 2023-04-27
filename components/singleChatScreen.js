@@ -36,7 +36,7 @@ export default class SingleChatScreen extends Component
     }
   }
 
-  getData = async () =>
+  getData = async (callback) =>
   {
     const { route } = this.props;
     const { params } = route;
@@ -63,6 +63,13 @@ export default class SingleChatScreen extends Component
         console.log(responseJson);
         this.setState({
           chatData: responseJson,
+        }, () =>
+        {
+          if (callback)
+          {
+            callback();
+            console.log('Chat data updated!');
+          }
         });
         console.log(chatData);
       })
@@ -104,6 +111,7 @@ export default class SingleChatScreen extends Component
         if (response.status === 200)
         {
           console.log('message sent successfully');
+          this.setState({ newMessage: '' });
           this.getData();
           return response.json();
         }
@@ -214,7 +222,7 @@ export default class SingleChatScreen extends Component
       <View style={styles.chat}>
         <TouchableOpacity onPress={() =>
         {
-          navigation.navigate('chatInfoScreen', { chatData });
+          navigation.navigate('chatInfoScreen', { chatData, chatItem, getData: this.getData });
           console.log({ chatData });
         }}
         >
@@ -300,7 +308,6 @@ export default class SingleChatScreen extends Component
           <View style={styles.sendMessageContainer}>
             <TextInput
               style={styles.messageBox}
-              placeholder="Enter Message"
               onChangeText={(nM) => this.setState({ newMessage: nM })}
               defaultValue={newMessage}
             />

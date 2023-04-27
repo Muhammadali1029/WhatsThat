@@ -6,6 +6,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Button, FlatList } from 'react-native-web';
 import PropTypes from 'prop-types';
 
+import getData from './getRequest';
+
 export default class CreateChatScreen extends Component
 {
   constructor(props)
@@ -97,6 +99,7 @@ export default class CreateChatScreen extends Component
       });
   };
 
+  
   // searchContactUsers = async () =>
   // {
   //     console.log("All search request sent to api")
@@ -187,7 +190,11 @@ export default class CreateChatScreen extends Component
                 data={usersData}
                 renderItem={({ item }) => (
                   <View style={styles.container}>
-                    {/* <Text>{item.given_name} {item.family_name}</Text> */}
+                    {/* <Text>
+                      {item.given_name}
+                      {' '}
+                      {item.family_name}
+                    </Text> */}
 
                     <TouchableOpacity onPress={() => console.log('Profile screen')}>
                       <View>
