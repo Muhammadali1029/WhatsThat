@@ -25,7 +25,10 @@ export default class ContactsScreen extends Component
     const { navigation } = this.props;
     const { navigate } = navigation;
     this.getData();
-    navigate('homeNav')
+    navigate('homeNav', 
+    {
+      screen:
+    })
   }
 
   componentDidUpdate(prevProps, prevState)
