@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, ActivityIndicator,
+  View, Text, StyleSheet, ActivityIndicator, TouchableOpacity,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Button } from 'react-native-web';
 import PropTypes from 'prop-types';
+
 
 export default class ProfileScreen extends Component
 {
@@ -54,6 +55,14 @@ export default class ProfileScreen extends Component
       });
   };
 
+  const [type, setType] = useState(CameraType.back);
+  const [permission, requestPermission] = Camera.useCameraPermissions(); 
+
+  toggleCameraType() {
+    setType(current => (current === CameraType.back ? CameraType.front : CameraType.back));
+    console.log("Camera: ", type)
+  }
+
   render()
   {
     const { isLoading, profileData } = this.state;
@@ -71,6 +80,22 @@ export default class ProfileScreen extends Component
     return (
       <View style={styles.container}>
         <Text>Profile Details</Text>
+        
+        {!permission || !permission.granted
+        ? (
+          <Text>No access to camera</Text>
+        ) : (
+          <View style={styles.container}>
+          <Camera style={styles.camera} type={type}>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={styles.button} onPress={toggleCameraType}>
+                <Text style={styles.buttonText}>Flip Camera</Text>
+              </TouchableOpacity>
+            </View>
+          </Camera>
+        </View>
+        )}
+
         <View>
           <Text>
             Name:
@@ -89,6 +114,7 @@ export default class ProfileScreen extends Component
           onPress={() => navigation.navigate('editProfile', { profileData })}
         />
       </View>
+
     );
   }
 }
@@ -115,6 +141,12 @@ const styles = StyleSheet.create({
   },
   nav: {
     marginBottom: 5,
+  },
+  buttonContainer: {
+    alignSelf: 'flex-end',
+    padding: 5,
+    margin: 5,
+    backgroundColor: 'steelblue'
   },
   button: {
     marginBottom: 30,

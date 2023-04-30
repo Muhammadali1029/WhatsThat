@@ -160,13 +160,13 @@ export default class ChatInfoScreen extends Component
             title="Add User to Chat"
             onPress={() => this.setState({ addUser: true })}
           />
-          {addUser
+          {/* {addUser
           ? (
 
           ) : (
 
           )
-          }
+          } */}
         </View>
         <View style={styles.members}>
           <Text>Members:-</Text>
