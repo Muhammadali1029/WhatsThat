@@ -17,6 +17,7 @@ export default class ContactsScreen extends Component
     this.state = {
       isLoading: true,
       contactsData: [],
+      test: 'test',
     };
   }
 
@@ -24,11 +25,16 @@ export default class ContactsScreen extends Component
   {
     const { navigation } = this.props;
     const { navigate } = navigation;
+    // const { contactsData } = this.state;
+    const { test } = this.state;
+
     this.getData();
-    // navigate('homeNav', 
-    // {
-    //   screen:
-    // })
+    navigate(
+      'homeNav',
+      {
+        screen: 'chatsNav', params: { screen: 'createChatScreen', params: { test } },
+      },
+    );
   }
 
   componentDidUpdate(prevProps, prevState)

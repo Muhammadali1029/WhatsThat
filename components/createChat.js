@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Button, FlatList } from 'react-native-web';
 import PropTypes from 'prop-types';
 
-import getData from './getRequest';
+// import getData from './getRequest';
 
 export default class CreateChatScreen extends Component
 {
@@ -19,6 +19,16 @@ export default class CreateChatScreen extends Component
       usersData: [],
       chatId: '',
     };
+  }
+
+  componentDidMount()
+  {
+    const { route } = this.props;
+    const { params } = route;
+    // const { contactsData } = params;
+    const { test } = params;
+    
+    console.log(`Contacts data coming from contacts scree: ${test}`);
   }
 
   getContactsData = async () =>
@@ -99,7 +109,6 @@ export default class CreateChatScreen extends Component
       });
   };
 
-  
   // searchContactUsers = async () =>
   // {
   //     console.log("All search request sent to api")
