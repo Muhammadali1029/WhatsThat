@@ -192,7 +192,8 @@ export default class EditProfileScreen extends Component
 
 EditProfileScreen.propTypes = {
   route: PropTypes.shape({
-    params: PropTypes.func.isRequired,
+    // eslint-disable-next-line react/forbid-prop-types
+    params: PropTypes.object.isRequired,
   }).isRequired,
 };
 
