@@ -19,11 +19,11 @@ export default class AddContactsScreen extends Component
     };
   }
 
-  searchAllUsers = async (searchTerm) =>
+  searchAllUsers = async (searchTerm, location) =>
   {
     console.log('All search request sent to api');
     return fetch(
-      `http://localhost:3333/api/1.0.0/search?q=${searchTerm}&search_in=all`,
+      `http://localhost:3333/api/1.0.0/search?q=${searchTerm}&search_in=${location}`,
       {
         method: 'get',
         headers:
@@ -125,7 +125,7 @@ export default class AddContactsScreen extends Component
           </View>
 
           <View style={styles.addbtn}>
-            <TouchableOpacity onPress={() => this.searchAllUsers(searchTerm)}>
+            <TouchableOpacity onPress={() => this.searchAllUsers(searchTerm, 'all')}>
               <View style={styles.button}>
                 <Text style={styles.buttonText}>Search</Text>
               </View>

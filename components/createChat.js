@@ -18,6 +18,7 @@ export default class CreateChatScreen extends Component
       submitted: false,
       usersData: [],
       chatId: '',
+      userAddedToChat: false,
     };
   }
 
@@ -157,6 +158,7 @@ export default class CreateChatScreen extends Component
       {
         console.log(`User ${userId} added to Chat`);
         params.getData();
+        this.setState({ userAddedToChat: true });
       }
       else
       {
@@ -172,7 +174,7 @@ export default class CreateChatScreen extends Component
   render()
   {
     const {
-      chatName, chatId, submitted, usersData,
+      chatName, chatId, submitted, usersData, userAddedToChat,
     } = this.state;
 
     return (
@@ -201,26 +203,42 @@ export default class CreateChatScreen extends Component
                 data={usersData}
                 renderItem={({ item }) => (
                   <View style={styles.container}>
-                    {/* <Text>
-                      {item.given_name}
-                      {' '}
-                      {item.family_name}
-                    </Text> */}
-
-                    <TouchableOpacity onPress={() => console.log('Profile screen')}>
-                      <View>
-                        <Text>
-                          {item.first_name}
-                          {' '}
-                          {item.last_name}
-                        </Text>
-                      </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => this.addToChat(chatId, item.user_id)}>
-                      <View style={styles.button}>
-                        <Text style={styles.buttonText}>Add to Chat</Text>
-                      </View>
-                    </TouchableOpacity>
+                    {
+                    userAddedToChat
+                      ? (
+                        <View>
+                          <TouchableOpacity onPress={() => console.log('Profile screen')}>
+                            <View>
+                              <Text>
+                                {item.first_name}
+                                {' '}
+                                {item.last_name}
+                              </Text>
+                            </View>
+                          </TouchableOpacity>
+                          <View style={styles.button}>
+                            <Text style={styles.buttonText}>User added to Chat</Text>
+                          </View>
+                        </View>
+                      ) : (
+                        <View>
+                          <TouchableOpacity onPress={() => console.log('Profile screen')}>
+                            <View>
+                              <Text>
+                                {item.first_name}
+                                {' '}
+                                {item.last_name}
+                              </Text>
+                            </View>
+                          </TouchableOpacity>
+                          <TouchableOpacity onPress={() => this.addToChat(chatId, item.user_id)}>
+                            <View style={styles.button}>
+                              <Text style={styles.buttonText}>Add to Chat</Text>
+                            </View>
+                          </TouchableOpacity>
+                        </View>
+                      )
+                 }
                   </View>
                 )}
                 // eslint-disable-next-line camelcase

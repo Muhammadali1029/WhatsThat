@@ -4,9 +4,11 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
-  FlatList, TextInput, TouchableOpacity,
+  FlatList, TextInput, TouchableOpacity, Button, 
 } from 'react-native-web';
 import PropTypes from 'prop-types';
+
+import searchUsers from './search';
 
 export default class ChatInfoScreen extends Component
 {
@@ -17,6 +19,7 @@ export default class ChatInfoScreen extends Component
     this.state = {
       showEdit: false,
       editChatName: '',
+      adduser: false,
     };
   }
 
@@ -75,17 +78,52 @@ export default class ChatInfoScreen extends Component
       });
   };
 
+  removeFromChat = async (chatId, userID) => fetch(
+    `http://localhost:3333/api/1.0.0/chat/${chatId}/user/${userID}`,
+    {
+      method: 'DELETE',
+      headers:
+            {
+              'Content-Type': 'application/json',
+              'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
+            },
+    },
+  )
+
+    .then(async (response) =>
+    {
+      const { route } = this.props;
+      const { params } = route;
+      console.log('Remove from chat sent to api');
+      if (response.status === 200)
+      {
+        console.log(`User ${userID} removed from chat`);
+        params.getData();
+      }
+      else
+      {
+        throw 'Something went wrong';
+      }
+    });
+
+  // searchUsers = async (searchTerm, location) =>
+  // {
+  //   (resJson)
+  // };
+
   render()
   {
     const { route } = this.props;
     const { params } = route;
     const { chatData } = params;
+    const { chatItem } = params;
+    const { navigation } = this.props;
+    const { navigate } = navigation;
     const { showEdit } = this.state;
 
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Chat Info</Text>
-
         {showEdit
           ? (
             <View>
@@ -117,7 +155,19 @@ export default class ChatInfoScreen extends Component
               </TouchableOpacity>
             </View>
           )}
+        <View>
+          <Button
+            title="Add User to Chat"
+            onPress={() => this.setState({ addUser: true })}
+          />
+          {addUser
+          ? (
 
+          ) : (
+
+          )
+          }
+        </View>
         <View style={styles.members}>
           <Text>Members:-</Text>
           <FlatList
@@ -129,6 +179,14 @@ export default class ChatInfoScreen extends Component
                   {' '}
                   {item.last_name}
                 </Text>
+                <TouchableOpacity onPress={
+                  () => this.removeFromChat(chatItem.chat_id, item.user_id)
+                }
+                >
+                  <View style={styles.button}>
+                    <Text style={styles.buttonText}>Remove</Text>
+                  </View>
+                </TouchableOpacity>
               </View>
             )}
             // eslint-disable-next-line camelcase
