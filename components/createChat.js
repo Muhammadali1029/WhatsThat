@@ -27,7 +27,8 @@ export default class CreateChatScreen extends Component
     const { params } = route;
     // const { contactsData } = params;
     const { test } = params;
-    
+
+    console.log(params);
     console.log(`Contacts data coming from contacts scree: ${test}`);
   }
 
@@ -76,7 +77,7 @@ export default class CreateChatScreen extends Component
     return fetch(
       'http://localhost:3333/api/1.0.0/chat',
       {
-        method: 'POST',
+        method: 'post',
         headers:
           {
             'Content-Type': 'application/json',
@@ -85,22 +86,23 @@ export default class CreateChatScreen extends Component
         body: JSON.stringify(toSend),
       },
     )
-      // .then((response) => response.json())
-      .then(async (response) =>
+      .then((response) =>
       {
         console.log('Create chat sent to api');
-        console.log(response);
         if (response.status === 201)
         {
           console.log(`${chatName} Created`);
-          this.setState({ chatId: response, submitted: true });
           params.getData();
           this.getContactsData();
+          return response.json();
         }
-        else
-        {
-          throw 'Something went wrong';
-        }
+
+        throw 'Something went wrong';
+      })
+      .then(async (resJson) =>
+      {
+        console.log(`New created chat id: ${resJson.chat_id}`);
+        this.setState({ chatId: resJson.chat_id, submitted: true });
       })
 
       .catch((error) =>
@@ -208,9 +210,9 @@ export default class CreateChatScreen extends Component
                     <TouchableOpacity onPress={() => console.log('Profile screen')}>
                       <View>
                         <Text>
-                          {item.given_name}
+                          {item.first_name}
                           {' '}
-                          {item.family_name}
+                          {item.last_name}
                         </Text>
                       </View>
                     </TouchableOpacity>

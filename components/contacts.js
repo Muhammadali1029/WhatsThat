@@ -29,10 +29,21 @@ export default class ContactsScreen extends Component
     const { test } = this.state;
 
     this.getData();
+    console.log(test);
     navigate(
-      'homeNav',
+      'contactsNav',
       {
-        screen: 'chatsNav', params: { screen: 'createChatScreen', params: { test } },
+        screen: 'homeNav',
+        params:
+        {
+          screen: 'chatsNav',
+          params:
+          {
+            screen: 'createChatScreen',
+            params:
+            { test },
+          },
+        },
       },
     );
   }
