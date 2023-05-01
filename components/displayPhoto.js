@@ -24,7 +24,7 @@ export default class DisplayImage extends Component
   async get_profile_image()
   {
     console.log('Get Photo Request sent to API');
-    fetch('http://localhost:3333/api/1.0.0/user/1/photo', {
+    fetch(`http://localhost:3333/api/1.0.0/user/${await AsyncStorage.getItem('whatsthat_user_id')}/photo`, {
       method: 'GET',
       headers: {
         'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
