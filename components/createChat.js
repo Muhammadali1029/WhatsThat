@@ -112,31 +112,6 @@ export default class CreateChatScreen extends Component
       });
   };
 
-  // searchContactUsers = async () =>
-  // {
-  //     console.log("All search request sent to api")
-  //     return fetch("http://localhost:3333/api/1.0.0/search?q=&search_in=contacts",
-  //     {
-  //         method: 'get',
-  //         headers:
-  //         {
-  //             'Content-Type': 'application/json',
-  //             'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
-  //         }
-  //     })
-  //     .then((response) => response.json())
-  //     .then((responseJson) =>
-  //     {
-  //         console.log("search Contacts Data returned from api");
-  //         console.log(responseJson);
-  //         this.setState({ usersData: responseJson });
-  //     })
-  //     .catch((error) =>
-  //     {
-  //         console.log(error);
-  //     });
-  // }
-
   addToChat = async (chatId, userId) => fetch(
     `http://localhost:3333/api/1.0.0/chat/${chatId}/user/${userId}`,
     {

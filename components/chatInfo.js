@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
-  FlatList, TextInput, TouchableOpacity, Button, 
+  FlatList, TextInput, TouchableOpacity, Button,
 } from 'react-native-web';
 import PropTypes from 'prop-types';
 
@@ -19,7 +19,9 @@ export default class ChatInfoScreen extends Component
     this.state = {
       showEdit: false,
       editChatName: '',
-      adduser: false,
+      showAddUser: false,
+      searchTerm: '',
+      searchData: [],
     };
   }
 
@@ -106,10 +108,53 @@ export default class ChatInfoScreen extends Component
       }
     });
 
-  // searchUsers = async (searchTerm, location) =>
-  // {
-  //   (resJson)
-  // };
+  searchContactUsers = async (searchTerm, location) =>
+  {
+    searchUsers(
+      `http://localhost:3333/api/1.0.0/search?q=${searchTerm}&search_in=${location}`,
+      await AsyncStorage.getItem('whatsthat_session_token'),
+      (resJson) =>
+      {
+        console.log('Search contacts request returned from Api');
+        console.log(resJson);
+        this.setState({ searchData: resJson });
+      },
+      (status) =>
+      {
+        console.log(status);
+      },
+    );
+  };
+
+  addToChat = async (chatId, userId) => fetch(
+    `http://localhost:3333/api/1.0.0/chat/${chatId}/user/${userId}`,
+    {
+      method: 'post',
+      headers:
+            {
+              'Content-Type': 'application/json',
+              'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
+            },
+    },
+  )
+    .then(async (response) =>
+    {
+      console.log('Add to Chat sent to api');
+      if (response.status === 200)
+      {
+        console.log(`User ${userId} added to Chat`);
+        this.setState({ showAddUser: true });
+      }
+      else
+      {
+        throw 'Something went wrong';
+      }
+    })
+
+    .catch((error) =>
+    {
+      console.log(error);
+    });
 
   render()
   {
@@ -117,9 +162,10 @@ export default class ChatInfoScreen extends Component
     const { params } = route;
     const { chatData } = params;
     const { chatItem } = params;
-    const { navigation } = this.props;
-    const { navigate } = navigation;
     const { showEdit } = this.state;
+    const { showAddUser } = this.state;
+    const { searchTerm } = this.state;
+    const { searchData } = this.state;
 
     return (
       <View style={styles.container}>
@@ -155,44 +201,95 @@ export default class ChatInfoScreen extends Component
               </TouchableOpacity>
             </View>
           )}
-        <View>
-          <Button
-            title="Add User to Chat"
-            onPress={() => this.setState({ addUser: true })}
-          />
-          {/* {addUser
+
+        {showAddUser
           ? (
+            <View>
+              <TextInput
+                style={{ height: 40, borderWidth: 1, width: '100%' }}
+                placeholder="Enter Name"
+                onChangeText={(sT) => this.setState({ searchTerm: sT })}
+                defaultValue={searchTerm}
+              />
+              <TouchableOpacity onPress={() =>
+              {
+                this.searchContactUsers(searchTerm, 'contacts');
+              }}
+              >
+                <View style={styles.button}>
+                  <Text style={styles.buttonText}>Search</Text>
+                </View>
+              </TouchableOpacity>
 
-          ) : (
-
+              <Button
+                title="Done"
+                onPress={() => this.setState({ showAddUser: false })}
+              />
+              <View>
+                <FlatList
+                  data={searchData}
+                  renderItem={({ item }) => (
+                    <View style={styles.container}>
+                      <TouchableOpacity onPress={() => console.log('Profile screen')}>
+                        <View style={styles.profilebtn}>
+                          <Text>
+                            {item.given_name}
+                            {' '}
+                            {item.family_name}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={
+                        () => this.addToChat(chatItem.chat_id, item.user_id)
+                      }
+                      >
+                        <View style={styles.button}>
+                          <Text style={styles.buttonText}>Add to Chat</Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+            // eslint-disable-next-line camelcase
+                  keyExtractor={({ user_id }) => user_id}
+                />
+              </View>
+            </View>
           )
-          } */}
-        </View>
-        <View style={styles.members}>
-          <Text>Members:-</Text>
-          <FlatList
-            data={chatData.members}
-            renderItem={({ item }) => (
-              <View style={styles.membersList}>
-                <Text>
-                  {item.first_name}
-                  {' '}
-                  {item.last_name}
-                </Text>
-                <TouchableOpacity onPress={
+          : (
+            <View>
+              <TouchableOpacity onPress={() => this.setState({ showAddUser: true })}>
+                <View style={styles.button}>
+                  <Text style={styles.buttonText}>Add New User to Chat</Text>
+                </View>
+              </TouchableOpacity>
+
+              <View style={styles.members}>
+                <Text>Members:-</Text>
+                <FlatList
+                  data={chatData.members}
+                  renderItem={({ item }) => (
+                    <View style={styles.membersList}>
+                      <Text>
+                        {item.first_name}
+                        {' '}
+                        {item.last_name}
+                      </Text>
+                      <TouchableOpacity onPress={
                   () => this.removeFromChat(chatItem.chat_id, item.user_id)
                 }
-                >
-                  <View style={styles.button}>
-                    <Text style={styles.buttonText}>Remove</Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            )}
+                      >
+                        <View style={styles.button}>
+                          <Text style={styles.buttonText}>Remove</Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  )}
             // eslint-disable-next-line camelcase
-            keyExtractor={({ user_id }) => user_id}
-          />
-        </View>
+                  keyExtractor={({ user_id }) => user_id}
+                />
+              </View>
+            </View>
+          )}
       </View>
     );
   }

@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, ActivityIndicator, TouchableOpacity,
+  View, Text, StyleSheet, ActivityIndicator,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Button } from 'react-native-web';
 import PropTypes from 'prop-types';
 
+import Camera from './camera';
+import DisplayImage from './displayPhoto';
 
 export default class ProfileScreen extends Component
 {
@@ -16,6 +18,7 @@ export default class ProfileScreen extends Component
     this.state = {
       isLoading: true,
       profileData: [],
+      takePhoto: false,
     };
   }
 
@@ -38,7 +41,6 @@ export default class ProfileScreen extends Component
             },
       },
     )
-
       .then((response) => response.json())
       .then((responseJson) =>
       {
@@ -55,18 +57,11 @@ export default class ProfileScreen extends Component
       });
   };
 
-  const [type, setType] = useState(CameraType.back);
-  const [permission, requestPermission] = Camera.useCameraPermissions(); 
-
-  toggleCameraType() {
-    setType(current => (current === CameraType.back ? CameraType.front : CameraType.back));
-    console.log("Camera: ", type)
-  }
-
   render()
   {
     const { isLoading, profileData } = this.state;
     const { navigation } = this.props;
+    const { takePhoto } = this.state;
 
     if (isLoading)
     {
@@ -79,40 +74,42 @@ export default class ProfileScreen extends Component
 
     return (
       <View style={styles.container}>
-        <Text>Profile Details</Text>
-        
-        {!permission || !permission.granted
-        ? (
-          <Text>No access to camera</Text>
-        ) : (
-          <View style={styles.container}>
-          <Camera style={styles.camera} type={type}>
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.button} onPress={toggleCameraType}>
-                <Text style={styles.buttonText}>Flip Camera</Text>
-              </TouchableOpacity>
+        {takePhoto
+          ? (
+            <View style={styles.camera}>
+              <Camera />
+              <Button
+                title="Go Back"
+                onPress={() => this.setState({ takePhoto: false })}
+              />
             </View>
-          </Camera>
-        </View>
-        )}
+          ) : (
+            <View>
+              <Text>Profile Details</Text>
+              <DisplayImage />
+              <Button
+                title="Take Photo"
+                onPress={() => this.setState({ takePhoto: true })}
+              />
+              <View>
+                <Text>
+                  Name:
+                  {profileData.first_name}
+                  {' '}
+                  {profileData.last_name}
+                </Text>
+                <Text>
+                  Email:
+                  {profileData.email}
+                </Text>
+              </View>
 
-        <View>
-          <Text>
-            Name:
-            {profileData.first_name}
-            {' '}
-            {profileData.last_name}
-          </Text>
-          <Text>
-            Email:
-            {profileData.email}
-          </Text>
-        </View>
-
-        <Button
-          title="Edit Profile Details"
-          onPress={() => navigation.navigate('editProfile', { profileData })}
-        />
+              <Button
+                title="Edit Profile Details"
+                onPress={() => navigation.navigate('editProfile', { profileData })}
+              />
+            </View>
+          )}
       </View>
 
     );
@@ -146,7 +143,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     padding: 5,
     margin: 5,
-    backgroundColor: 'steelblue'
+    backgroundColor: 'steelblue',
   },
   button: {
     marginBottom: 30,
@@ -156,5 +153,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     padding: 20,
     color: 'white',
+  },
+  camera: {
+    flex: 1,
+    width: '100%',
   },
 });

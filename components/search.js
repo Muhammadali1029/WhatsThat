@@ -1,25 +1,29 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const searchUsers = async (searchTerm, location) =>
-{
-  console.log('All search request sent to api');
-  return fetch(
-    `http://localhost:3333/api/1.0.0/search?q=${searchTerm}&search_in=${location}`,
-    {
-      method: 'get',
-      headers:
+const searchUsers = async (url, sessionToken, success, failure) => fetch(
+  url,
+  {
+    method: 'get',
+    headers:
           {
             'Content-Type': 'application/json',
-            'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
+            'X-Authorization': sessionToken,
           },
-    },
-  )
-    .then((response) => response.json())
-    .then((responseJson) => responseJson)
-    .catch((error) =>
+  },
+)
+  .then((response) =>
+  {
+    if (response.status === 200)
     {
-      console.log(error);
-    });
-};
+      return response.json();
+    }
+    throw response.status;
+  })
+  .then((resJson) =>
+  {
+    success(resJson);
+  })
+  .catch((error) =>
+  {
+    failure(error);
+  });
 
 export default searchUsers;

@@ -1,18 +1,63 @@
+import React, { useState } from 'react';
 import { Camera, CameraType } from 'expo-camera';
-import { useState } from 'react';
 import {
   StyleSheet, Text, TouchableOpacity, View,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function Camera()
+export default function cameraTakePhoto()
 {
   const [type, setType] = useState(CameraType.back);
-  const [permission, requestPermission] = Camera.useCameraPermissions();
+  const [permission] = Camera.useCameraPermissions();
+  const [camera, setCamera] = useState(null);
 
   function toggleCameraType()
   {
     setType((current) => (current === CameraType.back ? CameraType.front : CameraType.back));
     console.log('Camera: ', type);
+  }
+
+  async function sendToServer(data)
+  {
+    console.log('HERE', data.uri, 'AND HERE', data.base64);
+
+    const res = await fetch(data.base64);
+    const blob = await res.blob();
+
+    // network request here
+    return fetch(
+      `http://localhost:3333/api/1.0.0/user/${await AsyncStorage.getItem('whatsthat_user_id')}/photo`,
+      {
+        method: 'post',
+        headers:
+        {
+          'Content-Type': 'images/png',
+          'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
+        },
+        body: blob,
+      },
+    )
+      .then((response) =>
+      {
+        if (response === 200)
+        {
+          console.log('Picture Added ', response);
+        }
+      })
+      .catch((err) =>
+      {
+        console.log(err);
+      });
+  }
+
+  async function takePhoto()
+  {
+    if (camera)
+    {
+      const options = { quality: 0.5, base64: true, onPictureSaved: (data) => sendToServer(data) };
+      const data = await camera.takePictureAsync(options);
+      console.log(data);
+    }
   }
 
   if (!permission || !permission.granted)
@@ -21,10 +66,16 @@ export default function Camera()
   }
   return (
     <View style={styles.container}>
-      <Camera style={styles.camera} type={type}>
+      <Camera style={styles.camera} type={type} ref={(ref) => setCamera(ref)}>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={toggleCameraType}>
+          <TouchableOpacity style={styles.button} onPress={() => toggleCameraType()}>
             <Text style={styles.text}>Flip Camera</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={() => takePhoto()}>
+            <Text style={styles.text}>Take Photo</Text>
           </TouchableOpacity>
         </View>
       </Camera>
