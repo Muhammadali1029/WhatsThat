@@ -11,15 +11,9 @@ export default function cameraTakePhoto()
   const [permission] = Camera.useCameraPermissions();
   const [camera, setCamera] = useState(null);
 
-  function toggleCameraType()
-  {
-    setType((current) => (current === CameraType.back ? CameraType.front : CameraType.back));
-    console.log('Camera: ', type);
-  }
-
   async function sendToServer(data)
   {
-    console.log('HERE', data.uri, 'AND HERE', data.base64);
+    console.log('Send to Server: ', data.base64);
 
     const res = await fetch(data.base64);
     const blob = await res.blob();
@@ -31,7 +25,7 @@ export default function cameraTakePhoto()
         method: 'post',
         headers:
         {
-          'Content-Type': 'images/png',
+          'Content-Type': 'image/png',
           'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
         },
         body: blob,
@@ -41,13 +35,20 @@ export default function cameraTakePhoto()
       {
         if (response === 200)
         {
-          console.log('Picture Added ', response);
+          console.log('Picture Added Successfuly: ', response);
         }
+        throw ('Something went Wrong', response);
       })
       .catch((err) =>
       {
         console.log(err);
       });
+  }
+
+  function toggleCameraType()
+  {
+    setType((current) => (current === CameraType.back ? CameraType.front : CameraType.back));
+    console.log('Camera: ', type);
   }
 
   async function takePhoto()
@@ -56,7 +57,7 @@ export default function cameraTakePhoto()
     {
       const options = { quality: 0.5, base64: true, onPictureSaved: (data) => sendToServer(data) };
       const data = await camera.takePictureAsync(options);
-      console.log(data);
+      console.log('Photo Taken: ', data);
     }
   }
 

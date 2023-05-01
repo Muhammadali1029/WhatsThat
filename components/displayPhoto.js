@@ -23,6 +23,7 @@ export default class DisplayImage extends Component
 
   async get_profile_image()
   {
+    console.log('Get Photo Request sent to API');
     fetch('http://localhost:3333/api/1.0.0/user/1/photo', {
       method: 'GET',
       headers: {
@@ -38,6 +39,7 @@ export default class DisplayImage extends Component
           photo: data,
           isLoading: false,
         });
+        console.log(resBlob);
       })
       .catch((err) =>
       {
