@@ -7,6 +7,8 @@ import * as EmailValidator from 'email-validator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
 
+import Modal from './modal';
+
 export default class LoginScreen extends Component
 {
   constructor(props)
@@ -18,6 +20,7 @@ export default class LoginScreen extends Component
       password: '',
       error: '',
       submitted: false,
+      loginSuccessful: false,
     };
 
     this.onPressButton = this.onPressButton.bind(this);
@@ -90,6 +93,7 @@ export default class LoginScreen extends Component
         if (response.status === 200)
         {
           console.log('login successful');
+          this.setState({ loginSuccessful: true });
           return response.json();
         }
         if (response.status === 400)
@@ -138,7 +142,7 @@ export default class LoginScreen extends Component
   render()
   {
     const {
-      email, password, submitted, error,
+      email, password, submitted, error, loginSuccessful,
     } = this.state;
     const { navigation } = this.props;
 
@@ -191,6 +195,9 @@ export default class LoginScreen extends Component
             />
           </View>
         </View>
+
+        {loginSuccessful
+        && <Modal alert="Login Successful" />}
       </View>
     );
   }

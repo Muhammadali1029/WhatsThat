@@ -43,7 +43,7 @@ export default class SingleChatScreen extends Component
     const { chatItem } = params;
     const { chatData } = this.state;
 
-    console.log('message screen request sent to api');
+    console.log('message screen request sent to api', chatItem.creator.user_id);
     return fetch(
       `http://localhost:3333/api/1.0.0/chat/${chatItem.chat_id}`,
       {
@@ -237,12 +237,13 @@ export default class SingleChatScreen extends Component
                 <View style={styles.chats}>
                   <TouchableOpacity onLongPress={async () =>
                   {
-                    console.log(item.message_id, `User ID: ${await AsyncStorage.getItem('whatsthat_user_id')}`, `Message Creator ID: ${chatItem.author.user_id}`);
+                    console.log(item.message_id, `Message Creator ID: ${chatItem.creator.user_id}`);
                     this.setState({
                       messageId: item.message_id,
                       selectedMessage: item.message,
                     });
-                    if (item.author.user_id === await AsyncStorage.getItem('whatsthat_user_id'))
+                    console.log(item.author.user_id, chatItem.creator.user_id);
+                    if (item.author.user_id === chatItem.creator.user_id)
                     {
                       this.setState({ showModal: true });
                     }
@@ -264,6 +265,7 @@ export default class SingleChatScreen extends Component
                     <View style={styles.modalBackground}>
                       <View style={styles.modal}>
                         <View>
+                          <Text>Edit Message</Text>
                           <TextInput
                             style={styles.messageBox}
                             placeholder={selectedMessage}
@@ -372,17 +374,19 @@ const styles = StyleSheet.create({
     },
   modalBackground:
     {
-      backgroundColor: '',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
       flex: 1,
     },
   modal:
     {
-      backgroundColor: '#ffffff',
-      margin: 50,
-      padding: 40,
-      borderRadius: 10,
-      flex: 1,
-      height: 50,
-      width: '70%',
+      backgroundColor: 'white',
+      padding: 22,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: 4,
+      borderColor: 'rgba(0, 0, 0, 0.1)',
+      bottom: 0,
+      position: 'absolute',
+      width: '100%',
     },
 });

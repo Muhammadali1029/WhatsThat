@@ -3,7 +3,7 @@ import {
   View, Text, TouchableOpacity, StyleSheet, ActivityIndicator,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Button, FlatList } from 'react-native-web';
+import { Button, ScrollView, FlatList } from 'react-native-web';
 import PropTypes from 'prop-types';
 
 export default class ChatsScreen extends Component
@@ -91,12 +91,11 @@ export default class ChatsScreen extends Component
           />
         </View>
         <Text>Chats</Text>
-        <FlatList
-          data={allChatsData}
-          renderItem={({ item }) => (
-            <View style={styles.chats}>
+        <ScrollView style={{ flex: 1 }}>
+          {allChatsData.map((item) => (
+            <View key={item.chat_id}>
               <TouchableOpacity onPress={() => navigation.navigate('singleChatScreenNav', { screen: 'singleChatScreen', params: { chatItem: item } })}>
-                <Text>{item.name}</Text>
+                <Text style={styles.chats}>{item.name}</Text>
                 {/* <Text>
                   {item.last_message.author.first_name}
                   {' '}
@@ -106,10 +105,8 @@ export default class ChatsScreen extends Component
                 </Text> */}
               </TouchableOpacity>
             </View>
-          )}
-          // eslint-disable-next-line camelcase
-          keyExtractor={({ chat_id }) => chat_id}
-        />
+          ))}
+        </ScrollView>
       </View>
     );
   }
@@ -126,13 +123,11 @@ ChatsScreen.propTypes = {
 };
 
 const styles = StyleSheet.create({
-  // container: {
-  //   flex: 1,
-  //   backgroundColor: '#fff',
-  //   alignItems: 'center',
-  //   justifyContent: 'center',
-  //   padding: 20,
-  // },
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    padding: 10,
+  },
   chats: {
     flexDirection: 'row',
     justifyContent: 'space-between',

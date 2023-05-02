@@ -16,12 +16,14 @@ export default class AddContactsScreen extends Component
       isLoading: false,
       searchTerm: '',
       contactsData: [],
+      myUserId: '',
     };
   }
 
   searchAllUsers = async (searchTerm, location) =>
   {
     console.log('All search request sent to api');
+    this.setState({ myUserId: await AsyncStorage.getItem('whatsthat_session_token') });
     return fetch(
       `http://localhost:3333/api/1.0.0/search?q=${searchTerm}&search_in=${location}`,
       {
@@ -96,9 +98,11 @@ export default class AddContactsScreen extends Component
       console.log(error);
     });
 
-  render()
+  async render()
   {
-    const { isLoading, searchTerm, usersData } = this.state;
+    const {
+      isLoading, searchTerm, usersData, myUserId,
+    } = this.state;
     const { navigation } = this.props;
 
     if (isLoading)
