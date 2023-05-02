@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
 
 import Modal from './modal';
+import GlobalStyles from './globalStyleSheet';
 
 export default class LoginScreen extends Component
 {
@@ -147,12 +148,12 @@ export default class LoginScreen extends Component
     const { navigation } = this.props;
 
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, GlobalStyles.backgroundOveride]}>
         <View style={styles.formContainer}>
           <View style={styles.email}>
-            <Text>Email:</Text>
+            <Text style={GlobalStyles.text}>Email:</Text>
             <TextInput
-              style={{ height: 40, borderWidth: 1, width: '100%' }}
+              style={GlobalStyles.textInput}
               placeholder="Enter email"
               onChangeText={(e) => this.setState({ email: e })}
               defaultValue={email}
@@ -164,9 +165,9 @@ export default class LoginScreen extends Component
           </View>
 
           <View style={styles.password}>
-            <Text>Password:</Text>
+            <Text style={GlobalStyles.text}>Password:</Text>
             <TextInput
-              style={{ height: 40, borderWidth: 1, width: '100%' }}
+              style={GlobalStyles.textInput}
               placeholder="Enter password"
               onChangeText={(p) => this.setState({ password: p })}
               defaultValue={password}

@@ -79,6 +79,7 @@ export default class ChatsScreen extends Component
 
     return (
       <View style={styles.container}>
+        <Text>Chats</Text>
         <View>
           <Button
             title="New Chat"
@@ -90,7 +91,6 @@ export default class ChatsScreen extends Component
             )}
           />
         </View>
-        <Text>Chats</Text>
         <ScrollView style={{ flex: 1 }}>
           {allChatsData.map((item) => (
             <View key={item.chat_id}>
