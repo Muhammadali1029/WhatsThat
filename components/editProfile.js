@@ -15,7 +15,6 @@ export default class EditProfileScreen extends Component
     super(props);
 
     this.state = {
-      isLoading: false,
       originalProfileData: [],
 
       firstName: '',
@@ -23,6 +22,7 @@ export default class EditProfileScreen extends Component
       email: '',
       password: '',
       confirmPassword: '',
+      passwordChanged: false,
 
       error: '',
       submitted: false,
@@ -86,12 +86,13 @@ export default class EditProfileScreen extends Component
         return;
       }
 
-      toSend.password = password;
-    }
+      if (password !== confirmPassword)
+      {
+        this.setState({ error: 'Password does not match, re-enter' });
+        return;
+      }
 
-    if (password !== confirmPassword)
-    {
-      this.setState({ error: 'Password does not match, re-enter' });
+      toSend.password = password;
     }
 
     console.log(JSON.stringify(toSend));
@@ -110,16 +111,16 @@ export default class EditProfileScreen extends Component
     )
       .then((response) =>
       {
+        console.log('Edit Profile sent to API');
+
         if (response.status === 200)
         {
           console.log('Profile updated');
         }
         else
         {
-          console.log('Failed');
+          throw 'Something went Wrong';
         }
-
-        this.setState({ isLoading: false });
       })
       .catch((error) =>
       {
@@ -130,8 +131,11 @@ export default class EditProfileScreen extends Component
   render()
   {
     const {
-      firstName, lastName, email, password, confirmPassword, isLoading, submitted,
+      firstName, lastName, email, password, confirmPassword,
+      isLoading, submitted, passwordChanged, error,
     } = this.state;
+    const { navigation } = this.props;
+    const { navigate } = navigation;
 
     if (isLoading)
     {
@@ -148,42 +152,59 @@ export default class EditProfileScreen extends Component
 
         <Text>First Name</Text>
         <TextInput
+          style={{ height: 40, borderWidth: 1, width: '100%' }}
           value={firstName}
           onChangeText={(val) => this.setState({ firstName: val })}
         />
 
         <Text>Last Name</Text>
         <TextInput
+          style={{ height: 40, borderWidth: 1, width: '100%' }}
           value={lastName}
           onChangeText={(val) => this.setState({ lastName: val })}
         />
 
-        <Text>Email</Text>
         <TextInput
+          style={{ height: 40, borderWidth: 1, width: '100%' }}
           value={email}
           onChangeText={(val) => this.setState({ email: val })}
         />
 
         <Text>Password</Text>
         <TextInput
+          style={{ height: 40, borderWidth: 1, width: '100%' }}
           placeholder="Enter password"
-          onChangeText={(p) => this.setState({ password: p })}
+          onChangeText={(p) => this.setState({ password: p, passwordChanged: true })}
           defaultValue={password}
         />
 
-        <Text>Confirm Password</Text>
-        <TextInput
-          placeholder="Re-enter password"
-          onChangeText={(cP) => this.setState({ confirmPassword: cP })}
-          defaultValue={confirmPassword}
-        />
+        {passwordChanged
+        && (
+          <View>
+            <Text>Confirm Password</Text>
+            <TextInput
+              style={{ height: 40, borderWidth: 1, width: '100%' }}
+              placeholder="Re-enter password"
+              onChangeText={(cP) => this.setState({ confirmPassword: cP })}
+              defaultValue={confirmPassword}
+            />
+          </View>
+        )}
 
-        {submitted && !confirmPassword
+        {submitted && !confirmPassword && passwordChanged
         && <Text style={styles.error}>*Confirm Password is required</Text>}
+
+        {error
+          && <Text style={styles.error}>{error}</Text>}
 
         <Button
           title="Update"
           onPress={() => this.updateProfile()}
+        />
+
+        <Button
+          title="Go Back"
+          onPress={() => navigate('profile')}
         />
       </View>
     );
@@ -194,6 +215,9 @@ EditProfileScreen.propTypes = {
   route: PropTypes.shape({
     // eslint-disable-next-line react/forbid-prop-types
     params: PropTypes.object.isRequired,
+  }).isRequired,
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
   }).isRequired,
 };
 
@@ -221,5 +245,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     padding: 20,
     color: 'white',
+  },
+  error:
+  {
+    color: 'red',
+    fontWeight: '900',
   },
 });

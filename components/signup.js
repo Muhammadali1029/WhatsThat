@@ -125,7 +125,7 @@ export default class SignUpScreen extends Component
           <View style={styles.firstName}>
             <Text>First Name:</Text>
             <TextInput
-              style={{ height: 40, borderWidth: 1, width: '100%' }}
+              style={{ height: 40, borderWidth: 1, width: '80%' }}
               placeholder="Enter first name"
               onChangeText={(f) => this.setState({ firstName: f })}
               defaultValue={firstName}
