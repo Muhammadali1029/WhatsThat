@@ -24,7 +24,10 @@ export default class SingleChatScreen extends Component
 
   componentDidMount()
   {
+    const { navigation } = this.props;
+    const { addListener } = navigation;
     this.getData();
+    this.focusListener = addListener('focus', this.handleFocus);
   }
 
   componentDidUpdate(prevProps, prevState)
@@ -36,7 +39,21 @@ export default class SingleChatScreen extends Component
     }
   }
 
-  getData = async (callback) =>
+  componentWillUnmount()
+  {
+    // Remove the focus listener
+    if (this.focusListener)
+    {
+      this.focusListener();
+    }
+  }
+
+  handleFocus = () =>
+  {
+    this.getData();
+  };
+
+  getData = async () =>
   {
     const { route } = this.props;
     const { params } = route;
@@ -63,16 +80,10 @@ export default class SingleChatScreen extends Component
         console.log(responseJson);
         this.setState({
           chatData: responseJson,
-        }, () =>
-        {
-          if (callback)
-          {
-            callback();
-            console.log('Chat data updated!');
-          }
         });
         console.log(chatData);
       })
+
       .catch((error) =>
       {
         console.log(error);
@@ -222,7 +233,7 @@ export default class SingleChatScreen extends Component
       <View style={styles.chat}>
         <TouchableOpacity onPress={() =>
         {
-          navigation.navigate('chatInfoScreen', { chatData, chatItem, getData: this.getData });
+          navigation.navigate('chatInfoScreen', { chatItem });
           console.log({ chatData });
         }}
         >
@@ -338,6 +349,7 @@ SingleChatScreen.propTypes = {
   }).isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
+    addListener: PropTypes.func.isRequired,
   }).isRequired,
 };
 

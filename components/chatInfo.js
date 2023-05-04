@@ -22,6 +22,7 @@ export default class ChatInfoScreen extends Component
       showAddUser: false,
       searchTerm: '',
       searchData: [],
+      chatData: [],
     };
   }
 
@@ -29,6 +30,7 @@ export default class ChatInfoScreen extends Component
   {
     const { navigation } = this.props;
     const { addListener } = navigation;
+    this.getData();
     this.focusListener = addListener('focus', this.handleFocus);
   }
 
@@ -46,14 +48,41 @@ export default class ChatInfoScreen extends Component
     this.getData();
   };
 
-  updateChatName = (newChatName) =>
+  getData = async () =>
   {
     const { route } = this.props;
     const { params } = route;
-    const { chatData } = params;
-    chatData.name = newChatName;
-    // eslint-disable-next-line react/no-unused-state
-    this.setState({ chatData });
+    const { chatItem } = params;
+    const { chatData } = this.state;
+
+    console.log('message screen request sent to api', chatItem.creator.user_id);
+    return fetch(
+      `http://localhost:3333/api/1.0.0/chat/${chatItem.chat_id}`,
+      {
+        method: 'get',
+        headers:
+            {
+              'Content-Type': 'application/json',
+              'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
+            },
+      },
+    )
+
+      .then((response) => response.json())
+      .then((responseJson) =>
+      {
+        console.log('Message Screen Data returned from api');
+        console.log(responseJson);
+        this.setState({
+          chatData: responseJson,
+        });
+        console.log(chatData);
+      })
+
+      .catch((error) =>
+      {
+        console.log(error);
+      });
   };
 
   updateChatInfo = async () =>
@@ -88,7 +117,8 @@ export default class ChatInfoScreen extends Component
         if (response.status === 200)
         {
           console.log('Chat name editted successfully');
-          params.getData(() => this.updateChatName(editChatName));
+          // params.getData(() => this.updateChatName(editChatName));
+          this.getData();
           return response.json();
         }
 
@@ -115,13 +145,14 @@ export default class ChatInfoScreen extends Component
 
     .then(async (response) =>
     {
-      const { route } = this.props;
-      const { params } = route;
+      // const { route } = this.props;
+      // const { params } = route;
       console.log('Remove from chat sent to api');
       if (response.status === 200)
       {
         console.log(`User ${userID} removed from chat`);
-        params.getData();
+        // params.getData();
+        this.handleFocus();
       }
       else
       {
@@ -165,6 +196,7 @@ export default class ChatInfoScreen extends Component
       {
         console.log(`User ${userId} added to Chat`);
         this.setState({ showAddUser: true });
+        this.getData();
       }
       else
       {
@@ -181,12 +213,10 @@ export default class ChatInfoScreen extends Component
   {
     const { route } = this.props;
     const { params } = route;
-    const { chatData } = params;
     const { chatItem } = params;
-    const { showEdit } = this.state;
-    const { showAddUser } = this.state;
-    const { searchTerm } = this.state;
-    const { searchData } = this.state;
+    const {
+      chatData, showEdit, showAddUser, searchTerm, searchData,
+    } = this.state;
 
     return (
       <View style={styles.container}>
