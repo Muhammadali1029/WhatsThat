@@ -25,6 +25,27 @@ export default class ChatInfoScreen extends Component
     };
   }
 
+  componentDidMount()
+  {
+    const { navigation } = this.props;
+    const { addListener } = navigation;
+    this.focusListener = addListener('focus', this.handleFocus);
+  }
+
+  componentWillUnmount()
+  {
+    // Remove the focus listener
+    if (this.focusListener)
+    {
+      this.focusListener();
+    }
+  }
+
+  handleFocus = () =>
+  {
+    this.getData();
+  };
+
   updateChatName = (newChatName) =>
   {
     const { route } = this.props;
@@ -302,6 +323,7 @@ ChatInfoScreen.propTypes = {
   }).isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
+    addListener: PropTypes.func.isRequired,
   }).isRequired,
 };
 

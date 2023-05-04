@@ -3,7 +3,7 @@ import {
   View, Text, TouchableOpacity, StyleSheet, ActivityIndicator,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Button, ScrollView, FlatList } from 'react-native-web';
+import { Button, ScrollView } from 'react-native-web';
 import PropTypes from 'prop-types';
 
 export default class ChatsScreen extends Component
@@ -20,17 +20,25 @@ export default class ChatsScreen extends Component
 
   componentDidMount()
   {
+    const { navigation } = this.props;
+    const { addListener } = navigation;
     this.getData();
+    this.focusListener = addListener('focus', this.handleFocus);
   }
 
-  componentDidUpdate(prevProps, prevState)
+  componentWillUnmount()
   {
-    const { allChatsData } = this.state;
-    if (prevState.allChatsData.length !== allChatsData.length)
+    // Remove the focus listener
+    if (this.focusListener)
     {
-      this.getData();
+      this.focusListener();
     }
   }
+
+  handleFocus = () =>
+  {
+    this.getData();
+  };
 
   getData = async () =>
   {
@@ -115,6 +123,7 @@ export default class ChatsScreen extends Component
 ChatsScreen.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
+    addListener: PropTypes.func.isRequired,
   }).isRequired,
   // route: PropTypes.shape({
   //   // eslint-disable-next-line react/forbid-prop-types
