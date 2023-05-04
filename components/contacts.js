@@ -17,35 +17,14 @@ export default class ContactsScreen extends Component
     this.state = {
       isLoading: true,
       contactsData: [],
-      test: 'test',
     };
   }
 
   componentDidMount()
   {
-    const { navigation } = this.props;
-    const { navigate } = navigation;
     // const { contactsData } = this.state;
-    const { test } = this.state;
 
     this.getData();
-    console.log(test);
-    navigate(
-      'contactsNav',
-      {
-        screen: 'homeNav',
-        params:
-        {
-          screen: 'chatsNav',
-          params:
-          {
-            screen: 'createChatScreen',
-            params:
-            { test },
-          },
-        },
-      },
-    );
   }
 
   componentDidUpdate(prevProps, prevState)
@@ -209,8 +188,8 @@ export default class ContactsScreen extends Component
           onPress={() => navigation.navigate(
             'addContact',
             {
-              contactsData,
-              getData: this.getData,
+              current_contacts: contactsData,
+              // getData: this.getData,
             },
           )}
         />

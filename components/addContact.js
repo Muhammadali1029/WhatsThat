@@ -15,17 +15,18 @@ export default class AddContactsScreen extends Component
     this.state = {
       isLoading: false,
       searchTerm: '',
-      contactsData: [],
-      myUserId: '',
+      // contactsData: [],
+      usersData: [],
+      offset: 0,
     };
   }
 
   searchAllUsers = async (searchTerm, location) =>
   {
+    const { offset } = this.state;
     console.log('All search request sent to api');
-    this.setState({ myUserId: await AsyncStorage.getItem('whatsthat_session_token') });
     return fetch(
-      `http://localhost:3333/api/1.0.0/search?q=${searchTerm}&search_in=${location}`,
+      `http://localhost:3333/api/1.0.0/search?q=${searchTerm}&search_in=${location}&limit=10&offset=${offset}`,
       {
         method: 'get',
         headers:
@@ -38,18 +39,18 @@ export default class AddContactsScreen extends Component
       .then((response) => response.json())
       .then((responseJson) =>
       {
-        const { contactsData } = this.state;
+        // const { contactsData } = this.state;
 
         console.log('Data returned from api');
         console.log(responseJson);
-        // this.setState({usersData: responseJson});
-        const updatedUsersData = responseJson.map((user) =>
-        {
-          const isContact = contactsData.some((contact) => contact.user_id === user.user_id);
-          return { ...user, isContact };
-        });
+        this.setState({ usersData: responseJson });
+        // const updatedUsersData = responseJson.map((user) =>
+        // {
+        //   const isContact = contactsData.some((contact) => contact.user_id === user.user_id);
+        //   return { ...user, isContact };
+        // });
 
-        this.setState({ usersData: updatedUsersData });
+        // this.setState({ usersData: updatedUsersData });
       })
       .catch((error) =>
       {
@@ -98,10 +99,10 @@ export default class AddContactsScreen extends Component
       console.log(error);
     });
 
-  async render()
+  render()
   {
     const {
-      isLoading, searchTerm, usersData, myUserId,
+      isLoading, searchTerm, usersData, offset,
     } = this.state;
     const { navigation } = this.props;
 
@@ -190,6 +191,14 @@ export default class AddContactsScreen extends Component
         <Button
           title="Go Back"
           onPress={() => navigation.navigate('contacts')}
+        />
+        <Button
+          title="next page"
+          onPress={() =>
+          {
+            this.setState({ offset: (offset + 10) });
+            console.log(offset);
+          }}
         />
       </View>
     );
