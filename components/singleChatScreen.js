@@ -228,12 +228,13 @@ export default class SingleChatScreen extends Component
       chatData, showModal, selectedMessage, messageId, newMessage,
     } = this.state;
     const { navigation } = this.props;
+    const { navigate } = navigation;
 
     return (
       <View style={styles.chat}>
         <TouchableOpacity onPress={() =>
         {
-          navigation.navigate('chatInfoScreen', { chatItem });
+          navigate('chatInfoScreen', { chatItem });
           console.log({ chatData });
         }}
         >

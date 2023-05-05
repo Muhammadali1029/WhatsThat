@@ -55,7 +55,7 @@ export default class ChatInfoScreen extends Component
     const { chatItem } = params;
     const { chatData } = this.state;
 
-    console.log('message screen request sent to api', chatItem.creator.user_id);
+    console.log('chat info screen request sent to api', chatItem.creator.user_id);
     return fetch(
       `http://localhost:3333/api/1.0.0/chat/${chatItem.chat_id}`,
       {
@@ -71,7 +71,7 @@ export default class ChatInfoScreen extends Component
       .then((response) => response.json())
       .then((responseJson) =>
       {
-        console.log('Message Screen Data returned from api');
+        console.log(' chat info Data returned from api');
         console.log(responseJson);
         this.setState({
           chatData: responseJson,
@@ -131,8 +131,8 @@ export default class ChatInfoScreen extends Component
       });
   };
 
-  removeFromChat = async (chatId, userID) => fetch(
-    `http://localhost:3333/api/1.0.0/chat/${chatId}/user/${userID}`,
+  removeFromChat = async (chatId, userId) => fetch(
+    `http://localhost:3333/api/1.0.0/chat/${chatId}/user/${userId}`,
     {
       method: 'DELETE',
       headers:
@@ -145,13 +145,20 @@ export default class ChatInfoScreen extends Component
 
     .then(async (response) =>
     {
-      // const { route } = this.props;
-      // const { params } = route;
+      const { chatData } = this.state;
+      const { navigation } = this.props;
+      const { navigate } = navigation;
+
       console.log('Remove from chat sent to api');
       if (response.status === 200)
       {
-        console.log(`User ${userID} removed from chat`);
-        // params.getData();
+        console.log(`User ${userId} removed from chat`);
+
+        if (userId === chatData.creator.user_id)
+        {
+          navigate('chatsNav', { screen: 'chats' });
+          return;
+        }
         this.handleFocus();
       }
       else

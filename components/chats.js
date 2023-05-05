@@ -13,7 +13,7 @@ export default class ChatsScreen extends Component
     super(props);
 
     this.state = {
-      isLoading: true,
+      isLoading: false,
       allChatsData: [],
     };
   }
