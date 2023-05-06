@@ -221,7 +221,10 @@ const styles = StyleSheet.create({
     },
   formContainer:
     {
-
+      flex: 1,
+      width: '100%',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
   email:
     {
@@ -230,10 +233,6 @@ const styles = StyleSheet.create({
   password:
     {
       marginBottom: 10,
-    },
-  loginbtn:
-    {
-
     },
   signup:
     {
