@@ -32,7 +32,7 @@ export default class AddContactsScreen extends Component
     const { offset } = this.state;
     console.log('All search request sent to api');
     return fetch(
-      `http://localhost:3333/api/1.0.0/search?q=${searchTerm}&search_in=${location}&limit=10&offset=${offset}`,
+      `http://localhost:3333/api/1.0.0/search?q=${searchTerm}&search_in=${location}&limit=5&offset=${offset}`,
       {
         method: 'get',
         headers:
@@ -137,7 +137,12 @@ export default class AddContactsScreen extends Component
           </View>
 
           <View style={styles.addbtn}>
-            <TouchableOpacity onPress={() => this.searchAllUsers(searchTerm, 'all')}>
+            <TouchableOpacity onPress={() =>
+            {
+              this.searchAllUsers(searchTerm, 'all');
+              // this.setState({ offset: (offset + 5) });
+            }}
+            >
               <View style={styles.button}>
                 <Text style={styles.buttonText}>Search</Text>
               </View>
@@ -175,18 +180,24 @@ export default class AddContactsScreen extends Component
             // eslint-disable-next-line camelcase
           keyExtractor={({ user_id }) => user_id}
         />
-        <Button
-          title="Go Back"
-          onPress={() => navigation.navigate('contacts')}
-        />
+        <Text>
+          Page Number:
+          {(offset + 5) / 5}
+        </Text>
         <Button
           title="next page"
           onPress={() =>
           {
-            this.setState({ offset: (offset + 10) });
-            console.log(offset);
-            this.searchAllUsers(searchTerm, 'all');
+            this.setState({ offset: (offset + 5) }, () =>
+            {
+              console.log(offset);
+              this.searchAllUsers(searchTerm, 'all');
+            });
           }}
+        />
+        <Button
+          title="Go Back"
+          onPress={() => navigation.navigate('contacts')}
         />
 
         {showCannotAddYourself
