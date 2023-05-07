@@ -7,6 +7,7 @@ import { Button } from 'react-native-web';
 import PropTypes from 'prop-types';
 
 import * as EmailValidator from 'email-validator';
+import Modal from './modal';
 
 export default class EditProfileScreen extends Component
 {
@@ -26,6 +27,7 @@ export default class EditProfileScreen extends Component
 
       error: '',
       submitted: false,
+      showUpdated: false,
     };
   }
 
@@ -115,6 +117,11 @@ export default class EditProfileScreen extends Component
 
         if (response.status === 200)
         {
+          this.setState({ showUpdated: true });
+          setTimeout(() =>
+          {
+            this.setState({ showUpdated: false });
+          }, 2000);
           console.log('Profile updated');
         }
         else
@@ -132,7 +139,7 @@ export default class EditProfileScreen extends Component
   {
     const {
       firstName, lastName, email, password, confirmPassword,
-      isLoading, submitted, passwordChanged, error,
+      isLoading, submitted, passwordChanged, error, showUpdated,
     } = this.state;
     const { navigation } = this.props;
     const { navigate } = navigation;
@@ -206,6 +213,9 @@ export default class EditProfileScreen extends Component
           title="Go Back"
           onPress={() => navigate('profile')}
         />
+
+        {showUpdated
+         && <Modal alert="Profile Details Updated Successfully!" />}
       </View>
     );
   }

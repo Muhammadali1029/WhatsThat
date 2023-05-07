@@ -145,38 +145,36 @@ export default class AddContactsScreen extends Component
           </View>
         </View>
         <Text>Users:</Text>
-        <View>
-          <FlatList
-            data={usersData}
-            renderItem={({ item }) => (
-              <View style={styles.container}>
-                <TouchableOpacity onPress={() =>
-                {
-                  this.setState({
-                    showProfile: true,
-                    profileUserId: item.user_id,
-                  });
-                }}
-                >
-                  <View style={styles.profilebtn}>
-                    <Text style={styles.buttonText}>
-                      {item.given_name}
-                      {' '}
-                      {item.family_name}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => this.addToContacts(item.user_id)}>
-                  <View style={styles.button}>
-                    <Text style={styles.buttonText}>Add to contacts</Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            )}
+        <FlatList
+          data={usersData}
+          renderItem={({ item }) => (
+            <View style={styles.container}>
+              <TouchableOpacity onPress={() =>
+              {
+                this.setState({
+                  showProfile: true,
+                  profileUserId: item.user_id,
+                });
+              }}
+              >
+                <View style={styles.profilebtn}>
+                  <Text style={styles.buttonText}>
+                    {item.given_name}
+                    {' '}
+                    {item.family_name}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => this.addToContacts(item.user_id)}>
+                <View style={styles.button}>
+                  <Text style={styles.buttonText}>Add to contacts</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          )}
             // eslint-disable-next-line camelcase
-            keyExtractor={({ user_id }) => user_id}
-          />
-        </View>
+          keyExtractor={({ user_id }) => user_id}
+        />
         <Button
           title="Go Back"
           onPress={() => navigation.navigate('contacts')}
@@ -187,6 +185,7 @@ export default class AddContactsScreen extends Component
           {
             this.setState({ offset: (offset + 10) });
             console.log(offset);
+            this.searchAllUsers(searchTerm, 'all');
           }}
         />
 
