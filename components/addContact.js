@@ -72,10 +72,18 @@ export default class AddContactsScreen extends Component
       {
         console.log(`User ${userID} added to contacts`);
         this.setState({ showAdded: true });
+        setTimeout(() =>
+        {
+          this.setState({ showAdded: false });
+        }, 2000);
       }
       else if (response.status === 400)
       {
         this.setState({ showCannotAddYourself: true });
+        setTimeout(() =>
+        {
+          this.setState({ showCannotAddYourself: false });
+        }, 2000);
         console.log('You cannot add yourself');
       }
       else if (response.status === 404)
@@ -149,18 +157,8 @@ export default class AddContactsScreen extends Component
                   </View>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => this.addToContacts(item.user_id)}>
-                  {/* <View style={styles.button}>
+                  <View style={styles.button}>
                     <Text style={styles.buttonText}>Add to contacts</Text>
-                  </View> */}
-                  <View style={showAdded
-                    ? styles.disableButton : styles.button}
-                  >
-                    {showAdded
-                      ? (
-                        <Text style={styles.buttonText}>User Added to Contacts</Text>
-                      ) : (
-                        <Text style={styles.buttonText}>Add To Contacts</Text>
-                      )}
                   </View>
                 </TouchableOpacity>
               </View>
