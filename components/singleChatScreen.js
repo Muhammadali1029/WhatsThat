@@ -264,90 +264,86 @@ export default class SingleChatScreen extends Component
         <FlatList
           data={chatData.messages}
           inverted
-          renderItem={({ item }) =>
-          {
-            console.log('My user ID:', userId, 'message author userID:', item.author.user_id);
-            return (
-              <View
-                style={[
-                  styles.messageContainer,
-                  item.author.user_id === userId
-                    ? styles.myMessageContainer
-                    : styles.otherMessageContainer,
-                ]}
-              >
-                <TouchableOpacity
-                  onLongPress={async () =>
+          renderItem={({ item }) => (
+            <View
+              style={[
+                styles.messageContainer,
+                item.author.user_id === userId
+                  ? styles.myMessageContainer
+                  : styles.otherMessageContainer,
+              ]}
+            >
+              <TouchableOpacity
+                onLongPress={async () =>
+                {
+                  console.log(
+                    item.message_id,
+                    `Message Creator ID: ${chatItem.creator.user_id}`,
+                  );
+                  this.setState({
+                    messageId: item.message_id,
+                    selectedMessage: item.message,
+                  });
+                  if (item.author.user_id === userId)
                   {
-                    console.log(
-                      item.message_id,
-                      `Message Creator ID: ${chatItem.creator.user_id}`,
-                    );
-                    this.setState({
-                      messageId: item.message_id,
-                      selectedMessage: item.message,
-                    });
-                    if (item.author.user_id === userId)
-                    {
-                      this.setState({ showModal: true });
-                    }
-                  }}
+                    this.setState({ showModal: true });
+                  }
+                }}
+              >
+                <Text
+                  style={[
+                    styles.messageText,
+                    item.author.user_id === userId
+                      ? styles.myMessageText
+                      : styles.otherMessageText,
+                  ]}
                 >
-                  <Text
-                    style={[
-                      styles.messageText,
-                      item.author.user_id === userId
-                        ? styles.myMessageText
-                        : styles.otherMessageText,
-                    ]}
-                  >
-                    {item.author.user_id === userId
-                      ? item.message
-                      : `${item.author.first_name} ${item.author.last_name}: ${item.message}`}
-                  </Text>
-                </TouchableOpacity>
-                <Modal transparent visible={showModal}>
-                  <View style={styles.modalBackground}>
-                    <View style={styles.modal}>
-                      <View>
-                        <Text>Edit Message</Text>
-                        <TextInput
-                          style={styles.messageBox}
-                          placeholder={selectedMessage}
-                          onChangeText={(editMessage) => this.setState({ editMessage })}
-                        />
-
-                        <Button
-                          title="Confirm Edit"
-                          onPress={() =>
-                          {
-                            this.editMessage();
-                            console.log(`Edited Message ID: ${messageId}`);
-                            this.setState({ showModal: false });
-                          }}
-                        />
-                      </View>
+                  {item.author.user_id === userId
+                    ? item.message
+                    : `${item.author.first_name} ${item.author.last_name}: ${item.message}`}
+                </Text>
+              </TouchableOpacity>
+              <Modal transparent visible={showModal}>
+                <View style={styles.modalBackground}>
+                  <View style={styles.modal}>
+                    <View>
+                      <Text>Edit Message</Text>
+                      <TextInput
+                        style={styles.messageBox}
+                        placeholder={selectedMessage}
+                        onChangeText={(editMessage) => this.setState({ editMessage })}
+                      />
 
                       <Button
-                        title="Delete"
+                        title="Confirm Edit"
                         onPress={() =>
                         {
-                          this.deleteMessage();
-                          console.log(`Deleted Message ID: ${messageId}`);
+                          this.editMessage();
+                          console.log(`Edited Message ID: ${messageId}`);
                           this.setState({ showModal: false });
                         }}
                       />
-
-                      <Button
-                        title="Cancel"
-                        onPress={() => this.setState({ showModal: false })}
-                      />
                     </View>
+
+                    <Button
+                      title="Delete"
+                      onPress={() =>
+                      {
+                        this.deleteMessage();
+                        console.log(`Deleted Message ID: ${messageId}`);
+                        this.setState({ showModal: false });
+                      }}
+                    />
+
+                    <Button
+                      title="Cancel"
+                      onPress={() => this.setState({ showModal: false })}
+                    />
                   </View>
-                </Modal>
-              </View>
-            );
-          }}
+                </View>
+              </Modal>
+            </View>
+          )}
   // eslint-disable-next-line camelcase
           keyExtractor={({ message_id }) => message_id}
         />
