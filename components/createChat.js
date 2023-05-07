@@ -7,6 +7,7 @@ import { Button, FlatList } from 'react-native-web';
 import PropTypes from 'prop-types';
 
 // import getData from './getRequest';
+import Modal from './modal';
 
 export default class CreateChatScreen extends Component
 {
@@ -19,6 +20,7 @@ export default class CreateChatScreen extends Component
       usersData: [],
       chatId: '',
       userAddedToChat: false,
+      showChatCreated: false,
     };
   }
 
@@ -149,8 +151,10 @@ export default class CreateChatScreen extends Component
   render()
   {
     const {
-      chatName, chatId, submitted, usersData, userAddedToChat,
+      chatName, chatId, submitted, usersData, userAddedToChat, showChatCreated,
     } = this.state;
+    const { navigation } = this.props;
+    const { navigate } = navigation;
 
     return (
       <View>
@@ -162,23 +166,28 @@ export default class CreateChatScreen extends Component
           defaultValue={chatName}
         />
 
-        <Button
-          title="Create"
-          onPress={() => this.createChat()}
-        />
+        {chatName
+            && (
+            <Button
+              title="Create"
+              onPress={() =>
+              {
+                this.createChat();
+                this.setState({ showChatCreated: true });
+              }}
+            />
+            )}
 
         {
           submitted
           && (
           <View>
-            <Text>Chat Created</Text>
             <Text>Add Users to Chat:</Text>
-            <View>
-              <FlatList
-                data={usersData}
-                renderItem={({ item }) => (
-                  <View style={styles.container}>
-                    {
+            <FlatList
+              data={usersData}
+              renderItem={({ item }) => (
+                <View style={styles.container}>
+                  {
                     userAddedToChat
                       ? (
                         <View>
@@ -191,9 +200,16 @@ export default class CreateChatScreen extends Component
                               </Text>
                             </View>
                           </TouchableOpacity>
-                          <View style={styles.button}>
+                          <View style={styles.disableButton}>
                             <Text style={styles.buttonText}>User added to Chat</Text>
                           </View>
+                          <Button
+                            title="Done"
+                            onPress={() =>
+                            {
+                              navigate('chats');
+                            }}
+                          />
                         </View>
                       ) : (
                         <View>
@@ -211,18 +227,29 @@ export default class CreateChatScreen extends Component
                               <Text style={styles.buttonText}>Add to Chat</Text>
                             </View>
                           </TouchableOpacity>
+                          <Button
+                            title="Done"
+                            onPress={() =>
+                            {
+                              navigate('chats');
+                            }}
+                          />
                         </View>
                       )
                  }
-                  </View>
-                )}
+                </View>
+              )}
                 // eslint-disable-next-line camelcase
-                keyExtractor={({ user_id }) => user_id}
-              />
-            </View>
+              keyExtractor={({ user_id }) => user_id}
+            />
           </View>
           )
         }
+
+        {userAddedToChat
+         && <Modal alert="User was added to the Chat" />}
+        {showChatCreated
+          && <Modal alert="Chat Created" />}
       </View>
     );
   }
@@ -257,6 +284,10 @@ const styles = StyleSheet.create({
   button: {
     marginBottom: 30,
     backgroundColor: '#2196F3',
+  },
+  disableButton: {
+    marginBottom: 30,
+    backgroundColor: 'gray',
   },
   buttonText: {
     textAlign: 'center',

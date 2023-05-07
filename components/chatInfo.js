@@ -26,6 +26,7 @@ export default class ChatInfoScreen extends Component
       chatData: [],
       showLeftChat: false,
       showAddedToChat: false,
+      showAlreadyInChat: false,
     };
   }
 
@@ -211,6 +212,10 @@ export default class ChatInfoScreen extends Component
         );
         this.getData();
       }
+      if (response.status === 400)
+      {
+        this.setState({ showAlreadyInChat: true });
+      }
       else
       {
         throw 'Something went wrong';
@@ -228,7 +233,8 @@ export default class ChatInfoScreen extends Component
     const { params } = route;
     const { chatItem } = params;
     const {
-      chatData, showEdit, showAddUser, searchTerm, searchData, showLeftChat, showAddedToChat,
+      chatData, showEdit, showAddUser, searchTerm, searchData,
+      showLeftChat, showAddedToChat, showAlreadyInChat,
     } = this.state;
 
     return (
@@ -307,12 +313,15 @@ export default class ChatInfoScreen extends Component
                         () => this.addToChat(chatItem.chat_id, item.user_id)
                       }
                       >
-                        <View style={styles.button}>
-                          {showAddedToChat
-                            ? (<Text style={styles.buttonText}>User Added to Chat</Text>) : (
+                        <View style={showAddedToChat || showAlreadyInChat
+                          ? styles.disableButton : styles.button}
+                        >
+                          {showAddedToChat || showAlreadyInChat
+                            ? (
+                              <Text style={styles.buttonText}>User Added to Chat</Text>
+                            ) : (
                               <Text style={styles.buttonText}>Add User</Text>
                             )}
-
                         </View>
                       </TouchableOpacity>
                     </View>
@@ -364,6 +373,8 @@ export default class ChatInfoScreen extends Component
         && <Modal alert="User Removed from chat" />}
         {showAddedToChat
         && <Modal alert="User Added to Chat" />}
+        {showAlreadyInChat
+        && <Modal alert="User Already in Chat" />}
       </View>
     );
   }
@@ -400,6 +411,10 @@ const styles = StyleSheet.create({
   button: {
     marginBottom: 30,
     backgroundColor: '#2196F3',
+  },
+  disableButton: {
+    marginBottom: 30,
+    backgroundColor: 'gray',
   },
   buttonText: {
     textAlign: 'center',
