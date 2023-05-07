@@ -30,5 +30,6 @@ module.exports = {
     'no-console': 'off',
     'no-throw-literal': 'off',
     'no-use-before-define': ['error', { variables: false }],
+    'react/forbid-prop-types': 'off',
   },
 };

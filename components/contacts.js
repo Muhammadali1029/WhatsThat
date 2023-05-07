@@ -22,19 +22,30 @@ export default class ContactsScreen extends Component
 
   componentDidMount()
   {
-    // const { contactsData } = this.state;
-
     this.getData();
   }
 
-  componentDidUpdate(prevProps, prevState)
+  componentDidUpdate()
   {
-    const { contactsData } = this.state;
-    if (prevState.contactsData.length !== contactsData.length)
+    const { navigation } = this.props;
+    const { addListener } = navigation;
+
+    this.focusListener = addListener('focus', this.handleFocus);
+  }
+
+  componentWillUnmount()
+  {
+    // Remove the focus listener
+    if (this.focusListener)
     {
-      this.getData();
+      this.focusListener();
     }
   }
+
+  handleFocus = () =>
+  {
+    this.getData();
+  };
 
   getData = async () =>
   {
@@ -188,8 +199,7 @@ export default class ContactsScreen extends Component
           onPress={() => navigation.navigate(
             'addContact',
             {
-              current_contacts: contactsData,
-              // getData: this.getData,
+              getData: this.getData,
             },
           )}
         />
@@ -227,6 +237,7 @@ export default class ContactsScreen extends Component
 ContactsScreen.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
+    addListener: PropTypes.func.isRequired,
   }).isRequired,
 };
 

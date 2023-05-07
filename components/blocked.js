@@ -144,7 +144,7 @@ export default class BlockedScreen extends Component
 
 BlockedScreen.propTypes = {
   route: PropTypes.shape({
-    params: PropTypes.func.isRequired,
+    params: PropTypes.object.isRequired,
   }).isRequired,
 };
 

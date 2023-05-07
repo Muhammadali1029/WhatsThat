@@ -384,7 +384,6 @@ export default class ChatInfoScreen extends Component
 
 ChatInfoScreen.propTypes = {
   route: PropTypes.shape({
-    // eslint-disable-next-line react/forbid-prop-types
     params: PropTypes.object.isRequired,
   }).isRequired,
   navigation: PropTypes.shape({
