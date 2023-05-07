@@ -7,6 +7,7 @@ import { FlatList, Button } from 'react-native-web';
 import PropTypes from 'prop-types';
 
 import Modal from './modal';
+import ProfileScreen from './otherUsersProfile';
 
 export default class AddContactsScreen extends Component
 {
@@ -21,6 +22,8 @@ export default class AddContactsScreen extends Component
       offset: 0,
       showCannotAddYourself: false,
       showAdded: false,
+      profileUserId: '',
+      showProfile: false,
     };
   }
 
@@ -105,7 +108,8 @@ export default class AddContactsScreen extends Component
   render()
   {
     const {
-      isLoading, searchTerm, usersData, offset, showCannotAddYourself, showAdded,
+      isLoading, searchTerm, usersData, offset,
+      showCannotAddYourself, showAdded, profileUserId, showProfile,
     } = this.state;
     const { navigation } = this.props;
 
@@ -146,8 +150,14 @@ export default class AddContactsScreen extends Component
             data={usersData}
             renderItem={({ item }) => (
               <View style={styles.container}>
-                {/* <Text>{item.given_name} {item.family_name}</Text> */}
-                <TouchableOpacity onPress={() => console.log('Profile screen')}>
+                <TouchableOpacity onPress={() =>
+                {
+                  this.setState({
+                    showProfile: true,
+                    profileUserId: item.user_id,
+                  });
+                }}
+                >
                   <View style={styles.profilebtn}>
                     <Text style={styles.buttonText}>
                       {item.given_name}
@@ -184,6 +194,13 @@ export default class AddContactsScreen extends Component
          && <Modal alert="Cannot Add Yourself to Contacts" />}
         {showAdded
          && <Modal alert="User Added to Contacts" />}
+        {showProfile
+          && (
+          <ProfileScreen
+            userID={profileUserId}
+            onClose={() => this.setState({ showProfile: false })}
+          />
+          ) }
       </View>
     );
   }
@@ -191,7 +208,6 @@ export default class AddContactsScreen extends Component
 
 AddContactsScreen.propTypes = {
   route: PropTypes.shape({
-    // eslint-disable-next-line react/forbid-prop-types
     params: PropTypes.object.isRequired,
   }).isRequired,
   navigation: PropTypes.shape({

@@ -7,6 +7,7 @@ import { FlatList, Button } from 'react-native-web';
 import PropTypes from 'prop-types';
 
 import getRequest from './getRequest';
+import ProfileScreen from './otherUsersProfile';
 
 export default class ContactsScreen extends Component
 {
@@ -17,6 +18,8 @@ export default class ContactsScreen extends Component
     this.state = {
       isLoading: true,
       contactsData: [],
+      profileUserId: '',
+      showProfile: false,
     };
   }
 
@@ -167,7 +170,9 @@ export default class ContactsScreen extends Component
 
   render()
   {
-    const { isLoading, contactsData } = this.state;
+    const {
+      isLoading, contactsData, showProfile, profileUserId,
+    } = this.state;
     const { navigation } = this.props;
 
     if (isLoading)
@@ -208,11 +213,20 @@ export default class ContactsScreen extends Component
             data={contactsData}
             renderItem={({ item }) => (
               <View style={styles.contacts}>
-                <Text>
-                  {item.first_name}
-                  {' '}
-                  {item.last_name}
-                </Text>
+                <TouchableOpacity onPress={() =>
+                {
+                  this.setState({
+                    showProfile: true,
+                    profileUserId: item.user_id,
+                  });
+                }}
+                >
+                  <Text>
+                    {item.first_name}
+                    {' '}
+                    {item.last_name}
+                  </Text>
+                </TouchableOpacity>
                 <TouchableOpacity onPress={() => this.removeFromConatacts(item.user_id)}>
                   <View style={styles.button}>
                     <Text style={styles.buttonText}>Remove</Text>
@@ -229,6 +243,13 @@ export default class ContactsScreen extends Component
             keyExtractor={({ user_id }) => user_id}
           />
         </View>
+        {showProfile
+          && (
+          <ProfileScreen
+            userID={profileUserId}
+            onClose={() => this.setState({ showProfile: false })}
+          />
+          ) }
       </View>
     );
   }

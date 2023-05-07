@@ -3,6 +3,7 @@ import {
   View, Image, Text, ActivityIndicator,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import PropTypes from 'prop-types';
 
 export default class DisplayImage extends Component
 {
@@ -18,13 +19,14 @@ export default class DisplayImage extends Component
 
   componentDidMount()
   {
-    this.get_profile_image();
+    const { userID } = this.props;
+    this.get_profile_image(userID);
   }
 
-  async get_profile_image()
+  async get_profile_image(userID)
   {
     console.log('Get Photo Request sent to API');
-    fetch(`http://localhost:3333/api/1.0.0/user/${await AsyncStorage.getItem('whatsthat_user_id')}/photo`, {
+    fetch(`http://localhost:3333/api/1.0.0/user/${userID}/photo`, {
       method: 'GET',
       headers: {
         'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
@@ -79,3 +81,7 @@ export default class DisplayImage extends Component
     return (<Text>Loading</Text>);
   }
 }
+
+DisplayImage.propTypes = {
+  userID: PropTypes.number.isRequired,
+};

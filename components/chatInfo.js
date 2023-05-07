@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 
 import searchUsers from './search';
 import Modal from './modal';
+import ProfileScreen from './otherUsersProfile';
 
 export default class ChatInfoScreen extends Component
 {
@@ -27,6 +28,8 @@ export default class ChatInfoScreen extends Component
       showLeftChat: false,
       showAddedToChat: false,
       showAlreadyInChat: false,
+      profileUserId: '',
+      showProfile: false,
     };
   }
 
@@ -243,7 +246,7 @@ export default class ChatInfoScreen extends Component
     const { chatItem } = params;
     const {
       chatData, showEdit, showAddUser, searchTerm, searchData,
-      showLeftChat, showAddedToChat, showAlreadyInChat,
+      showLeftChat, showAddedToChat, showAlreadyInChat, showProfile, profileUserId,
     } = this.state;
 
     return (
@@ -309,7 +312,14 @@ export default class ChatInfoScreen extends Component
                   data={searchData}
                   renderItem={({ item }) => (
                     <View style={styles.container}>
-                      <TouchableOpacity onPress={() => console.log('Profile screen')}>
+                      <TouchableOpacity onPress={() =>
+                      {
+                        this.setState({
+                          showProfile: true,
+                          profileUserId: item.user_id,
+                        });
+                      }}
+                      >
                         <View style={styles.profilebtn}>
                           <Text>
                             {item.given_name}
@@ -348,11 +358,22 @@ export default class ChatInfoScreen extends Component
                   data={chatData.members}
                   renderItem={({ item }) => (
                     <View style={styles.membersList}>
-                      <Text>
-                        {item.first_name}
-                        {' '}
-                        {item.last_name}
-                      </Text>
+                      <TouchableOpacity onPress={() =>
+                      {
+                        this.setState({
+                          showProfile: true,
+                          profileUserId: item.user_id,
+                        });
+                      }}
+                      >
+                        <View style={styles.profilebtn}>
+                          <Text>
+                            {item.first_name}
+                            {' '}
+                            {item.last_name}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
                       <TouchableOpacity onPress={() =>
                       {
                         this.removeFromChat(chatItem.chat_id, item.user_id);
@@ -377,6 +398,13 @@ export default class ChatInfoScreen extends Component
         && <Modal alert="User Added to Chat" /> }
         {showAlreadyInChat
         && <Modal alert="User Already in Chat" /> }
+        {showProfile
+          && (
+          <ProfileScreen
+            userID={profileUserId}
+            onClose={() => this.setState({ showProfile: false })}
+          />
+          ) }
       </View>
     );
   }
@@ -403,8 +431,8 @@ const styles = StyleSheet.create({
   title: {
     marginBottom: 40,
   },
-  info: {
-
+  profilebtn: {
+    marginBottom: 10,
   },
   nav: {
     marginBottom: 5,
