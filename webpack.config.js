@@ -7,10 +7,7 @@ module.exports = async (env, argv) =>
 
   config.resolve = {
     ...config.resolve,
-    alias: {
-      ...config.resolve.alias,
-      react: path.resolve(__dirname, './node_modules/react'),
-    },
+    alias: { ...config.resolve.alias, react: path.resolve(__dirname, './node_modules/react') },
   };
 
   return config;

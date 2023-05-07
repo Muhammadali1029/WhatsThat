@@ -100,7 +100,7 @@ export default class ChatsScreen extends Component
           />
         </View>
         <ScrollView style={{ flex: 1 }}>
-          {allChatsData.map((item) => (
+          {allChatsData.reverse().map((item) => (
             <View key={item.chat_id}>
               <TouchableOpacity onPress={() => navigation.navigate('singleChatScreenNav', { screen: 'singleChatScreen', params: { chatItem: item } })}>
                 <Text style={styles.chats}>{item.name}</Text>

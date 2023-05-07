@@ -9,6 +9,7 @@ import {
 import PropTypes from 'prop-types';
 
 import searchUsers from './search';
+import Modal from './modal';
 
 export default class ChatInfoScreen extends Component
 {
@@ -23,6 +24,8 @@ export default class ChatInfoScreen extends Component
       searchTerm: '',
       searchData: [],
       chatData: [],
+      showLeftChat: false,
+      showAddedToChat: false,
     };
   }
 
@@ -117,7 +120,6 @@ export default class ChatInfoScreen extends Component
         if (response.status === 200)
         {
           console.log('Chat name editted successfully');
-          // params.getData(() => this.updateChatName(editChatName));
           this.getData();
           return response.json();
         }
@@ -142,7 +144,6 @@ export default class ChatInfoScreen extends Component
             },
     },
   )
-
     .then(async (response) =>
     {
       const { chatData } = this.state;
@@ -153,7 +154,7 @@ export default class ChatInfoScreen extends Component
       if (response.status === 200)
       {
         console.log(`User ${userId} removed from chat`);
-
+        this.setState({ showLeftChat: true });
         if (userId === chatData.creator.user_id)
         {
           navigate('chatsNav', { screen: 'chats' });
@@ -202,7 +203,12 @@ export default class ChatInfoScreen extends Component
       if (response.status === 200)
       {
         console.log(`User ${userId} added to Chat`);
-        this.setState({ showAddUser: true });
+        this.setState(
+          {
+            showAddUser: true,
+            showAddedToChat: true,
+          },
+        );
         this.getData();
       }
       else
@@ -222,7 +228,7 @@ export default class ChatInfoScreen extends Component
     const { params } = route;
     const { chatItem } = params;
     const {
-      chatData, showEdit, showAddUser, searchTerm, searchData,
+      chatData, showEdit, showAddUser, searchTerm, searchData, showLeftChat, showAddedToChat,
     } = this.state;
 
     return (
@@ -302,7 +308,11 @@ export default class ChatInfoScreen extends Component
                       }
                       >
                         <View style={styles.button}>
-                          <Text style={styles.buttonText}>Add to Chat</Text>
+                          {showAddedToChat
+                            ? (<Text style={styles.buttonText}>User Added to Chat</Text>) : (
+                              <Text style={styles.buttonText}>Add User</Text>
+                            )}
+
                         </View>
                       </TouchableOpacity>
                     </View>
@@ -332,9 +342,10 @@ export default class ChatInfoScreen extends Component
                         {' '}
                         {item.last_name}
                       </Text>
-                      <TouchableOpacity onPress={
-                  () => this.removeFromChat(chatItem.chat_id, item.user_id)
-                }
+                      <TouchableOpacity onPress={() =>
+                      {
+                        this.removeFromChat(chatItem.chat_id, item.user_id);
+                      }}
                       >
                         <View style={styles.button}>
                           <Text style={styles.buttonText}>Remove</Text>
@@ -348,6 +359,11 @@ export default class ChatInfoScreen extends Component
               </View>
             </View>
           )}
+
+        {showLeftChat
+        && <Modal alert="User Removed from chat" />}
+        {showAddedToChat
+        && <Modal alert="User Added to Chat" />}
       </View>
     );
   }

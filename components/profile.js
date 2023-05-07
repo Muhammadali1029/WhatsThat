@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Button } from 'react-native-web';
 import PropTypes from 'prop-types';
 
-import Camera from './camera';
+// import Camera from './camera';
 import DisplayImage from './displayPhoto';
 
 export default class ProfileScreen extends Component
@@ -77,7 +77,7 @@ export default class ProfileScreen extends Component
         {takePhoto
           ? (
             <View style={styles.camera}>
-              <Camera />
+              {/* <Camera /> */}
               <Button
                 title="Go Back"
                 onPress={() => this.setState({ takePhoto: false })}
