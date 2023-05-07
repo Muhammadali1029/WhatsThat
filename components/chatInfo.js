@@ -156,6 +156,10 @@ export default class ChatInfoScreen extends Component
       {
         console.log(`User ${userId} removed from chat`);
         this.setState({ showLeftChat: true });
+        setTimeout(() =>
+        {
+          this.setState({ showLeftChat: false });
+        }, 2000);
         if (userId === chatData.creator.user_id)
         {
           navigate('chatsNav', { screen: 'chats' });
@@ -204,17 +208,22 @@ export default class ChatInfoScreen extends Component
       if (response.status === 200)
       {
         console.log(`User ${userId} added to Chat`);
-        this.setState(
-          {
-            showAddUser: true,
-            showAddedToChat: true,
-          },
-        );
+
+        this.setState({ showAddedToChat: true });
+        setTimeout(() =>
+        {
+          this.setState({ showAddedToChat: false });
+        }, 2000);
+
         this.getData();
       }
-      if (response.status === 400)
+      else if (response.status === 400)
       {
         this.setState({ showAlreadyInChat: true });
+        setTimeout(() =>
+        {
+          this.setState({ showAlreadyInChat: false });
+        }, 2000);
       }
       else
       {
@@ -313,15 +322,8 @@ export default class ChatInfoScreen extends Component
                         () => this.addToChat(chatItem.chat_id, item.user_id)
                       }
                       >
-                        <View style={showAddedToChat || showAlreadyInChat
-                          ? styles.disableButton : styles.button}
-                        >
-                          {showAddedToChat || showAlreadyInChat
-                            ? (
-                              <Text style={styles.buttonText}>User Added to Chat</Text>
-                            ) : (
-                              <Text style={styles.buttonText}>Add User</Text>
-                            )}
+                        <View style={styles.button}>
+                          <Text style={styles.buttonText}>Add User</Text>
                         </View>
                       </TouchableOpacity>
                     </View>
@@ -372,9 +374,9 @@ export default class ChatInfoScreen extends Component
         {showLeftChat
         && <Modal alert="User Removed from chat" />}
         {showAddedToChat
-        && <Modal alert="User Added to Chat" />}
+        && <Modal alert="User Added to Chat" /> }
         {showAlreadyInChat
-        && <Modal alert="User Already in Chat" />}
+        && <Modal alert="User Already in Chat" /> }
       </View>
     );
   }

@@ -136,6 +136,10 @@ export default class CreateChatScreen extends Component
         console.log(`User ${userId} added to Chat`);
         params.getData();
         this.setState({ userAddedToChat: true });
+        setTimeout(() =>
+        {
+          this.setState({ userAddedToChat: false });
+        }, 2000);
       }
       else
       {
@@ -174,6 +178,10 @@ export default class CreateChatScreen extends Component
               {
                 this.createChat();
                 this.setState({ showChatCreated: true });
+                setTimeout(() =>
+                {
+                  this.setState({ showChatCreated: false });
+                }, 2000);
               }}
             />
             )}

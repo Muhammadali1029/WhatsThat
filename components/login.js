@@ -95,6 +95,10 @@ export default class LoginScreen extends Component
         {
           console.log('login successful');
           this.setState({ loginSuccessful: true });
+          setTimeout(() =>
+          {
+            this.setState({ loginSuccessful: false });
+          }, 2000);
           return response.json();
         }
         if (response.status === 400)

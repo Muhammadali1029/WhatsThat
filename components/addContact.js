@@ -6,6 +6,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FlatList, Button } from 'react-native-web';
 import PropTypes from 'prop-types';
 
+import Modal from './modal';
+
 export default class AddContactsScreen extends Component
 {
   constructor(props)
@@ -15,9 +17,10 @@ export default class AddContactsScreen extends Component
     this.state = {
       isLoading: false,
       searchTerm: '',
-      // contactsData: [],
       usersData: [],
       offset: 0,
+      showCannotAddYourself: false,
+      showAdded: false,
     };
   }
 
@@ -44,13 +47,6 @@ export default class AddContactsScreen extends Component
         console.log('Data returned from api');
         console.log(responseJson);
         this.setState({ usersData: responseJson });
-        // const updatedUsersData = responseJson.map((user) =>
-        // {
-        //   const isContact = contactsData.some((contact) => contact.user_id === user.user_id);
-        //   return { ...user, isContact };
-        // });
-
-        // this.setState({ usersData: updatedUsersData });
       })
       .catch((error) =>
       {
@@ -71,17 +67,15 @@ export default class AddContactsScreen extends Component
   )
     .then(async (response) =>
     {
-      const { route } = this.props;
-      const { params } = route;
-
       console.log('Add to contacts sent to api');
       if (response.status === 200)
       {
         console.log(`User ${userID} added to contacts`);
-        params.getData();
+        this.setState({ showAdded: true });
       }
       else if (response.status === 400)
       {
+        this.setState({ showCannotAddYourself: true });
         console.log('You cannot add yourself');
       }
       else if (response.status === 404)
@@ -90,6 +84,7 @@ export default class AddContactsScreen extends Component
       }
       else
       {
+        console.log(response.status);
         throw 'Something went wrong';
       }
     })
@@ -102,7 +97,7 @@ export default class AddContactsScreen extends Component
   render()
   {
     const {
-      isLoading, searchTerm, usersData, offset,
+      isLoading, searchTerm, usersData, offset, showCannotAddYourself, showAdded,
     } = this.state;
     const { navigation } = this.props;
 
@@ -153,36 +148,22 @@ export default class AddContactsScreen extends Component
                     </Text>
                   </View>
                 </TouchableOpacity>
-                { item.isContact
-                  ? (
-                    <View style={styles.buttonDisabled}>
-                      <Text style={styles.buttonText}>Added to contacts</Text>
-                    </View>
-                  )
-                  : (
-                    <TouchableOpacity onPress={() => this.addToContacts(item.user_id)}>
-                      <View style={styles.button}>
-                        <Text style={styles.buttonText}>Add to contacts</Text>
-                      </View>
-                    </TouchableOpacity>
-                  )}
+                <TouchableOpacity onPress={() => this.addToContacts(item.user_id)}>
+                  {/* <View style={styles.button}>
+                    <Text style={styles.buttonText}>Add to contacts</Text>
+                  </View> */}
+                  <View style={showAdded
+                    ? styles.disableButton : styles.button}
+                  >
+                    {showAdded
+                      ? (
+                        <Text style={styles.buttonText}>User Added to Contacts</Text>
+                      ) : (
+                        <Text style={styles.buttonText}>Add To Contacts</Text>
+                      )}
+                  </View>
+                </TouchableOpacity>
               </View>
-
-              // <View style={styles.buttonContainer}>
-              // { item.isContact ?
-              // (
-              //     <View style={styles.buttonDisabled}>
-              //         <Text style={styles.buttonText}>Already in contacts</Text>
-              //     </View>
-              // ) :
-              // (
-              //     <TouchableOpacity onPress={() => this.addToContacts(item.user_id)}>
-              //         <View style={styles.button}>
-              //             <Text style={styles.buttonText}>Add to contacts</Text>
-              //         </View>
-              //     </TouchableOpacity>
-              // )}
-              // </View>
             )}
             // eslint-disable-next-line camelcase
             keyExtractor={({ user_id }) => user_id}
@@ -200,6 +181,11 @@ export default class AddContactsScreen extends Component
             console.log(offset);
           }}
         />
+
+        {showCannotAddYourself
+         && <Modal alert="Cannot Add Yourself to Contacts" />}
+        {showAdded
+         && <Modal alert="User Added to Contacts" />}
       </View>
     );
   }
@@ -232,6 +218,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   button: {
+    marginBottom: 30,
     backgroundColor: '#2196F3',
   },
   profilebtn: {
@@ -242,18 +229,13 @@ const styles = StyleSheet.create({
     padding: 20,
     color: 'white',
   },
-  buttonDisabled:
-    {
-      backgroundColor: '#d3d3d3',
-      padding: 10,
-      borderRadius: 5,
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginVertical: 10,
-    },
+  disableButton: {
+    marginBottom: 30,
+    backgroundColor: 'gray',
+  },
   buttonTextDisabled:
     {
-      color: '#808080',
+      color: 'white',
       fontWeight: 'bold',
       fontSize: 16,
     },
