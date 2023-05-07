@@ -30,6 +30,12 @@ export default class SingleChatScreen extends Component
     this.getData();
     this.setUserId();
     this.focusListener = addListener('focus', this.handleFocus);
+
+    // Call the getData function every 5 seconds
+    this.interval = setInterval(() =>
+    {
+      this.getData();
+    }, 5000);
   }
 
   componentDidUpdate(prevProps, prevState)
@@ -49,6 +55,9 @@ export default class SingleChatScreen extends Component
     {
       this.focusListener();
     }
+
+    // Clear the interval
+    clearInterval(this.interval);
   }
 
   handleFocus = () =>
@@ -61,7 +70,7 @@ export default class SingleChatScreen extends Component
     const { userId } = this.state;
     await AsyncStorage.getItem('whatsthat_user_id').then((id) =>
     {
-      this.setState({ userId: id });
+      this.setState({ userId: JSON.parse(id) });
     });
     console.log(userId, 'inside set id');
   };
