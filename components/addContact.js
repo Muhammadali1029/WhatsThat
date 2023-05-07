@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 
 import Modal from './modal';
 import ProfileScreen from './otherUsersProfile';
+import globalStyles from './globalStyleSheet';
 
 export default class AddContactsScreen extends Component
 {
@@ -140,11 +141,10 @@ export default class AddContactsScreen extends Component
             <TouchableOpacity onPress={() =>
             {
               this.searchAllUsers(searchTerm, 'all');
-              // this.setState({ offset: (offset + 5) });
             }}
             >
-              <View style={styles.button}>
-                <Text style={styles.buttonText}>Search</Text>
+              <View style={[styles.button, globalStyles.buttonContainer]}>
+                <Text style={[styles.buttonText, globalStyles.buttonText]}>Search</Text>
               </View>
             </TouchableOpacity>
           </View>

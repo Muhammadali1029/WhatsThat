@@ -6,6 +6,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Button, ScrollView } from 'react-native-web';
 import PropTypes from 'prop-types';
 
+import globalStyles from './globalStyleSheet';
+
 export default class ChatsScreen extends Component
 {
   constructor(props)
@@ -86,8 +88,10 @@ export default class ChatsScreen extends Component
     }
 
     return (
-      <View style={styles.container}>
-        <Text>Chats</Text>
+      <View style={globalStyles.container}>
+        <View>
+          <Text styles={globalStyles.headerText}>Chats</Text>
+        </View>
         <View>
           <Button
             title="New Chat"
@@ -125,18 +129,14 @@ ChatsScreen.propTypes = {
     navigate: PropTypes.func.isRequired,
     addListener: PropTypes.func.isRequired,
   }).isRequired,
-  // route: PropTypes.shape({
-  //   // eslint-disable-next-line react/forbid-prop-types
-  //   params: PropTypes.object.isRequired,
-  // }).isRequired,
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    padding: 10,
-  },
+  // container: {
+  //   flex: 1,
+  //   backgroundColor: '#fff',
+  //   padding: 10,
+  // },
   chats: {
     flexDirection: 'row',
     justifyContent: 'space-between',

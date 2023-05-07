@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 
 import getRequest from './getRequest';
 import ProfileScreen from './otherUsersProfile';
+import globalStyles from './globalStyleSheet';
 
 export default class ContactsScreen extends Component
 {
@@ -186,33 +187,41 @@ export default class ContactsScreen extends Component
 
     return (
       <View style={styles.container}>
-        <View style={styles.blockedbtn}>
-          <Button
-            title="View Blocked Users"
-            onPress={() => navigation.navigate(
-              'blocked',
-              {
-                getData: this.getData,
-                removeFromContacts: this.removeFromConatacts,
-              },
-            )}
-          />
+        <View style={styles.header}>
+          <View style={styles.title}>
+            <Text style={globalStyles.headerText}>Contacts</Text>
+          </View>
+          <View style={styles.blockedbtn}>
+            <Button
+              title="View Blocked Users"
+              onPress={() => navigation.navigate(
+                'blocked',
+                {
+                  getData: this.getData,
+                  removeFromContacts: this.removeFromConatacts,
+                },
+              )}
+            />
+          </View>
+          <View style={styles.addButton}>
+            <Button
+              title="Add New Contact"
+              style={styles.addButtonText}
+              onPress={() => navigation.navigate(
+                'addContact',
+                {
+                  getData: this.getData,
+                },
+              )}
+            />
+          </View>
         </View>
-        <Text>Contacts</Text>
-        <Button
-          title="Add New Contact"
-          onPress={() => navigation.navigate(
-            'addContact',
-            {
-              getData: this.getData,
-            },
-          )}
-        />
+
         <View style={styles.contactsList}>
           <FlatList
             data={contactsData}
             renderItem={({ item }) => (
-              <View style={styles.contacts}>
+              <View style={styles.contactContainer}>
                 <TouchableOpacity onPress={() =>
                 {
                   this.setState({
@@ -221,22 +230,24 @@ export default class ContactsScreen extends Component
                   });
                 }}
                 >
-                  <Text>
+                  <Text style={styles.contactName}>
                     {item.first_name}
                     {' '}
                     {item.last_name}
                   </Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => this.removeFromConatacts(item.user_id)}>
-                  <View style={styles.button}>
-                    <Text style={styles.buttonText}>Remove</Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => this.blockUser(item.user_id)}>
-                  <View style={styles.button}>
-                    <Text style={styles.buttonText}>Block</Text>
-                  </View>
-                </TouchableOpacity>
+                <View style={styles.buttonsContainer}>
+                  <TouchableOpacity onPress={() => this.removeFromConatacts(item.user_id)}>
+                    <View style={styles.button}>
+                      <Text style={styles.buttonText}>Remove</Text>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => this.blockUser(item.user_id)}>
+                    <View style={styles.button}>
+                      <Text style={styles.buttonText}>Block</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
               </View>
             )}
             // eslint-disable-next-line camelcase
@@ -264,31 +275,49 @@ ContactsScreen.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     backgroundColor: '#F5F5F5',
-    borderRadius: 10,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    marginVertical: 10,
+    paddingHorizontal: 10,
+    paddingTop: 20,
+  },
+  headerText: {
+    fontSize: 35,
+    fontWeight: '800',
+    color: 'black',
   },
   contactsList: {
-    marginTop: 20,
     flex: 1,
-    alignSelf: 'stretch',
+    backgroundColor: '1a1a1as',
+    paddingHorizontal: 10,
   },
-  contacts: {
+  contactContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+    marginTop: 10,
+  },
+  contactName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
   button: {
-    backgroundColor: 'red',
-    padding: 10,
+    backgroundColor: '#ff6347',
     borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
     marginHorizontal: 5,
   },
   buttonText: {
-    color: 'white',
-    textAlign: 'center',
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
