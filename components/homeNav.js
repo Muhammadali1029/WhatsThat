@@ -5,7 +5,8 @@ import PropTypes from 'prop-types';
 
 import ChatsNav from './chatsNav';
 import ContactsNav from './contactsNav';
-import SettingsScreenStack from './settingsNav';
+// import SettingsScreenStack from './settingsNav';
+import ProfileNav from './profileNav';
 
 const Tab = createBottomTabNavigator();
 
@@ -46,7 +47,7 @@ export default class HomeNav extends Component
       >
         <Tab.Screen name="chatsNav" component={ChatsNav} />
         <Tab.Screen name="contactsNav" component={ContactsNav} />
-        <Tab.Screen name="settingsNav" component={SettingsScreenStack} />
+        <Tab.Screen name="profileNav" component={ProfileNav} />
       </Tab.Navigator>
     );
   }

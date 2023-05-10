@@ -3,7 +3,7 @@ import {
   View, Text, StyleSheet, ActivityIndicator,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Button } from 'react-native-web';
+import { Button, TouchableOpacity } from 'react-native-web';
 import PropTypes from 'prop-types';
 
 // import Camera from './camera';
@@ -57,6 +57,48 @@ export default class ProfileScreen extends Component
       });
   };
 
+  logout = async () => fetch(
+    'http://localhost:3333/api/1.0.0/logout',
+    {
+      method: 'post',
+      headers:
+                {
+                  'Content-Type': 'application/json',
+                  'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
+                },
+    },
+  )
+
+    .then(async (response) =>
+    {
+      const { navigation } = this.props;
+
+      console.log('Logout sent to api');
+      if (response.status === 200)
+      {
+        console.log('logout successful');
+        await AsyncStorage.removeItem('whatsthat_user_id');
+        await AsyncStorage.removeItem('whatsthat_session_token');
+        navigation.navigate('login');
+      }
+      else if (response.status === 401)
+      {
+        console.log('Unauthorized. Logged out');
+        await AsyncStorage.removeItem('whatsthat_user_id');
+        await AsyncStorage.removeItem('whatsthat_session_token');
+        navigation.navigate('login');
+      }
+      else
+      {
+        throw 'Something went wrong';
+      }
+    })
+
+    .catch((error) =>
+    {
+      console.log(error);
+    });
+
   render()
   {
     const { isLoading, profileData } = this.state;
@@ -108,6 +150,14 @@ export default class ProfileScreen extends Component
                 title="Edit Profile Details"
                 onPress={() => navigation.navigate('editProfile', { profileData })}
               />
+
+              <View style={styles.logoutbtn}>
+                <TouchableOpacity onPress={this.logout}>
+                  <View style={styles.button}>
+                    <Text style={styles.buttonText}>Logout</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
             </View>
           )}
       </View>
