@@ -5,11 +5,14 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import Modal from './modal';
+
 export default function cameraTakePhoto()
 {
   const [type, setType] = useState(CameraType.back);
   const [permission] = Camera.useCameraPermissions();
   const [camera, setCamera] = useState(null);
+  const [photoTaken, setPhotoTaken] = useState(false);
 
   async function sendToServer(data)
   {
@@ -57,7 +60,8 @@ export default function cameraTakePhoto()
     {
       const options = { quality: 0.5, base64: true, onPictureSaved: (data) => sendToServer(data) };
       const data = await camera.takePictureAsync(options);
-      console.log('Photo Taken: ', data);
+      setPhotoTaken({ ...photoTaken, photoTaken: true });
+      console.log('Photo Taken: ', data, photoTaken);
     }
   }
 
@@ -75,11 +79,19 @@ export default function cameraTakePhoto()
         </View>
 
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={() => takePhoto()}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() =>
+            {
+              takePhoto();
+            }}
+          >
             <Text style={styles.text}>Take Photo</Text>
           </TouchableOpacity>
         </View>
       </Camera>
+      {photoTaken
+       && <Modal alert="Photo Taken" />}
     </View>
   );
 }

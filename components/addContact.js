@@ -25,15 +25,18 @@ export default class AddContactsScreen extends Component
       showAdded: false,
       profileUserId: '',
       showProfile: false,
+      searchPressed: false,
+      increment: 10,
+      searchResults: '',
     };
   }
 
   searchAllUsers = async (searchTerm, location) =>
   {
-    const { offset } = this.state;
+    const { offset, increment } = this.state;
     console.log('All search request sent to api');
     return fetch(
-      `http://localhost:3333/api/1.0.0/search?q=${searchTerm}&search_in=${location}&limit=5&offset=${offset}`,
+      `http://localhost:3333/api/1.0.0/search?q=${searchTerm}&search_in=${location}&limit=${increment}&offset=${offset}`,
       {
         method: 'get',
         headers:
@@ -46,11 +49,12 @@ export default class AddContactsScreen extends Component
       .then((response) => response.json())
       .then((responseJson) =>
       {
-        // const { contactsData } = this.state;
-
         console.log('Data returned from api');
         console.log(responseJson);
-        this.setState({ usersData: responseJson });
+        this.setState({
+          usersData: responseJson,
+          searchResults: responseJson.length,
+        });
       })
       .catch((error) =>
       {
@@ -109,8 +113,9 @@ export default class AddContactsScreen extends Component
   render()
   {
     const {
-      isLoading, searchTerm, usersData, offset,
-      showCannotAddYourself, showAdded, profileUserId, showProfile,
+      isLoading, searchTerm, usersData, offset, showCannotAddYourself,
+      showAdded, profileUserId, showProfile, searchPressed, increment,
+      searchResults,
     } = this.state;
     const { navigation } = this.props;
 
@@ -137,23 +142,29 @@ export default class AddContactsScreen extends Component
             />
           </View>
 
-          <View style={styles.addbtn}>
+          <View style={styles.buttonContainer}>
             <TouchableOpacity onPress={() =>
             {
               this.searchAllUsers(searchTerm, 'all');
+              this.setState({ searchPressed: true });
             }}
             >
-              <View style={[styles.button, globalStyles.buttonContainer]}>
-                <Text style={[styles.buttonText, globalStyles.buttonText]}>Search</Text>
+              <View style={styles.button}>
+                <Text style={styles.buttonText}>Search</Text>
               </View>
             </TouchableOpacity>
           </View>
         </View>
-        <Text>Users:</Text>
+
+        {searchResults === 0
+          ? <Text>No Results...</Text>
+          : null}
+
         <FlatList
+          styles={styles.searchList}
           data={usersData}
           renderItem={({ item }) => (
-            <View style={styles.container}>
+            <View style={styles.searchContainer}>
               <TouchableOpacity onPress={() =>
               {
                 this.setState({
@@ -162,13 +173,11 @@ export default class AddContactsScreen extends Component
                 });
               }}
               >
-                <View style={styles.profilebtn}>
-                  <Text style={styles.buttonText}>
-                    {item.given_name}
-                    {' '}
-                    {item.family_name}
-                  </Text>
-                </View>
+                <Text style={styles.searchName}>
+                  {item.given_name}
+                  {' '}
+                  {item.family_name}
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => this.addToContacts(item.user_id)}>
                 <View style={styles.button}>
@@ -180,21 +189,40 @@ export default class AddContactsScreen extends Component
             // eslint-disable-next-line camelcase
           keyExtractor={({ user_id }) => user_id}
         />
-        <Text>
-          Page Number:
-          {(offset + 5) / 5}
-        </Text>
-        <Button
-          title="next page"
-          onPress={() =>
-          {
-            this.setState({ offset: (offset + 5) }, () =>
+        {searchPressed
+        && (
+        <View>
+          <Text>
+            Page Number:
+            {(offset + increment) / increment}
+          </Text>
+          <Button
+            title="next page"
+            onPress={() =>
             {
-              console.log(offset);
-              this.searchAllUsers(searchTerm, 'all');
-            });
-          }}
-        />
+              this.setState({ offset: (offset + increment) }, () =>
+              {
+                console.log(offset);
+                this.searchAllUsers(searchTerm, 'all');
+              });
+            }}
+          />
+          {offset > 0
+          && (
+          <Button
+            title="previous page"
+            onPress={() =>
+            {
+              this.setState({ offset: (offset - increment) }, () =>
+              {
+                console.log(offset);
+                this.searchAllUsers(searchTerm, 'all');
+              });
+            }}
+          />
+          )}
+        </View>
+        )}
         <Button
           title="Go Back"
           onPress={() => navigation.navigate('contacts')}
@@ -232,37 +260,45 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'start',
   },
-  search: {
-
-  },
-  info: {
-
-  },
   nav: {
     marginBottom: 5,
   },
-  button: {
-    marginBottom: 30,
-    backgroundColor: '#2196F3',
+  searchList: {
+    flex: 1,
+    backgroundColor: '1a1a1as',
+    paddingHorizontal: 10,
   },
-  profilebtn: {
-    backgroundColor: 'red',
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+    marginTop: 10,
+  },
+  searchName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+  button: {
+    backgroundColor: '#ff6347',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginHorizontal: 5,
+    alignItems: 'center',
   },
   buttonText: {
-    textAlign: 'center',
-    padding: 20,
-    color: 'white',
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
-  disableButton: {
-    marginBottom: 30,
-    backgroundColor: 'gray',
-  },
-  buttonTextDisabled:
-    {
-      color: 'white',
-      fontWeight: 'bold',
-      fontSize: 16,
-    },
 });
 
 // searchAllUsers = async (search) =>

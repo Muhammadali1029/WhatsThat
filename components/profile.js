@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Button, TouchableOpacity } from 'react-native-web';
 import PropTypes from 'prop-types';
 
-// import Camera from './camera';
+import Camera from './camera';
 import DisplayImage from './displayPhoto';
 
 export default class ProfileScreen extends Component
@@ -19,12 +19,18 @@ export default class ProfileScreen extends Component
       isLoading: true,
       profileData: [],
       takePhoto: false,
+      userId: '',
     };
   }
 
-  componentDidMount()
+  async componentDidMount()
   {
     this.getData();
+
+    await AsyncStorage.getItem('whatsthat_user_id').then((id) =>
+    {
+      this.setState({ userId: parseInt(id, 10) });
+    });
   }
 
   getData = async () =>
@@ -101,7 +107,7 @@ export default class ProfileScreen extends Component
 
   render()
   {
-    const { isLoading, profileData } = this.state;
+    const { isLoading, profileData, userId } = this.state;
     const { navigation } = this.props;
     const { takePhoto } = this.state;
 
@@ -119,7 +125,7 @@ export default class ProfileScreen extends Component
         {takePhoto
           ? (
             <View style={styles.camera}>
-              {/* <Camera /> */}
+              <Camera />
               <Button
                 title="Go Back"
                 onPress={() => this.setState({ takePhoto: false })}
@@ -128,7 +134,7 @@ export default class ProfileScreen extends Component
           ) : (
             <View>
               <Text>Profile Details</Text>
-              <DisplayImage />
+              <DisplayImage userID={userId} />
               <Button
                 title="Take Photo"
                 onPress={() => this.setState({ takePhoto: true })}

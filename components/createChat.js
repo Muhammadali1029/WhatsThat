@@ -21,6 +21,8 @@ export default class CreateChatScreen extends Component
       chatId: '',
       userAddedToChat: false,
       showChatCreated: false,
+      addedName: '',
+      alreadyAdded: false,
     };
   }
 
@@ -141,6 +143,15 @@ export default class CreateChatScreen extends Component
           this.setState({ userAddedToChat: false });
         }, 2000);
       }
+      if (response.status === 400)
+      {
+        console.log(`User ${userId} already added to Chat`);
+        this.setState({ alreadyAdded: true });
+        setTimeout(() =>
+        {
+          this.setState({ alreadyAdded: false });
+        }, 2000);
+      }
       else
       {
         throw 'Something went wrong';
@@ -155,7 +166,8 @@ export default class CreateChatScreen extends Component
   render()
   {
     const {
-      chatName, chatId, submitted, usersData, userAddedToChat, showChatCreated,
+      chatName, chatId, submitted, usersData, userAddedToChat,
+      showChatCreated, addedName, alreadyAdded,
     } = this.state;
     const { navigation } = this.props;
     const { navigate } = navigation;
@@ -195,69 +207,49 @@ export default class CreateChatScreen extends Component
               data={usersData}
               renderItem={({ item }) => (
                 <View style={styles.container}>
-                  {
-                    userAddedToChat
-                      ? (
-                        <View>
-                          <TouchableOpacity onPress={() => console.log('Profile screen')}>
-                            <View>
-                              <Text>
-                                {item.first_name}
-                                {' '}
-                                {item.last_name}
-                              </Text>
-                            </View>
-                          </TouchableOpacity>
-                          <View style={styles.disableButton}>
-                            <Text style={styles.buttonText}>User added to Chat</Text>
-                          </View>
-                          <Button
-                            title="Done"
-                            onPress={() =>
-                            {
-                              navigate('chats');
-                            }}
-                          />
-                        </View>
-                      ) : (
-                        <View>
-                          <TouchableOpacity onPress={() => console.log('Profile screen')}>
-                            <View>
-                              <Text>
-                                {item.first_name}
-                                {' '}
-                                {item.last_name}
-                              </Text>
-                            </View>
-                          </TouchableOpacity>
-                          <TouchableOpacity onPress={() => this.addToChat(chatId, item.user_id)}>
-                            <View style={styles.button}>
-                              <Text style={styles.buttonText}>Add to Chat</Text>
-                            </View>
-                          </TouchableOpacity>
-                          <Button
-                            title="Done"
-                            onPress={() =>
-                            {
-                              navigate('chats');
-                            }}
-                          />
-                        </View>
-                      )
-                 }
+                  <View>
+                    <TouchableOpacity onPress={() => console.log('Profile screen')}>
+                      <View>
+                        <Text>
+                          {item.first_name}
+                          {' '}
+                          {item.last_name}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() =>
+                    {
+                      this.addToChat(chatId, item.user_id);
+                      this.setState({ addedName: `${item.first_name} ${item.last_name}` });
+                    }}
+                    >
+                      <View style={styles.button}>
+                        <Text style={styles.buttonText}>Add to Chat</Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               )}
                 // eslint-disable-next-line camelcase
               keyExtractor={({ user_id }) => user_id}
+            />
+            <Button
+              title="Done"
+              onPress={() =>
+              {
+                navigate('chats');
+              }}
             />
           </View>
           )
         }
 
         {userAddedToChat
-         && <Modal alert="User was added to the Chat" />}
+         && <Modal alert={`${addedName} was added to the Chat`} />}
         {showChatCreated
           && <Modal alert="Chat Created" />}
+        {alreadyAdded
+          && <Modal alert={`${addedName} is already added to the Chat`} />}
       </View>
     );
   }
