@@ -28,10 +28,11 @@ export default class AddContactsScreen extends Component
       searchPressed: false,
       increment: 10,
       searchResults: '',
+      addedName: '',
     };
   }
 
-  searchAllUsers = async (searchTerm, location) =>
+  searchUsers = async (searchTerm, location) =>
   {
     const { offset, increment } = this.state;
     console.log('All search request sent to api');
@@ -115,7 +116,7 @@ export default class AddContactsScreen extends Component
     const {
       isLoading, searchTerm, usersData, offset, showCannotAddYourself,
       showAdded, profileUserId, showProfile, searchPressed, increment,
-      searchResults,
+      searchResults, addedName,
     } = this.state;
     const { navigation } = this.props;
 
@@ -145,7 +146,7 @@ export default class AddContactsScreen extends Component
           <View style={styles.buttonContainer}>
             <TouchableOpacity onPress={() =>
             {
-              this.searchAllUsers(searchTerm, 'all');
+              this.searchUsers(searchTerm, 'all');
               this.setState({ searchPressed: true });
             }}
             >
@@ -179,9 +180,14 @@ export default class AddContactsScreen extends Component
                   {item.family_name}
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => this.addToContacts(item.user_id)}>
+              <TouchableOpacity onPress={() =>
+              {
+                this.addToContacts(item.user_id);
+                this.setState({ addedName: `${item.given_name} ${item.family_name}` });
+              }}
+              >
                 <View style={styles.button}>
-                  <Text style={styles.buttonText}>Add to contacts</Text>
+                  <Text style={styles.buttonText}>Add To Contacts</Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -203,7 +209,7 @@ export default class AddContactsScreen extends Component
               this.setState({ offset: (offset + increment) }, () =>
               {
                 console.log(offset);
-                this.searchAllUsers(searchTerm, 'all');
+                this.searchUsers(searchTerm, 'all');
               });
             }}
           />
@@ -216,7 +222,7 @@ export default class AddContactsScreen extends Component
               this.setState({ offset: (offset - increment) }, () =>
               {
                 console.log(offset);
-                this.searchAllUsers(searchTerm, 'all');
+                this.searchUsers(searchTerm, 'all');
               });
             }}
           />
@@ -231,7 +237,7 @@ export default class AddContactsScreen extends Component
         {showCannotAddYourself
          && <Modal alert="Cannot Add Yourself to Contacts" />}
         {showAdded
-         && <Modal alert="User Added to Contacts" />}
+         && <Modal alert={`${addedName} added to the Contacts`} />}
         {showProfile
           && (
           <ProfileScreen

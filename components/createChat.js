@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 
 // import getData from './getRequest';
 import Modal from './modal';
+import ProfileScreen from './otherUsersProfile';
 
 export default class CreateChatScreen extends Component
 {
@@ -23,49 +24,15 @@ export default class CreateChatScreen extends Component
       showChatCreated: false,
       addedName: '',
       alreadyAdded: false,
+      searchResults: '',
+      showProfile: false,
+      profileUserId: '',
+      searchPressed: false,
+      searchTerm: '',
+      offset: 0,
+      increment: 10,
     };
   }
-
-  componentDidMount()
-  {
-    const { route } = this.props;
-    const { params } = route;
-    // const { contactsData } = params;
-    const { test } = params;
-
-    console.log(params);
-    console.log(`Contacts data coming from contacts scree: ${test}`);
-  }
-
-  getContactsData = async () =>
-  {
-    console.log('Contacts request sent to api');
-    return fetch(
-      'http://localhost:3333/api/1.0.0/contacts',
-      {
-        method: 'get',
-        headers:
-            {
-              'Content-Type': 'application/json',
-              'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
-            },
-      },
-    )
-
-      .then((response) => response.json())
-      .then((responseJson) =>
-      {
-        console.log('Contacts Data returned from api');
-        console.log(responseJson);
-        this.setState({
-          usersData: responseJson,
-        });
-      })
-      .catch((error) =>
-      {
-        console.log(error);
-      });
-  };
 
   createChat = async () =>
   {
@@ -98,7 +65,6 @@ export default class CreateChatScreen extends Component
         {
           console.log(`${chatName} Created`);
           params.getData();
-          this.getContactsData();
           return response.json();
         }
 
@@ -107,9 +73,43 @@ export default class CreateChatScreen extends Component
       .then(async (resJson) =>
       {
         console.log(`New created chat id: ${resJson.chat_id}`);
-        this.setState({ chatId: resJson.chat_id, submitted: true });
+        this.setState({
+          chatId: resJson.chat_id,
+          submitted: true,
+        });
       })
 
+      .catch((error) =>
+      {
+        console.log(error);
+      });
+  };
+
+  searchUsers = async (searchTerm, location) =>
+  {
+    const { offset, increment } = this.state;
+    console.log('All search request sent to api');
+    return fetch(
+      `http://localhost:3333/api/1.0.0/search?q=${searchTerm}&search_in=${location}&limit=${increment}&offset=${offset}`,
+      {
+        method: 'get',
+        headers:
+            {
+              'Content-Type': 'application/json',
+              'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
+            },
+      },
+    )
+      .then((response) => response.json())
+      .then((responseJson) =>
+      {
+        console.log('Data returned from api');
+        console.log(responseJson);
+        this.setState({
+          usersData: responseJson,
+          searchResults: responseJson.length,
+        });
+      })
       .catch((error) =>
       {
         console.log(error);
@@ -166,14 +166,15 @@ export default class CreateChatScreen extends Component
   render()
   {
     const {
-      chatName, chatId, submitted, usersData, userAddedToChat,
-      showChatCreated, addedName, alreadyAdded,
+      chatName, submitted, usersData, userAddedToChat, searchResults,
+      showChatCreated, addedName, alreadyAdded, showProfile, profileUserId,
+      searchPressed, searchTerm, offset, increment, chatId,
     } = this.state;
     const { navigation } = this.props;
     const { navigate } = navigation;
 
     return (
-      <View>
+      <View style={styles.container}>
         <Text>Create New Chat</Text>
         <TextInput
           style={{ height: 40, borderWidth: 1, width: '100%' }}
@@ -182,7 +183,7 @@ export default class CreateChatScreen extends Component
           defaultValue={chatName}
         />
 
-        {chatName
+        {chatName && !submitted
             && (
             <Button
               title="Create"
@@ -202,37 +203,104 @@ export default class CreateChatScreen extends Component
           submitted
           && (
           <View>
-            <Text>Add Users to Chat:</Text>
+            <View>
+              <Text>Add Users to Chat:</Text>
+              <View>
+                <Text>Name, Email or UserID</Text>
+                <TextInput
+                  style={{ height: 40, borderWidth: 1, width: '100%' }}
+                  placeholder="Enter..."
+                  onChangeText={(sT) => this.setState({ searchTerm: sT })}
+                  defaultValue={searchTerm}
+                />
+              </View>
+
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity onPress={() =>
+                {
+                  this.searchUsers(searchTerm, 'contacts');
+                  this.setState({ searchPressed: true });
+                }}
+                >
+                  <View style={styles.button}>
+                    <Text style={styles.buttonText}>Search</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {searchResults === 0
+              ? <Text>No Results...</Text>
+              : null}
+
             <FlatList
+              styles={styles.searchList}
               data={usersData}
               renderItem={({ item }) => (
-                <View style={styles.container}>
-                  <View>
-                    <TouchableOpacity onPress={() => console.log('Profile screen')}>
-                      <View>
-                        <Text>
-                          {item.first_name}
-                          {' '}
-                          {item.last_name}
-                        </Text>
-                      </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() =>
-                    {
-                      this.addToChat(chatId, item.user_id);
-                      this.setState({ addedName: `${item.first_name} ${item.last_name}` });
-                    }}
-                    >
-                      <View style={styles.button}>
-                        <Text style={styles.buttonText}>Add to Chat</Text>
-                      </View>
-                    </TouchableOpacity>
-                  </View>
+                <View style={styles.searchContainer}>
+                  <TouchableOpacity onPress={() =>
+                  {
+                    this.setState({
+                      showProfile: true,
+                      profileUserId: item.user_id,
+                    });
+                  }}
+                  >
+                    <Text style={styles.searchName}>
+                      {item.given_name}
+                      {' '}
+                      {item.family_name}
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() =>
+                  {
+                    this.addToChat(chatId, item.user_id);
+                    this.setState({ addedName: `${item.given_name} ${item.family_name}` });
+                  }}
+                  >
+                    <View style={styles.button}>
+                      <Text style={styles.buttonText}>Add To Chat</Text>
+                    </View>
+                  </TouchableOpacity>
                 </View>
               )}
-                // eslint-disable-next-line camelcase
+            // eslint-disable-next-line camelcase
               keyExtractor={({ user_id }) => user_id}
             />
+            {searchPressed
+        && (
+        <View>
+          <Text>
+            Page Number:
+            {(offset + increment) / increment}
+          </Text>
+          <Button
+            title="next page"
+            onPress={() =>
+            {
+              this.setState({ offset: (offset + increment) }, () =>
+              {
+                console.log(offset);
+                this.searchUsers(searchTerm, 'contacts');
+              });
+            }}
+          />
+          {offset > 0
+          && (
+          <Button
+            title="previous page"
+            onPress={() =>
+            {
+              this.setState({ offset: (offset - increment) }, () =>
+              {
+                console.log(offset);
+                this.searchUsers(searchTerm, 'contacts');
+              });
+            }}
+          />
+          )}
+        </View>
+        )}
             <Button
               title="Done"
               onPress={() =>
@@ -244,6 +312,13 @@ export default class CreateChatScreen extends Component
           )
         }
 
+        {showProfile
+          && (
+          <ProfileScreen
+            userID={profileUserId}
+            onClose={() => this.setState({ showProfile: false })}
+          />
+          ) }
         {userAddedToChat
          && <Modal alert={`${addedName} was added to the Chat`} />}
         {showChatCreated
@@ -270,28 +345,41 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     alignItems: 'center',
-    justifyContent: 'center',
   },
-  title: {
-
+  searchList: {
+    flex: 1,
+    backgroundColor: '1a1a1as',
+    paddingHorizontal: 10,
   },
-  info: {
-
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+    marginTop: 10,
   },
-  nav: {
-    marginBottom: 5,
+  searchName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
   button: {
-    marginBottom: 30,
-    backgroundColor: '#2196F3',
-  },
-  disableButton: {
-    marginBottom: 30,
-    backgroundColor: 'gray',
+    backgroundColor: '#ff6347',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginHorizontal: 5,
+    alignItems: 'center',
   },
   buttonText: {
-    textAlign: 'center',
-    padding: 20,
-    color: 'white',
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
