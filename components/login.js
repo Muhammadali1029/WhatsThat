@@ -22,6 +22,7 @@ export default class LoginScreen extends Component
       error: '',
       submitted: false,
       loginSuccessful: false,
+      noAccount: false,
     };
 
     this.onPressButton = this.onPressButton.bind(this);
@@ -103,6 +104,11 @@ export default class LoginScreen extends Component
         }
         if (response.status === 400)
         {
+          this.setState({ noAccount: true });
+          setTimeout(() =>
+          {
+            this.setState({ noAccount: false });
+          }, 2000);
           throw 'Account does not exist';
         }
         else
@@ -147,7 +153,7 @@ export default class LoginScreen extends Component
   render()
   {
     const {
-      email, password, submitted, error, loginSuccessful,
+      email, password, submitted, error, loginSuccessful, noAccount,
     } = this.state;
     const { navigation } = this.props;
 
@@ -203,6 +209,8 @@ export default class LoginScreen extends Component
 
         {loginSuccessful
         && <Modal alert="Login Successful" />}
+        {noAccount
+         && <Modal alert="Account Does Not Exist" />}
       </View>
     );
   }
