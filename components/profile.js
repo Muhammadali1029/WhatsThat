@@ -136,7 +136,7 @@ export default class ProfileScreen extends Component
               <Text>Profile Details</Text>
               <DisplayImage userID={userId} />
               <Button
-                title="Take Photo"
+                title="Update Photo"
                 onPress={() => this.setState({ takePhoto: true })}
               />
               <View>
@@ -158,7 +158,7 @@ export default class ProfileScreen extends Component
               />
 
               <View style={styles.logoutbtn}>
-                <TouchableOpacity onPress={this.logout}>
+                <TouchableOpacity onPress={() => this.logout()}>
                   <View style={styles.button}>
                     <Text style={styles.buttonText}>Logout</Text>
                   </View>
