@@ -4,13 +4,33 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5F5F5',
-    paddingHorizontal: 10,
     paddingTop: 20,
   },
-  headerText: {
+  headerContainer: {
+    borderBottomWidth: 3,
+    borderBottomColor: '#ddd',
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+  },
+  titleContainer: {
+    marginBottom: 10,
+  },
+  titleText: {
     fontSize: 35,
-    fontWeight: '800',
+    fontWeight: '900',
     color: 'black',
+  },
+  headerButtonsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  headerButtons: {
+    color: '#0077be',
+    fontSize: 18,
+    fontWeight: '600',
+    borderBottomWidth: 2,
+    borderBottomColor: '#0077be',
   },
   backgroundOveride:
     {

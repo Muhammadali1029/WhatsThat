@@ -3,7 +3,7 @@ import {
   View, Text, TouchableOpacity, StyleSheet, ActivityIndicator,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Button, ScrollView } from 'react-native-web';
+import { FlatList } from 'react-native-web';
 import PropTypes from 'prop-types';
 
 import globalStyles from './globalStyleSheet';
@@ -89,36 +89,52 @@ export default class ChatsScreen extends Component
 
     return (
       <View style={globalStyles.container}>
-        <View>
-          <Text styles={globalStyles.headerText}>Chats</Text>
-        </View>
-        <View>
-          <Button
-            title="New Chat"
-            onPress={() => navigation.navigate(
+
+        <View style={globalStyles.headerContainer}>
+          <View style={globalStyles.titleContainer}>
+            <Text style={globalStyles.titleText}>Chats</Text>
+          </View>
+
+          <View style={styles.headerButtonsContainer}>
+            <TouchableOpacity onPress={() => navigation.navigate(
               'createChatScreen',
               {
                 getData: this.getData,
               },
             )}
+            >
+              <Text style={[
+                globalStyles.headerButtons, styles.headerButtons,
+              ]}
+              >
+                Create New Chat
+
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={styles.chatsList}>
+          <FlatList
+            data={allChatsData}
+            renderItem={({ item }) => (
+              <View style={styles.chats}>
+                <TouchableOpacity onPress={() => navigation.navigate('singleChatScreenNav', { screen: 'singleChatScreen', params: { chatItem: item } })}>
+                  <Text style={styles.chatName}>{item.name}</Text>
+                  {/* <Text>
+                    {item.last_message.author.first_name}
+                    {' '}
+                    {item.last_message.author.last_name}
+                    :
+                    {item.last_message.message}
+                  </Text> */}
+                </TouchableOpacity>
+              </View>
+            )}
+          // eslint-disable-next-line camelcase
+            keyExtractor={({ chat_id }) => chat_id}
           />
         </View>
-        <ScrollView style={{ flex: 1 }}>
-          {allChatsData.reverse().map((item) => (
-            <View key={item.chat_id}>
-              <TouchableOpacity onPress={() => navigation.navigate('singleChatScreenNav', { screen: 'singleChatScreen', params: { chatItem: item } })}>
-                <Text style={styles.chats}>{item.name}</Text>
-                {/* <Text>
-                  {item.last_message.author.first_name}
-                  {' '}
-                  {item.last_message.author.last_name}
-                  :
-                  {item.last_message.message}
-                </Text> */}
-              </TouchableOpacity>
-            </View>
-          ))}
-        </ScrollView>
       </View>
     );
   }
@@ -132,11 +148,15 @@ ChatsScreen.propTypes = {
 };
 
 const styles = StyleSheet.create({
-  // container: {
-  //   flex: 1,
-  //   backgroundColor: '#fff',
-  //   padding: 10,
-  // },
+  headerButtons: {
+    width: '39%',
+  },
+  chatsList: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+  },
   chats: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -146,6 +166,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: '#F2F2F2',
     width: '100%',
-    borderWidth: 1,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  chatName: {
+    fontSize: 15,
+    fontWeight: '700',
   },
 });
