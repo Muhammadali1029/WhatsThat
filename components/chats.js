@@ -5,6 +5,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FlatList } from 'react-native-web';
 import PropTypes from 'prop-types';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import globalStyles from './globalStyleSheet';
 
@@ -118,17 +119,24 @@ export default class ChatsScreen extends Component
           <FlatList
             data={allChatsData}
             renderItem={({ item }) => (
-              <View style={styles.chats}>
-                <TouchableOpacity onPress={() => navigation.navigate('singleChatScreenNav', { screen: 'singleChatScreen', params: { chatItem: item } })}>
-                  <Text style={styles.chatName}>{item.name}</Text>
-                  {/* <Text>
+              <View style={styles.chatsContainer}>
+
+                <View style={styles.icon}>
+                  <Icon name="chatbubble-ellipses-outline" size={30} color="white" />
+                </View>
+
+                <View style={styles.chats}>
+                  <TouchableOpacity onPress={() => navigation.navigate('singleChatScreenNav', { screen: 'singleChatScreen', params: { chatItem: item } })}>
+                    <Text style={styles.chatName}>{item.name}</Text>
+                    {/* <Text>
                     {item.last_message.author.first_name}
                     {' '}
                     {item.last_message.author.last_name}
                     :
                     {item.last_message.message}
                   </Text> */}
-                </TouchableOpacity>
+                  </TouchableOpacity>
+                </View>
               </View>
             )}
           // eslint-disable-next-line camelcase
@@ -151,26 +159,36 @@ const styles = StyleSheet.create({
   headerButtons: {
     width: '39%',
   },
-  chatsList: {
+  chatsContainer: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  chatsList: {
+    flex: 1,
     paddingHorizontal: 10,
   },
   chats: {
+    flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginVertical: 10,
-    padding: 10,
-    borderRadius: 5,
+    alignItems: 'flex-end',
+    padding: 20,
     backgroundColor: '#F2F2F2',
-    width: '100%',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
   },
   chatName: {
-    fontSize: 15,
-    fontWeight: '700',
+    fontSize: 20,
+    fontWeight: '800',
+  },
+  icon: {
+    marginTop: 15,
+    marginRight: 10,
+    alignSelf: 'flex-start',
+    padding: 5,
+    borderWidth: 1,
+    borderRadius: 360,
+    borderColor: 'black',
+    backgroundColor: '#7BC74D',
   },
 });
