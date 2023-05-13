@@ -5,6 +5,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Button, FlatList } from 'react-native-web';
 import PropTypes from 'prop-types';
+import globalStyles from './globalStyleSheet';
 
 export default class SingleChatScreen extends Component
 {
@@ -252,119 +253,124 @@ export default class SingleChatScreen extends Component
     const { navigate } = navigation;
 
     return (
-      <View style={styles.container}>
-        <TouchableOpacity onPress={() =>
-        {
-          navigate('chatInfoScreen', { chatItem });
-          console.log({ chatData });
-        }}
-        >
-          <Text style={styles.headers}>{chatData.name}</Text>
-        </TouchableOpacity>
-        <FlatList
-          data={chatData.messages}
-          inverted
-          renderItem={({ item }) => (
-            <View
-              style={[
-                styles.messageContainer,
-                item.author.user_id === userId
-                  ? styles.myMessageContainer
-                  : styles.otherMessageContainer,
-              ]}
-            >
-              <TouchableOpacity
-                onLongPress={async () =>
-                {
-                  console.log(
-                    item.message_id,
-                    `Message Creator ID: ${chatItem.creator.user_id}`,
-                  );
-                  this.setState({
-                    messageId: item.message_id,
-                    selectedMessage: item.message,
-                  });
-                  if (item.author.user_id === userId)
-                  {
-                    this.setState({ showModal: true });
-                  }
-                }}
+      <View style={globalStyles.container}>
+
+        <View style={globalStyles.headerContainer}>
+          <TouchableOpacity onPress={() =>
+          {
+            navigate('chatInfoScreen', { chatItem });
+            console.log({ chatData });
+          }}
+          >
+            <Text style={globalStyles.titleText}>{chatData.name}</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.body}>
+          <FlatList
+            data={chatData.messages}
+            inverted
+            renderItem={({ item }) => (
+              <View
+                style={[
+                  styles.messageContainer,
+                  item.author.user_id === userId
+                    ? styles.myMessageContainer
+                    : styles.otherMessageContainer,
+                ]}
               >
-                <Text
-                  style={[
-                    styles.messageText,
-                    item.author.user_id === userId
-                      ? styles.myMessageText
-                      : styles.otherMessageText,
-                  ]}
+                <TouchableOpacity
+                  onLongPress={async () =>
+                  {
+                    console.log(
+                      item.message_id,
+                      `Message Creator ID: ${chatItem.creator.user_id}`,
+                    );
+                    this.setState({
+                      messageId: item.message_id,
+                      selectedMessage: item.message,
+                    });
+                    if (item.author.user_id === userId)
+                    {
+                      this.setState({ showModal: true });
+                    }
+                  }}
                 >
-                  {item.author.user_id === userId
-                    ? item.message
-                    : `${item.author.first_name} ${item.author.last_name}: ${item.message}`}
-                </Text>
-              </TouchableOpacity>
-              <Modal transparent visible={showModal}>
-                <View style={styles.modalBackground}>
-                  <View style={styles.modal}>
-                    <View>
-                      <Text>Edit Message</Text>
-                      <TextInput
-                        style={styles.messageBox}
-                        placeholder={selectedMessage}
-                        onChangeText={(editMessage) => this.setState({ editMessage })}
-                      />
+                  <Text
+                    style={[
+                      styles.messageText,
+                      item.author.user_id === userId
+                        ? styles.myMessageText
+                        : styles.otherMessageText,
+                    ]}
+                  >
+                    {item.author.user_id === userId
+                      ? item.message
+                      : `${item.author.first_name} ${item.author.last_name}: ${item.message}`}
+                  </Text>
+                </TouchableOpacity>
+                <Modal transparent visible={showModal}>
+                  <View style={styles.modalBackground}>
+                    <View style={styles.modal}>
+                      <View>
+                        <Text>Edit Message</Text>
+                        <TextInput
+                          style={styles.messageBox}
+                          placeholder={selectedMessage}
+                          onChangeText={(editMessage) => this.setState({ editMessage })}
+                        />
+
+                        <Button
+                          title="Confirm Edit"
+                          onPress={() =>
+                          {
+                            this.editMessage();
+                            console.log(`Edited Message ID: ${messageId}`);
+                            this.setState({ showModal: false });
+                          }}
+                        />
+                      </View>
 
                       <Button
-                        title="Confirm Edit"
+                        title="Delete"
                         onPress={() =>
                         {
-                          this.editMessage();
-                          console.log(`Edited Message ID: ${messageId}`);
+                          this.deleteMessage();
+                          console.log(`Deleted Message ID: ${messageId}`);
                           this.setState({ showModal: false });
                         }}
                       />
+
+                      <Button
+                        title="Cancel"
+                        onPress={() => this.setState({ showModal: false })}
+                      />
                     </View>
-
-                    <Button
-                      title="Delete"
-                      onPress={() =>
-                      {
-                        this.deleteMessage();
-                        console.log(`Deleted Message ID: ${messageId}`);
-                        this.setState({ showModal: false });
-                      }}
-                    />
-
-                    <Button
-                      title="Cancel"
-                      onPress={() => this.setState({ showModal: false })}
-                    />
                   </View>
-                </View>
-              </Modal>
-            </View>
-          )}
-  // eslint-disable-next-line camelcase
-          keyExtractor={({ message_id }) => message_id}
-        />
-
-        <View style={styles.sendMessageContainer}>
-          <TextInput
-            style={styles.messageBox}
-            onChangeText={(nM) => this.setState({ newMessage: nM })}
-            defaultValue={newMessage}
+                </Modal>
+              </View>
+            )}
+          // eslint-disable-next-line camelcase
+            keyExtractor={({ message_id }) => message_id}
           />
-          <Button
-            style={styles.button}
-            title="Send"
-            onPress={() =>
+
+          <View style={styles.sendMessageContainer}>
+            <TextInput
+              style={styles.messageBox}
+              onChangeText={(nM) => this.setState({ newMessage: nM })}
+              defaultValue={newMessage}
+            />
+            <TouchableOpacity onPress={() =>
             {
               if (newMessage !== '')
               {
                 this.sendMessage(newMessage);
               }
             }}
-          />
+            >
+              <Text>Send</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     );
@@ -383,21 +389,9 @@ SingleChatScreen.propTypes = {
 };
 
 const styles = StyleSheet.create({
-  headers:
-    {
-      fontSize: 20,
-      marginBottom: 20,
-      borderWidth: 2,
-    },
-  container:
-    {
-      flex: 1,
-      // justifyContent: 'space-between',
-    },
-  chats:
-    {
-
-    },
+  body: {
+    flex: 1,
+  },
   messageContainer: {
     paddingHorizontal: 16,
     paddingVertical: 8,
@@ -428,7 +422,7 @@ const styles = StyleSheet.create({
     {
       height: 40,
       borderWidth: 1,
-      width: '60%',
+      width: '80%',
       marginTop: 10,
     },
   sendMessageContainer:

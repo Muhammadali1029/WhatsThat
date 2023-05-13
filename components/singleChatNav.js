@@ -18,7 +18,7 @@ export default class SingleChatScreenStack extends Component
           initialRouteName: 'singleChatScreen',
         }}
       >
-        <SingleChatStack.Screen name="singleChatScreen" component={SingleChatScreen} />
+        <SingleChatStack.Screen name="singleChatScreen" component={SingleChatScreen} options={{ tabBarVisible: false }} />
         <SingleChatStack.Screen name="chatInfoScreen" component={ChatInfoScreen} />
       </SingleChatStack.Navigator>
     );

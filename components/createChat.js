@@ -37,8 +37,6 @@ export default class CreateChatScreen extends Component
   createChat = async () =>
   {
     const { chatName } = this.state;
-    const { route } = this.props;
-    const { params } = route;
 
     this.setState({ submitted: true });
 
@@ -64,7 +62,6 @@ export default class CreateChatScreen extends Component
         if (response.status === 201)
         {
           console.log(`${chatName} Created`);
-          params.getData();
           return response.json();
         }
 
@@ -331,10 +328,6 @@ export default class CreateChatScreen extends Component
 }
 
 CreateChatScreen.propTypes = {
-  route: PropTypes.shape({
-    // eslint-disable-next-line react/forbid-prop-types
-    params: PropTypes.object.isRequired,
-  }).isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,

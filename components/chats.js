@@ -97,13 +97,7 @@ export default class ChatsScreen extends Component
           </View>
 
           <View style={styles.headerButtonsContainer}>
-            <TouchableOpacity onPress={() => navigation.navigate(
-              'createChatScreen',
-              {
-                getData: this.getData,
-              },
-            )}
-            >
+            <TouchableOpacity onPress={() => navigation.navigate('createChatScreen')}>
               <Text style={[
                 globalStyles.headerButtons, styles.headerButtons,
               ]}
