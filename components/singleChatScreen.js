@@ -266,7 +266,7 @@ export default class SingleChatScreen extends Component
           </TouchableOpacity>
         </View>
 
-        <View style={styles.body}>
+        <View style={styles.messagesBody}>
           <FlatList
             data={chatData.messages}
             inverted
@@ -353,13 +353,15 @@ export default class SingleChatScreen extends Component
           // eslint-disable-next-line camelcase
             keyExtractor={({ message_id }) => message_id}
           />
-
-          <View style={styles.sendMessageContainer}>
+        </View>
+        <View style={styles.sendMessageContainer}>
+          <View style={styles.messageBox}>
             <TextInput
-              style={styles.messageBox}
               onChangeText={(nM) => this.setState({ newMessage: nM })}
               defaultValue={newMessage}
             />
+          </View>
+          <View style={styles.sendMessage}>
             <TouchableOpacity onPress={() =>
             {
               if (newMessage !== '')
@@ -372,6 +374,7 @@ export default class SingleChatScreen extends Component
             </TouchableOpacity>
           </View>
         </View>
+
       </View>
     );
   }
@@ -389,8 +392,10 @@ SingleChatScreen.propTypes = {
 };
 
 const styles = StyleSheet.create({
-  body: {
+  messagesBody: {
     flex: 1,
+    borderWidth: 2,
+    borderColor: 'green',
   },
   messageContainer: {
     paddingHorizontal: 16,
@@ -418,21 +423,25 @@ const styles = StyleSheet.create({
   otherMessageText: {
     color: '#333',
   },
-  messageBox:
-    {
-      height: 40,
-      borderWidth: 1,
-      width: '80%',
-      marginTop: 10,
-    },
   sendMessageContainer:
     {
       flewDirection: 'row',
+      borderWidth: 3,
     },
-  button:
+  messageBox:
     {
-      width: '20%',
+      flex: 1,
+      padding: 10,
+      height: 40,
+      borderWidth: 1,
+      borderRadius: 100,
+      marginTop: 10,
     },
+  sendMessage: {
+    width: '10%',
+    borderWidth: 2,
+    borderColor: 'red',
+  },
   modalBackground:
     {
       flex: 1,
