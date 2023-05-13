@@ -117,6 +117,7 @@ export default class ChatsScreen extends Component
 
         <View style={styles.chatsList}>
           <FlatList
+            inverted
             data={allChatsData}
             renderItem={({ item }) => (
               <View style={styles.chatsContainer}>
@@ -126,15 +127,33 @@ export default class ChatsScreen extends Component
                 </View>
 
                 <View style={styles.chats}>
-                  <TouchableOpacity onPress={() => navigation.navigate('singleChatScreenNav', { screen: 'singleChatScreen', params: { chatItem: item } })}>
+                  <TouchableOpacity
+                    style={{ flex: 1 }}
+                    onPress={() => navigation.navigate('singleChatScreenNav', { screen: 'singleChatScreen', params: { chatItem: item } })}
+                  >
                     <Text style={styles.chatName}>{item.name}</Text>
-                    {/* <Text>
-                    {item.last_message.author.first_name}
-                    {' '}
-                    {item.last_message.author.last_name}
-                    :
-                    {item.last_message.message}
-                  </Text> */}
+                    <View style={styles.lastMessage}>
+                      <Text style={styles.lastMesText}>
+                        {item.last_message
+                        && item.last_message.author
+                        && item.last_message.author.first_name}
+                        {' '}
+                        {item.last_message
+                        && item.last_message.author
+                        && item.last_message.author.last_name }
+                        :
+                        {item.last_message
+                        && item.last_message.message}
+                      </Text>
+                      <Text style={styles.timeText}>
+                        {item.last_message && item.last_message.timestamp
+                          && new Date(item.last_message.timestamp * 1000).toLocaleString('en-US', {
+                            hour: 'numeric',
+                            minute: 'numeric',
+                            hour12: true,
+                          })}
+                      </Text>
+                    </View>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -172,7 +191,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'flex-end',
-    padding: 20,
+    padding: 15,
     backgroundColor: '#F2F2F2',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
@@ -190,5 +209,18 @@ const styles = StyleSheet.create({
     borderRadius: 360,
     borderColor: 'black',
     backgroundColor: '#7BC74D',
+  },
+  lastMessage: {
+    flex: 1,
+    flexDirection: 'row',
+    marginTop: 10,
+  },
+  lastMesText: {
+    width: '80%',
+    fontWeight: '400',
+  },
+  timeText: {
+    width: '20%',
+    fontWeight: '400',
   },
 });

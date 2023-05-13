@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 
 import Camera from './camera';
 import DisplayImage from './displayPhoto';
+import globalStyles from './globalStyleSheet';
 
 export default class ProfileScreen extends Component
 {
@@ -132,9 +133,17 @@ export default class ProfileScreen extends Component
               />
             </View>
           ) : (
-            <View>
-              <Text>Profile Details</Text>
-              <DisplayImage userID={userId} />
+            <View style={globalStyles.container}>
+
+              <View style={globalStyles.headerContainer}>
+                <View style={globalStyles.titleContainer}>
+                  <Text style={globalStyles.titleText}>Profile</Text>
+                </View>
+              </View>
+
+              <View style={styles.image}>
+                <DisplayImage userID={userId} />
+              </View>
               <Button
                 title="Update Photo"
                 onPress={() => this.setState({ takePhoto: true })}
@@ -183,14 +192,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-
-  },
-  info: {
-
   },
   nav: {
     marginBottom: 5,
@@ -213,5 +214,10 @@ const styles = StyleSheet.create({
   camera: {
     flex: 1,
     width: '100%',
+  },
+  image: {
+    borderWidth: 2,
+    alignItems: 'center',
+    borderRadius: 360,
   },
 });
