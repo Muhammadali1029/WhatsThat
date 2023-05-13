@@ -5,7 +5,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5F5F5',
     paddingTop: 20,
-    borderWidth: 2,
   },
   headerContainer: {
     borderBottomWidth: 3,

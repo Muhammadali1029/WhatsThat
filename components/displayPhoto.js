@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Image, Text, ActivityIndicator,
+  View, Image, Text, ActivityIndicator, StyleSheet,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
@@ -70,10 +70,7 @@ export default class DisplayImage extends Component
             source={{
               uri: photo,
             }}
-            style={{
-              width: 100,
-              height: 100,
-            }}
+            style={styles.image}
           />
         </View>
       );
@@ -85,3 +82,16 @@ export default class DisplayImage extends Component
 DisplayImage.propTypes = {
   userID: PropTypes.number.isRequired,
 };
+
+const styles = StyleSheet.create({
+  image: {
+    borderWidth: 10,
+    borderColor: '#CCCCCC',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 100,
+    height: 150,
+    width: 150,
+    marginVertical: 20,
+  },
+});

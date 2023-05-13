@@ -122,7 +122,7 @@ export default class ProfileScreen extends Component
     }
 
     return (
-      <View style={styles.container}>
+      <View style={globalStyles.container}>
         {takePhoto
           ? (
             <View style={styles.camera}>
@@ -133,44 +133,53 @@ export default class ProfileScreen extends Component
               />
             </View>
           ) : (
-            <View style={globalStyles.container}>
-
+            <View style={styles.profileContainer}>
               <View style={globalStyles.headerContainer}>
                 <View style={globalStyles.titleContainer}>
                   <Text style={globalStyles.titleText}>Profile</Text>
                 </View>
+
+                <View style={globalStyles.headerButtonsContainer}>
+                  <TouchableOpacity onPress={() => this.setState({ takePhoto: true })}>
+                    <Text style={[
+                      globalStyles.headerButtons, styles.headerButtons,
+                    ]}
+                    >
+                      Update Photo
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity onPress={() => navigation.navigate('editProfile', { profileData })}>
+                    <Text style={[
+                      globalStyles.headerButtons, styles.headerButtons,
+                    ]}
+                    >
+                      Edit Details
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
 
-              <View style={styles.image}>
-                <DisplayImage userID={userId} />
-              </View>
-              <Button
-                title="Update Photo"
-                onPress={() => this.setState({ takePhoto: true })}
-              />
-              <View>
-                <Text>
-                  Name:
-                  {profileData.first_name}
-                  {' '}
-                  {profileData.last_name}
-                </Text>
-                <Text>
-                  Email:
-                  {profileData.email}
-                </Text>
+              <View style={styles.detailsContainer}>
+                <View style={styles.image}>
+                  <DisplayImage userID={userId} />
+                </View>
+
+                <View style={styles.detailsTextContainer}>
+                  <Text style={styles.detailsText}>
+                    {profileData.first_name}
+                    {' '}
+                    {profileData.last_name}
+                  </Text>
+                  <Text style={styles.detailsText}>
+                    {profileData.email}
+                  </Text>
+                </View>
               </View>
 
-              <Button
-                title="Edit Profile Details"
-                onPress={() => navigation.navigate('editProfile', { profileData })}
-              />
-
-              <View style={styles.logoutbtn}>
+              <View style={styles.logoutButtonContainer}>
                 <TouchableOpacity onPress={() => this.logout()}>
-                  <View style={styles.button}>
-                    <Text style={styles.buttonText}>Logout</Text>
-                  </View>
+                  <Text style={[globalStyles.headerButtons, styles.logoutButton]}>Logout?</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -190,34 +199,37 @@ ProfileScreen.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
+    alignItems: 'center',
+  },
+  profileContainer: {
     flex: 1,
-    width: '100%',
   },
-  nav: {
-    marginBottom: 5,
-  },
-  buttonContainer: {
-    alignSelf: 'flex-end',
-    padding: 5,
-    margin: 5,
-    backgroundColor: 'steelblue',
-  },
-  button: {
-    marginBottom: 30,
-    backgroundColor: '#2196F3',
-  },
-  buttonText: {
-    textAlign: 'center',
-    padding: 20,
-    color: 'white',
+  detailsContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   camera: {
     flex: 1,
     width: '100%',
   },
   image: {
-    borderWidth: 2,
     alignItems: 'center',
-    borderRadius: 360,
+  },
+  detailsTextContainer: {
+    marginTop: 15,
+    alignItems: 'center',
+  },
+  detailsText: {
+    fontSize: 20,
+    fontWeight: '700',
+    padding: 5,
+  },
+  logoutButtonContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  logoutButton: {
+    color: 'black',
   },
 });
