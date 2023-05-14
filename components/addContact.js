@@ -130,13 +130,20 @@ export default class AddContactsScreen extends Component
     }
 
     return (
-      <View style={styles.container}>
-        <View>
-          <Text>Add a user to Contacts</Text>
-          <View>
-            <Text>Name, Email or UserID</Text>
+      <View style={globalStyles.container}>
+        <View style={globalStyles.headerContainer}>
+          <View style={globalStyles.titleContainer}>
+            <Text style={globalStyles.titleText}>Add to Contacts</Text>
+          </View>
+        </View>
+
+        <View style={styles.searchBarContainer}>
+          <View style={styles.searchbox}>
+            <Text style={styles.text}>Name, Email or UserID</Text>
             <TextInput
-              style={{ height: 40, borderWidth: 1, width: '100%' }}
+              style={{
+                height: 40, borderWidth: 1, width: '100%', borderRadius: 100,
+              }}
               placeholder="Enter..."
               onChangeText={(sT) => this.setState({ searchTerm: sT })}
               defaultValue={searchTerm}
@@ -150,7 +157,7 @@ export default class AddContactsScreen extends Component
               this.setState({ searchPressed: true });
             }}
             >
-              <View style={styles.button}>
+              <View style={styles.bottomButton}>
                 <Text style={styles.buttonText}>Search</Text>
               </View>
             </TouchableOpacity>
@@ -197,42 +204,49 @@ export default class AddContactsScreen extends Component
         />
         {searchPressed
         && (
-        <View>
+
+        <View style={styles.bottmButtonsContainer}>
           <Text>
             Page Number:
             {(offset + increment) / increment}
           </Text>
-          <Button
-            title="next page"
-            onPress={() =>
+          <TouchableOpacity onPress={() =>
+          {
+            this.setState({ offset: (offset + increment) }, () =>
             {
-              this.setState({ offset: (offset + increment) }, () =>
-              {
-                console.log(offset);
-                this.searchUsers(searchTerm, 'all');
-              });
-            }}
-          />
+              console.log(offset);
+              this.searchUsers(searchTerm, 'all');
+            });
+          }}
+          >
+            <View style={styles.bottomButton}>
+              <Text style={styles.buttonText}>next page</Text>
+            </View>
+          </TouchableOpacity>
+
           {offset > 0
-          && (
-          <Button
-            title="previous page"
-            onPress={() =>
-            {
-              this.setState({ offset: (offset - increment) }, () =>
-              {
-                console.log(offset);
-                this.searchUsers(searchTerm, 'all');
-              });
-            }}
-          />
-          )}
+        && (
+        <TouchableOpacity onPress={() =>
+        {
+          this.setState({ offset: (offset - increment) }, () =>
+          {
+            console.log(offset);
+            this.searchUsers(searchTerm, 'all');
+          });
+        }}
+        >
+          <View style={styles.bottomButton}>
+            <Text style={styles.buttonText}>previous page</Text>
+          </View>
+        </TouchableOpacity>
+        )}
+          <TouchableOpacity onPress={() => navigation.navigate('contacts')}>
+            <View style={styles.bottomButton}>
+              <Text style={styles.buttonText}>Go Back</Text>
+            </View>
+          </TouchableOpacity>
         </View>
         )}
-        <Button
-          title="Go Back"
-          onPress={() => navigation.navigate('contacts')}
-        />
 
         {showCannotAddYourself
          && <Modal alert="Cannot Add Yourself to Contacts" />}
@@ -260,12 +274,6 @@ AddContactsScreen.propTypes = {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'start',
-  },
   nav: {
     marginBottom: 5,
   },
@@ -273,6 +281,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '1a1a1as',
     paddingHorizontal: 10,
+  },
+  searchBarContainer: {
+    alignItems: 'center',
   },
   searchContainer: {
     flexDirection: 'row',
@@ -282,10 +293,19 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
     marginTop: 10,
+    padding: 10,
+  },
+  searchBox: {
+    flex: 1,
+  },
+  text: {
+    fontSize: 15,
+    fontWeight: '600',
   },
   searchName: {
     fontSize: 18,
     fontWeight: 'bold',
+    marginBottom: 10,
   },
   buttonsContainer: {
     flexDirection: 'row',
@@ -305,29 +325,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  bottmButtonsContainer: {
+    alignItems: 'center',
+  },
+  bottomButton: {
+    backgroundColor: '#0077be',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginHorizontal: 5,
+    alignItems: 'center',
+  },
 });
-
-// searchAllUsers = async (search) =>
-// {
-//     console.log("All search request sent to api")
-//     return fetch("http://localhost:3333/api/1.0.0/search?q=" + search + "&search_in=all",
-//     {
-//         method: 'get',
-//         headers:
-//         {
-//             'Content-Type': 'application/json',
-//             'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
-//         }
-//     })
-//     .then((response) => response.json())
-//     .then((responseJson) =>
-//     {
-//         console.log("Data returned from api");
-//         console.log(responseJson);
-//         this.setState({usersData: responseJson});
-//     })
-//     .catch((error) =>
-//     {
-//         console.log(error);
-//     });
-// }
