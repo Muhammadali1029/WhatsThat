@@ -444,8 +444,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   sendMessage: {
-    // borderWidth: 2,
-    // borderColor: 'red',
     marginLeft: 8,
     alignItems: 'center',
     justifyContent: 'center',

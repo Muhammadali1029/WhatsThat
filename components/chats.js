@@ -103,7 +103,6 @@ export default class ChatsScreen extends Component
               ]}
               >
                 Create New Chat
-
               </Text>
             </TouchableOpacity>
           </View>

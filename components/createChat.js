@@ -3,12 +3,12 @@ import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Button, FlatList } from 'react-native-web';
+import { FlatList } from 'react-native-web';
 import PropTypes from 'prop-types';
 
-// import getData from './getRequest';
 import Modal from './modal';
 import ProfileScreen from './otherUsersProfile';
+import globalStyles from './globalStyleSheet';
 
 export default class CreateChatScreen extends Component
 {
@@ -18,6 +18,7 @@ export default class CreateChatScreen extends Component
     this.state = {
       chatName: '',
       submitted: false,
+      // submitted: true,
       usersData: [],
       chatId: '',
       userAddedToChat: false,
@@ -28,6 +29,7 @@ export default class CreateChatScreen extends Component
       showProfile: false,
       profileUserId: '',
       searchPressed: false,
+      // searchPressed: true,
       searchTerm: '',
       offset: 0,
       increment: 10,
@@ -126,14 +128,10 @@ export default class CreateChatScreen extends Component
   )
     .then(async (response) =>
     {
-      const { route } = this.props;
-      const { params } = route;
-
       console.log('Add to Chat sent to api');
       if (response.status === 200)
       {
         console.log(`User ${userId} added to Chat`);
-        params.getData();
         this.setState({ userAddedToChat: true });
         setTimeout(() =>
         {
@@ -171,20 +169,25 @@ export default class CreateChatScreen extends Component
     const { navigate } = navigation;
 
     return (
-      <View style={styles.container}>
-        <Text>Create New Chat</Text>
-        <TextInput
-          style={{ height: 40, borderWidth: 1, width: '100%' }}
-          placeholder="Enter Chat Name"
-          onChangeText={(cN) => this.setState({ chatName: cN })}
-          defaultValue={chatName}
-        />
+      <View style={globalStyles.container}>
 
-        {chatName && !submitted
+        <View style={globalStyles.headerContainer}>
+          <View style={globalStyles.titleContainer}>
+            <Text style={globalStyles.titleText}>Create New Chat</Text>
+          </View>
+        </View>
+
+        <View style={styles.body}>
+          <TextInput
+            style={styles.createBox}
+            placeholder="Enter Chat Name"
+            onChangeText={(cN) => this.setState({ chatName: cN })}
+            defaultValue={chatName}
+          />
+
+          {chatName && !submitted
             && (
-            <Button
-              title="Create"
-              onPress={() =>
+              <TouchableOpacity onPress={() =>
               {
                 this.createChat();
                 this.setState({ showChatCreated: true });
@@ -193,17 +196,21 @@ export default class CreateChatScreen extends Component
                   this.setState({ showChatCreated: false });
                 }, 2000);
               }}
-            />
+              >
+                <View style={styles.button}>
+                  <Text style={styles.buttonText}>Create</Text>
+                </View>
+              </TouchableOpacity>
             )}
 
-        {
+          {
           submitted
           && (
-          <View>
-            <View>
-              <Text>Add Users to Chat:</Text>
+          <View style={styles.body}>
+            <View style={styles.searchContainer}>
+              <Text style={styles.text}>Add Users to Chat:</Text>
               <View>
-                <Text>Name, Email or UserID</Text>
+                <Text style={styles.text}>Name, Email or UserID</Text>
                 <TextInput
                   style={{ height: 40, borderWidth: 1, width: '100%' }}
                   placeholder="Enter..."
@@ -227,7 +234,7 @@ export default class CreateChatScreen extends Component
             </View>
 
             {searchResults === 0
-              ? <Text>No Results...</Text>
+              ? <Text style={styles.text}>No Results...</Text>
               : null}
 
             <FlatList
@@ -271,57 +278,65 @@ export default class CreateChatScreen extends Component
             Page Number:
             {(offset + increment) / increment}
           </Text>
-          <Button
-            title="next page"
-            onPress={() =>
+          <TouchableOpacity onPress={() =>
+          {
+            this.setState({ offset: (offset + increment) }, () =>
             {
-              this.setState({ offset: (offset + increment) }, () =>
-              {
-                console.log(offset);
-                this.searchUsers(searchTerm, 'contacts');
-              });
-            }}
-          />
+              console.log(offset);
+              this.searchUsers(searchTerm, 'contacts');
+            });
+          }}
+          >
+            <View style={styles.button}>
+              <Text style={styles.buttonText}>next page</Text>
+            </View>
+          </TouchableOpacity>
+
           {offset > 0
           && (
-          <Button
-            title="previous page"
-            onPress={() =>
+          <TouchableOpacity onPress={() =>
+          {
+            this.setState({ offset: (offset - increment) }, () =>
             {
-              this.setState({ offset: (offset - increment) }, () =>
-              {
-                console.log(offset);
-                this.searchUsers(searchTerm, 'contacts');
-              });
-            }}
-          />
+              console.log(offset);
+              this.searchUsers(searchTerm, 'contacts');
+            });
+          }}
+          >
+            <View style={styles.button}>
+              <Text style={styles.buttonText}>previous page</Text>
+            </View>
+          </TouchableOpacity>
           )}
         </View>
         )}
-            <Button
-              title="Done"
-              onPress={() =>
-              {
-                navigate('chats');
-              }}
-            />
+            <TouchableOpacity onPress={() =>
+            {
+              navigate('chats');
+            }}
+            >
+              <View style={styles.button}>
+                <Text style={styles.buttonText}>Done</Text>
+              </View>
+            </TouchableOpacity>
           </View>
           )
         }
 
-        {showProfile
+          {showProfile
           && (
           <ProfileScreen
             userID={profileUserId}
             onClose={() => this.setState({ showProfile: false })}
           />
           ) }
-        {userAddedToChat
+          {userAddedToChat
          && <Modal alert={`${addedName} was added to the Chat`} />}
-        {showChatCreated
+          {showChatCreated
           && <Modal alert="Chat Created" />}
-        {alreadyAdded
+          {alreadyAdded
           && <Modal alert={`${addedName} is already added to the Chat`} />}
+        </View>
       </View>
     );
   }
@@ -339,13 +354,27 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
   },
+  body: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  createBox: {
+    borderWidth: 1,
+    borderRadius: 100,
+    margin: 15,
+    flex: 0.05,
+  },
+  text: {
+    fontSize: 20,
+    fontWeight: '600',
+  },
   searchList: {
     flex: 1,
     backgroundColor: '1a1a1as',
     paddingHorizontal: 10,
   },
   searchContainer: {
-    flexDirection: 'row',
+    // flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: 10,
@@ -360,10 +389,9 @@ const styles = StyleSheet.create({
   buttonsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-end',
   },
   button: {
-    backgroundColor: '#ff6347',
+    backgroundColor: '#0077be',
     borderRadius: 5,
     paddingHorizontal: 10,
     paddingVertical: 5,
