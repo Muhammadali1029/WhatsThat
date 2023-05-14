@@ -6,6 +6,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FlatList } from 'react-native-web';
 import PropTypes from 'prop-types';
 
+import globalStyles from './globalStyleSheet';
+
 export default class BlockedScreen extends Component
 {
   constructor(props)
@@ -114,14 +116,18 @@ export default class BlockedScreen extends Component
     }
 
     return (
-      <View style={styles.container}>
-        <Text>Blocked Users</Text>
+      <View style={globalStyles.container}>
+        <View style={globalStyles.headerContainer}>
+          <View style={globalStyles.titleContainer}>
+            <Text style={globalStyles.titleText}>Blocked Users</Text>
+          </View>
+        </View>
         <View>
           <FlatList
             data={blockedData}
             renderItem={({ item }) => (
-              <View>
-                <Text>
+              <View style={styles.blockList}>
+                <Text style={styles.text}>
                   {item.first_name}
                   {' '}
                   {item.last_name}
@@ -155,22 +161,33 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  search: {
-
+  blockList: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+    marginTop: 10,
+    padding: 10,
   },
-  info: {
-
+  text: {
+    fontSize: 20,
+    fontWeight: '600',
   },
   nav: {
     marginBottom: 5,
   },
   button: {
-    marginBottom: 30,
-    backgroundColor: '#2196F3',
+    backgroundColor: '#ff6347',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginHorizontal: 5,
   },
   buttonText: {
-    textAlign: 'center',
-    padding: 20,
-    color: 'white',
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
