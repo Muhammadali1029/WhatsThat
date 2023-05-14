@@ -266,112 +266,115 @@ export default class SingleChatScreen extends Component
           </TouchableOpacity>
         </View>
 
-        <View style={styles.messagesBody}>
-          <FlatList
-            data={chatData.messages}
-            inverted
-            renderItem={({ item }) => (
-              <View
-                style={[
-                  styles.messageContainer,
-                  item.author.user_id === userId
-                    ? styles.myMessageContainer
-                    : styles.otherMessageContainer,
-                ]}
-              >
-                <TouchableOpacity
-                  onLongPress={async () =>
-                  {
-                    console.log(
-                      item.message_id,
-                      `Message Creator ID: ${chatItem.creator.user_id}`,
-                    );
-                    this.setState({
-                      messageId: item.message_id,
-                      selectedMessage: item.message,
-                    });
-                    if (item.author.user_id === userId)
-                    {
-                      this.setState({ showModal: true });
-                    }
-                  }}
+        <View style={styles.body}>
+          <View style={styles.messagesBody}>
+            <FlatList
+              data={chatData.messages}
+              inverted
+              renderItem={({ item }) => (
+                <View
+                  style={[
+                    styles.messageContainer,
+                    item.author.user_id === userId
+                      ? styles.myMessageContainer
+                      : styles.otherMessageContainer,
+                  ]}
                 >
-                  <Text
-                    style={[
-                      styles.messageText,
-                      item.author.user_id === userId
-                        ? styles.myMessageText
-                        : styles.otherMessageText,
-                    ]}
+                  <TouchableOpacity
+                    onLongPress={async () =>
+                    {
+                      console.log(
+                        item.message_id,
+                        `Message Creator ID: ${chatItem.creator.user_id}`,
+                      );
+                      this.setState({
+                        messageId: item.message_id,
+                        selectedMessage: item.message,
+                      });
+                      if (item.author.user_id === userId)
+                      {
+                        this.setState({ showModal: true });
+                      }
+                    }}
                   >
-                    {item.author.user_id === userId
-                      ? item.message
-                      : `${item.author.first_name} ${item.author.last_name}: ${item.message}`}
-                  </Text>
-                </TouchableOpacity>
-                <Modal transparent visible={showModal}>
-                  <View style={styles.modalBackground}>
-                    <View style={styles.modal}>
-                      <View>
-                        <Text>Edit Message</Text>
-                        <TextInput
-                          style={styles.messageBox}
-                          placeholder={selectedMessage}
-                          onChangeText={(editMessage) => this.setState({ editMessage })}
-                        />
+                    <Text
+                      style={[
+                        styles.messageText,
+                        item.author.user_id === userId
+                          ? styles.myMessageText
+                          : styles.otherMessageText,
+                      ]}
+                    >
+                      {item.author.user_id === userId
+                        ? item.message
+                        : `${item.author.first_name} ${item.author.last_name}: ${item.message}`}
+                    </Text>
+                  </TouchableOpacity>
+                  <Modal transparent visible={showModal}>
+                    <View style={styles.modalBackground}>
+                      <View style={styles.modal}>
+                        <View>
+                          <Text>Edit Message</Text>
+                          <TextInput
+                            style={styles.messageBox}
+                            placeholder={selectedMessage}
+                            onChangeText={(editMessage) => this.setState({ editMessage })}
+                          />
+
+                          <Button
+                            title="Confirm Edit"
+                            onPress={() =>
+                            {
+                              this.editMessage();
+                              console.log(`Edited Message ID: ${messageId}`);
+                              this.setState({ showModal: false });
+                            }}
+                          />
+                        </View>
 
                         <Button
-                          title="Confirm Edit"
+                          title="Delete"
                           onPress={() =>
                           {
-                            this.editMessage();
-                            console.log(`Edited Message ID: ${messageId}`);
+                            this.deleteMessage();
+                            console.log(`Deleted Message ID: ${messageId}`);
                             this.setState({ showModal: false });
                           }}
                         />
+
+                        <Button
+                          title="Cancel"
+                          onPress={() => this.setState({ showModal: false })}
+                        />
                       </View>
-
-                      <Button
-                        title="Delete"
-                        onPress={() =>
-                        {
-                          this.deleteMessage();
-                          console.log(`Deleted Message ID: ${messageId}`);
-                          this.setState({ showModal: false });
-                        }}
-                      />
-
-                      <Button
-                        title="Cancel"
-                        onPress={() => this.setState({ showModal: false })}
-                      />
                     </View>
-                  </View>
-                </Modal>
-              </View>
-            )}
+                  </Modal>
+                </View>
+              )}
           // eslint-disable-next-line camelcase
-            keyExtractor={({ message_id }) => message_id}
-          />
-        </View>
-        <View style={styles.sendMessageContainer}>
-          <View style={styles.messageBox}>
-            <TextInput
-              onChangeText={(nM) => this.setState({ newMessage: nM })}
-              defaultValue={newMessage}
+              keyExtractor={({ message_id }) => message_id}
             />
           </View>
-          <View style={styles.sendMessage}>
-            <TouchableOpacity onPress={() =>
-            {
-              if (newMessage !== '')
+          <View style={styles.sendMessageContainer}>
+            <View>
+              <TextInput
+                style={styles.messageBox}
+                onChangeText={(nM) => this.setState({ newMessage: nM })}
+                defaultValue={newMessage}
+              />
+            </View>
+            <View style={styles.sendMessage}>
+              <TouchableOpacity onPress={() =>
               {
-                this.sendMessage(newMessage);
-              }
-            }}
-            >
-              <Text>Send</Text>
-            </TouchableOpacity>
+                if (newMessage !== '')
+                {
+                  this.sendMessage(newMessage);
+                }
+              }}
+              >
+                <Text style={styles.sendButton}>Send</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
 
@@ -392,10 +395,11 @@ SingleChatScreen.propTypes = {
 };
 
 const styles = StyleSheet.create({
+  body: {
+    flex: 1,
+  },
   messagesBody: {
     flex: 1,
-    borderWidth: 2,
-    borderColor: 'green',
   },
   messageContainer: {
     paddingHorizontal: 16,
@@ -423,24 +427,36 @@ const styles = StyleSheet.create({
   otherMessageText: {
     color: '#333',
   },
-  sendMessageContainer:
-    {
-      flewDirection: 'row',
-      borderWidth: 3,
-    },
-  messageBox:
-    {
-      flex: 1,
-      padding: 10,
-      height: 40,
-      borderWidth: 1,
-      borderRadius: 100,
-      marginTop: 10,
-    },
+  sendMessageContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: '#ddd',
+  },
+  messageBox: {
+    flex: 1,
+    padding: 10,
+    borderWidth: 1,
+    borderRadius: 100,
+    marginTop: 10,
+    width: '150%',
+    backgroundColor: 'white',
+  },
   sendMessage: {
-    width: '10%',
-    borderWidth: 2,
-    borderColor: 'red',
+    // borderWidth: 2,
+    // borderColor: 'red',
+    marginLeft: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 100,
+    flex: 0.5,
+  },
+  sendButton: {
+    color: '#0077be',
+    fontSize: 20,
+    borderBottomWidth: 2,
+    borderBottomColor: '#0077be',
   },
   modalBackground:
     {
