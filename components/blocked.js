@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FlatList } from 'react-native-web';
 import PropTypes from 'prop-types';
 
+import Modal from './modal';
 import globalStyles from './globalStyleSheet';
 
 export default class BlockedScreen extends Component
@@ -17,6 +18,8 @@ export default class BlockedScreen extends Component
     this.state = {
       isLoading: true,
       blockedData: [],
+      showResponse: false,
+      response: '',
     };
   }
 
@@ -88,24 +91,55 @@ export default class BlockedScreen extends Component
         this.getData();
         params.getData();
         params.removeFromContacts(userID);
+        this.setState({ showResponse: true, response: 'User Unblocked Successfuly' });
+        setTimeout(() =>
+        {
+          this.setState({ showResponse: false });
+        }, 2000);
       }
       else if (response.status === 400)
       {
         console.log('You cannot unblock yourself');
+        this.setState({ showResponse: true, response: 'You cannot unblock yourself' });
+        setTimeout(() =>
+        {
+          this.setState({ showResponse: false });
+        }, 2000);
+      }
+      else if (response.status === 401)
+      {
+        console.log('Unauthorised');
+        this.setState({ showResponse: true, response: 'Unauthorized' });
+        setTimeout(() =>
+        {
+          this.setState({ showResponse: false });
+        }, 2000);
       }
       else if (response.status === 404)
       {
         console.log('User does not exist');
+        this.setState({ showResponse: true, response: 'User Not Found' });
+        setTimeout(() =>
+        {
+          this.setState({ showResponse: false });
+        }, 2000);
       }
       else
       {
+        this.setState({ showResponse: true, response: 'Server Error' });
+        setTimeout(() =>
+        {
+          this.setState({ showResponse: false });
+        }, 2000);
         throw 'Something went wrong';
       }
     });
 
   render()
   {
-    const { isLoading, blockedData } = this.state;
+    const {
+      isLoading, blockedData, showResponse, response,
+    } = this.state;
     if (isLoading)
     {
       return (
@@ -143,6 +177,8 @@ export default class BlockedScreen extends Component
             keyExtractor={({ user_id }) => user_id}
           />
         </View>
+        {showResponse
+         && <Modal alert={response} />}
       </View>
     );
   }

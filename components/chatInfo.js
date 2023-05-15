@@ -30,6 +30,8 @@ export default class ChatInfoScreen extends Component
       showAlreadyInChat: false,
       profileUserId: '',
       showProfile: false,
+      showRespone: false,
+      response: '',
     };
   }
 
@@ -125,10 +127,52 @@ export default class ChatInfoScreen extends Component
         {
           console.log('Chat name editted successfully');
           this.getData();
-          return response.json();
+          this.setState({ showRespone: true, response: 'Chat eddited successfuly' });
+          setTimeout(() =>
+          {
+            this.setState({ showRespone: false });
+          }, 2000);
         }
-
-        throw 'Something went wrong';
+        else if (response.status === 400)
+        {
+          this.setState({ showRespone: true, response: 'Bad Request' });
+          setTimeout(() =>
+          {
+            this.setState({ showRespone: false });
+          }, 2000);
+        }
+        else if (response.status === 401)
+        {
+          this.setState({ showRespone: true, response: 'Unauthorised, login' });
+          setTimeout(() =>
+          {
+            this.setState({ showRespone: false });
+          }, 2000);
+        }
+        else if (response.status === 403)
+        {
+          this.setState({ showRespone: true, response: 'Forbidden' });
+          setTimeout(() =>
+          {
+            this.setState({ showRespone: false });
+          }, 2000);
+        }
+        else if (response.status === 404)
+        {
+          this.setState({ showRespone: true, response: 'Chat not found' });
+          setTimeout(() =>
+          {
+            this.setState({ showRespone: false });
+          }, 2000);
+        }
+        else if (response.status === 500)
+        {
+          this.setState({ showRespone: true, response: 'server error' });
+          setTimeout(() =>
+          {
+            this.setState({ showRespone: false });
+          }, 2000);
+        }
       })
 
       .catch((error) =>
@@ -158,10 +202,10 @@ export default class ChatInfoScreen extends Component
       if (response.status === 200)
       {
         console.log(`User ${userId} removed from chat`);
-        this.setState({ showLeftChat: true });
+        this.setState({ showRespone: true, response: 'User removed from chat' });
         setTimeout(() =>
         {
-          this.setState({ showLeftChat: false });
+          this.setState({ showRespone: false });
         }, 2000);
         if (userId === chatData.creator.user_id)
         {
@@ -170,9 +214,37 @@ export default class ChatInfoScreen extends Component
         }
         this.handleFocus();
       }
+      else if (response.status === 401)
+      {
+        this.setState({ showRespone: true, response: 'Unauthorised, login' });
+        setTimeout(() =>
+        {
+          this.setState({ showRespone: false });
+        }, 2000);
+      }
+      else if (response.status === 403)
+      {
+        this.setState({ showRespone: true, response: 'Forbidden' });
+        setTimeout(() =>
+        {
+          this.setState({ showRespone: false });
+        }, 2000);
+      }
+      else if (response.status === 404)
+      {
+        this.setState({ showRespone: true, response: 'User not found' });
+        setTimeout(() =>
+        {
+          this.setState({ showRespone: false });
+        }, 2000);
+      }
       else
       {
-        throw 'Something went wrong';
+        this.setState({ showRespone: true, response: 'Server Error' });
+        setTimeout(() =>
+        {
+          this.setState({ showRespone: false });
+        }, 2000);
       }
     });
 
@@ -247,6 +319,7 @@ export default class ChatInfoScreen extends Component
     const {
       chatData, showEdit, showAddUser, searchTerm, searchData,
       showLeftChat, showAddedToChat, showAlreadyInChat, showProfile, profileUserId,
+      showRespone, response,
     } = this.state;
 
     return (
@@ -398,6 +471,8 @@ export default class ChatInfoScreen extends Component
         && <Modal alert="User Added to Chat" /> }
         {showAlreadyInChat
         && <Modal alert="User Already in Chat" /> }
+        {showRespone
+        && <Modal alert={response} /> }
         {showProfile
           && (
           <ProfileScreen
