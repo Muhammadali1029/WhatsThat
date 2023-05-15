@@ -6,6 +6,7 @@ import { Button } from 'react-native-web';
 import PropTypes from 'prop-types';
 
 import * as EmailValidator from 'email-validator';
+import globalStyles from './globalStyleSheet';
 
 export default class SignUpScreen extends Component
 {
@@ -123,9 +124,9 @@ export default class SignUpScreen extends Component
       <View style={styles.container}>
         <View style={styles.formContainer}>
           <View style={styles.firstName}>
-            <Text>First Name:</Text>
+            <Text style={globalStyles.text}>First Name:</Text>
             <TextInput
-              style={{ height: 40, borderWidth: 1, width: '80%' }}
+              style={globalStyles.textInput}
               placeholder="Enter first name"
               onChangeText={(f) => this.setState({ firstName: f })}
               defaultValue={firstName}
@@ -136,9 +137,9 @@ export default class SignUpScreen extends Component
           </View>
 
           <View style={styles.lastName}>
-            <Text>Last Name:</Text>
+            <Text style={globalStyles.text}>Last Name:</Text>
             <TextInput
-              style={{ height: 40, borderWidth: 1, width: '100%' }}
+              style={globalStyles.textInput}
               placeholder="Enter last name"
               onChangeText={(l) => this.setState({ lastName: l })}
               defaultValue={lastName}
@@ -149,9 +150,9 @@ export default class SignUpScreen extends Component
           </View>
 
           <View style={styles.email}>
-            <Text>Email:</Text>
+            <Text style={globalStyles.text}>Email:</Text>
             <TextInput
-              style={{ height: 40, borderWidth: 1, width: '100%' }}
+              style={globalStyles.textInput}
               placeholder="Enter email"
               onChangeText={(e) => this.setState({ email: e })}
               defaultValue={email}
@@ -162,9 +163,9 @@ export default class SignUpScreen extends Component
           </View>
 
           <View style={styles.password}>
-            <Text>Password:</Text>
+            <Text style={globalStyles.text}>Password:</Text>
             <TextInput
-              style={{ height: 40, borderWidth: 1, width: '100%' }}
+              style={globalStyles.textInput}
               placeholder="Enter password"
               onChangeText={(p) => this.setState({ password: p })}
               defaultValue={password}
@@ -177,9 +178,9 @@ export default class SignUpScreen extends Component
           </View>
 
           <View style={styles.confirmPassword}>
-            <Text>Confirm Password:</Text>
+            <Text style={globalStyles.text}>Confirm Password:</Text>
             <TextInput
-              style={{ height: 40, borderWidth: 1, width: '100%' }}
+              style={globalStyles.textInput}
               placeholder="Re-enter password"
               onChangeText={(cP) => this.setState({ confirmPassword: cP })}
               defaultValue={confirmPassword}
@@ -191,23 +192,24 @@ export default class SignUpScreen extends Component
 
           </View>
 
-          <View style={styles.createbtn}>
+          <View style={globalStyles.buttonsContainer}>
             <TouchableOpacity onPress={this.onPressButton}>
-              <View style={styles.button}>
-                <Text style={styles.buttonText}>Create Account</Text>
+              <View style={globalStyles.button}>
+                <Text style={globalStyles.buttonText}>Create Account</Text>
               </View>
             </TouchableOpacity>
           </View>
 
           {error
           && <Text style={styles.error}>{error}</Text>}
+        </View>
 
-          <View>
-            <Button
-              title="Have an account? Login"
-              onPress={() => navigation.navigate('login')}
-            />
-          </View>
+        <View style={[globalStyles.headerButtonsContainer, styles.btnContainer]}>
+          <TouchableOpacity onPress={() => navigation.navigate('login')}>
+            <View style={globalStyles.headerButtons}>
+              <Text style={styles.buttonText}>Have an account? Login</Text>
+            </View>
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -231,31 +233,10 @@ const styles = StyleSheet.create({
     },
   formContainer:
     {
-
-    },
-  firstName:
-    {
-      marginBottom: 5,
-    },
-  lastName:
-    {
-      marginBottom: 10,
-    },
-  email:
-    {
-      marginBottom: 15,
-    },
-  password:
-    {
-      marginBottom: 20,
-    },
-  confirmPassword:
-    {
-      marginBottom: 25,
-    },
-  createbtn:
-    {
-
+      flex: 1,
+      width: '100%',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
   signin:
     {
@@ -270,9 +251,12 @@ const styles = StyleSheet.create({
   buttonText:
     {
       textAlign: 'center',
-      padding: 20,
-      color: 'white',
+      fontSize: 20,
+      fontWeight: '600',
     },
+  btnContainer: {
+    marginBottom: 20,
+  },
   error:
     {
       color: 'red',
