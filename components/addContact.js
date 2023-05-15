@@ -3,7 +3,7 @@ import {
   View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { FlatList, Button } from 'react-native-web';
+import { FlatList } from 'react-native-web';
 import PropTypes from 'prop-types';
 
 import Modal from './modal';
@@ -21,7 +21,6 @@ export default class AddContactsScreen extends Component
       searchTerm: '',
       usersData: [],
       offset: 0,
-      showCannotAddYourself: false,
       showAdded: false,
       profileUserId: '',
       showProfile: false,
@@ -29,6 +28,8 @@ export default class AddContactsScreen extends Component
       increment: 10,
       searchResults: '',
       addedName: '',
+      error: '',
+      showError: false,
     };
   }
 
@@ -88,19 +89,38 @@ export default class AddContactsScreen extends Component
       }
       else if (response.status === 400)
       {
-        this.setState({ showCannotAddYourself: true });
+        this.setState({ showError: true, error: 'Cannot Add Yourself' });
         setTimeout(() =>
         {
-          this.setState({ showCannotAddYourself: false });
+          this.setState({ showError: false });
         }, 2000);
         console.log('You cannot add yourself');
       }
+      else if (response.status === 401)
+      {
+        this.setState({ showError: true, error: 'Unauthorised, Login' });
+        setTimeout(() =>
+        {
+          this.setState({ showError: false });
+        }, 2000);
+        console.log('Unauthorized');
+      }
       else if (response.status === 404)
       {
+        this.setState({ showError: true, error: 'Account Doesnot Exist' });
+        setTimeout(() =>
+        {
+          this.setState({ showError: false });
+        }, 2000);
         console.log('User does not exist');
       }
       else
       {
+        this.setState({ showError: true, error: 'Server Error' });
+        setTimeout(() =>
+        {
+          this.setState({ showError: false });
+        }, 2000);
         console.log(response.status);
         throw 'Something went wrong';
       }
@@ -114,9 +134,9 @@ export default class AddContactsScreen extends Component
   render()
   {
     const {
-      isLoading, searchTerm, usersData, offset, showCannotAddYourself,
+      isLoading, searchTerm, usersData, offset,
       showAdded, profileUserId, showProfile, searchPressed, increment,
-      searchResults, addedName,
+      searchResults, addedName, showError, error,
     } = this.state;
     const { navigation } = this.props;
 
@@ -162,11 +182,10 @@ export default class AddContactsScreen extends Component
               </View>
             </TouchableOpacity>
           </View>
+          {searchResults === 0
+            ? <Text style={globalStyles.text}>No Results...</Text>
+            : null}
         </View>
-
-        {searchResults === 0
-          ? <Text>No Results...</Text>
-          : null}
 
         <FlatList
           styles={styles.searchList}
@@ -248,10 +267,10 @@ export default class AddContactsScreen extends Component
         </View>
         )}
 
-        {showCannotAddYourself
-         && <Modal alert="Cannot Add Yourself to Contacts" />}
         {showAdded
          && <Modal alert={`${addedName} added to the Contacts`} />}
+        {showError
+          && <Modal alert={error} />}
         {showProfile
           && (
           <ProfileScreen
@@ -259,6 +278,8 @@ export default class AddContactsScreen extends Component
             onClose={() => this.setState({ showProfile: false })}
           />
           ) }
+        {showError
+         && <Modal alert={error} />}
       </View>
     );
   }
