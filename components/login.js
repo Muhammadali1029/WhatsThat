@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
 
 import Modal from './modal';
-import GlobalStyles from './globalStyleSheet';
+import globalStyles from './globalStyleSheet';
 
 export default class LoginScreen extends Component
 {
@@ -158,12 +158,12 @@ export default class LoginScreen extends Component
     const { navigation } = this.props;
 
     return (
-      <View style={[styles.container, GlobalStyles.backgroundOveride]}>
+      <View style={[styles.container, globalStyles.backgroundOveride]}>
         <View style={styles.formContainer}>
           <View style={styles.email}>
-            <Text style={GlobalStyles.text}>Email:</Text>
+            <Text style={globalStyles.text}>Email:</Text>
             <TextInput
-              style={GlobalStyles.textInput}
+              style={globalStyles.textInput}
               placeholder="Enter email"
               onChangeText={(e) => this.setState({ email: e })}
               defaultValue={email}
@@ -175,9 +175,9 @@ export default class LoginScreen extends Component
           </View>
 
           <View style={styles.password}>
-            <Text style={GlobalStyles.text}>Password:</Text>
+            <Text style={globalStyles.text}>Password:</Text>
             <TextInput
-              style={GlobalStyles.textInput}
+              style={globalStyles.textInput}
               placeholder="Enter password"
               onChangeText={(p) => this.setState({ password: p })}
               defaultValue={password}
@@ -188,23 +188,24 @@ export default class LoginScreen extends Component
             && <Text style={styles.error}>*Password is required</Text>}
           </View>
 
-          <View style={styles.loginbtn}>
+          <View style={globalStyles.buttonsContainer}>
             <TouchableOpacity onPress={this.onPressButton}>
-              <View style={styles.button}>
-                <Text style={styles.buttonText}>Login</Text>
+              <View style={[globalStyles.button, styles.button]}>
+                <Text style={globalStyles.buttonText}>Login</Text>
               </View>
             </TouchableOpacity>
           </View>
 
           {error
           && <Text style={styles.error}>{error}</Text>}
+        </View>
 
-          <View>
-            <Button
-              title="Need an account?"
-              onPress={() => navigation.navigate('signup')}
-            />
-          </View>
+        <View style={[globalStyles.headerButtonsContainer, styles.btnContainer]}>
+          <TouchableOpacity onPress={() => navigation.navigate('signup')}>
+            <View style={globalStyles.headerButtons}>
+              <Text style={styles.buttonText}>Need an account?</Text>
+            </View>
+          </TouchableOpacity>
         </View>
 
         {loginSuccessful
@@ -240,7 +241,7 @@ const styles = StyleSheet.create({
     },
   email:
     {
-      marginBottom: 5,
+      marginBottom: 10,
     },
   password:
     {
@@ -254,14 +255,16 @@ const styles = StyleSheet.create({
   button:
     {
       marginBottom: 30,
-      backgroundColor: '#2196F3',
     },
   buttonText:
     {
       textAlign: 'center',
-      padding: 20,
-      color: 'white',
+      fontSize: 20,
+      fontWeight: '600',
     },
+  btnContainer: {
+    marginBottom: 20,
+  },
   error:
     {
       color: 'red',

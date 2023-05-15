@@ -53,6 +53,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  text: {
+    fontSize: 20,
+    fontWeight: '600',
+  },
+  textInput: {
+    height: 40,
+    borderWidth: 2,
+    borderColor: '#505054',
+    borderRadius: 10,
+    width: '100%',
+    marginBottom: 15,
+    fontSize: 20,
+  },
 });
 
 export default styles;

@@ -39,7 +39,7 @@ export default class AlertModal extends Component
         >
           <View style={styles.modalBackground}>
             <View style={styles.modal}>
-              <Text>{alert}</Text>
+              <Text style={styles.text}>{alert}</Text>
             </View>
           </View>
         </Modal>
@@ -78,5 +78,9 @@ const styles = StyleSheet.create({
   bottomModal: {
     justifyContent: 'flex-end',
     margin: 0,
+  },
+  text: {
+    fontSize: 15,
+    fontWeight: '600',
   },
 });
