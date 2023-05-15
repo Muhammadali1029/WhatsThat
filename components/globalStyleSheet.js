@@ -36,29 +36,20 @@ const styles = StyleSheet.create({
     {
       backgroundColor: 'white',
     },
-  textInput:
-    {
-      height: 40,
-      borderWidth: 2,
-      borderColor: '#505054',
-      borderRadius: 10,
-      width: '100%',
-    },
-  text:
-    {
-      color: 'white',
-      fontSize: 15,
-    },
-  buttonContainer: {
-    backgroundColor: '#2196F3',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 5,
+  buttonsContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
+  },
+  button: {
+    backgroundColor: '#ff6347',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginHorizontal: 5,
   },
   buttonText: {
-    color: '#FFFFFF',
+    color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
   },

@@ -39,9 +39,7 @@ export default class AlertModal extends Component
         >
           <View style={styles.modalBackground}>
             <View style={styles.modal}>
-              <View>
-                <Text>{alert}</Text>
-              </View>
+              <Text>{alert}</Text>
             </View>
           </View>
         </Modal>

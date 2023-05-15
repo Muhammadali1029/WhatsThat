@@ -3,11 +3,12 @@ import {
   View, Text, TextInput, StyleSheet, ActivityIndicator,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Button } from 'react-native-web';
+import { TouchableOpacity } from 'react-native-web';
 import PropTypes from 'prop-types';
 
 import * as EmailValidator from 'email-validator';
 import Modal from './modal';
+import globalStyles from './globalStyleSheet';
 
 export default class EditProfileScreen extends Component
 {
@@ -154,66 +155,79 @@ export default class EditProfileScreen extends Component
     }
 
     return (
-      <View style={styles.container}>
-        <Text>Edit Profile Details</Text>
+      <View style={globalStyles.container}>
 
-        <Text>First Name</Text>
-        <TextInput
-          style={{ height: 40, borderWidth: 1, width: '100%' }}
-          value={firstName}
-          onChangeText={(val) => this.setState({ firstName: val })}
-        />
+        <View style={globalStyles.headerContainer}>
+          <View style={globalStyles.titleContainer}>
+            <Text style={globalStyles.titleText}>Edit Profile Details</Text>
+          </View>
+        </View>
 
-        <Text>Last Name</Text>
-        <TextInput
-          style={{ height: 40, borderWidth: 1, width: '100%' }}
-          value={lastName}
-          onChangeText={(val) => this.setState({ lastName: val })}
-        />
+        <View style={styles.body}>
+          <View style={styles.textInputContainer}>
+            <Text style={styles.text}>First Name</Text>
+            <TextInput
+              style={styles.textInput}
+              value={firstName}
+              onChangeText={(val) => this.setState({ firstName: val })}
+            />
 
-        <TextInput
-          style={{ height: 40, borderWidth: 1, width: '100%' }}
-          value={email}
-          onChangeText={(val) => this.setState({ email: val })}
-        />
+            <Text style={styles.text}>Last Name</Text>
+            <TextInput
+              style={styles.textInput}
+              value={lastName}
+              onChangeText={(val) => this.setState({ lastName: val })}
+            />
 
-        <Text>Password</Text>
-        <TextInput
-          style={{ height: 40, borderWidth: 1, width: '100%' }}
-          placeholder="Enter password"
-          onChangeText={(p) => this.setState({ password: p, passwordChanged: true })}
-          defaultValue={password}
-        />
+            <Text style={styles.text}>Email</Text>
+            <TextInput
+              style={styles.textInput}
+              value={email}
+              onChangeText={(val) => this.setState({ email: val })}
+            />
 
-        {passwordChanged
+            <Text style={styles.text}>Password</Text>
+            <TextInput
+              style={styles.textInput}
+              placeholder="Enter password"
+              onChangeText={(p) => this.setState({ password: p, passwordChanged: true })}
+              defaultValue={password}
+            />
+
+            {passwordChanged
         && (
           <View>
-            <Text>Confirm Password</Text>
+            <Text style={styles.text}>Confirm Password</Text>
             <TextInput
-              style={{ height: 40, borderWidth: 1, width: '100%' }}
+              style={styles.textInput}
               placeholder="Re-enter password"
               onChangeText={(cP) => this.setState({ confirmPassword: cP })}
               defaultValue={confirmPassword}
             />
           </View>
         )}
+          </View>
 
-        {submitted && !confirmPassword && passwordChanged
+          {submitted && !confirmPassword && passwordChanged
         && <Text style={styles.error}>*Confirm Password is required</Text>}
 
-        {error
+          {error
           && <Text style={styles.error}>{error}</Text>}
 
-        <Button
-          title="Update"
-          onPress={() => this.updateProfile()}
-        />
+          <View style={[globalStyles.buttonsContainer, styles.buttonsContainer]}>
+            <TouchableOpacity onPress={() => this.updateProfile()}>
+              <View style={[globalStyles.button, styles.button]}>
+                <Text style={globalStyles.buttonText}>Update</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigate('profile')}>
+              <View style={globalStyles.button}>
+                <Text style={globalStyles.buttonText}>Go Back</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
 
-        <Button
-          title="Go Back"
-          onPress={() => navigate('profile')}
-        />
-
+        </View>
         {showUpdated
          && <Modal alert="Profile Details Updated Successfully!" />}
       </View>
@@ -232,24 +246,15 @@ EditProfileScreen.propTypes = {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  body: {
     flex: 1,
-    width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  title: {
-
-  },
-  info: {
-
-  },
-  nav: {
-    marginBottom: 5,
+    // borderWidth: 2,
+    // borderColor: 'red',
   },
   button: {
-    marginBottom: 30,
-    backgroundColor: '#2196F3',
+    marginBottom: 10,
   },
   buttonText: {
     textAlign: 'center',
@@ -260,5 +265,25 @@ const styles = StyleSheet.create({
   {
     color: 'red',
     fontWeight: '900',
+  },
+  buttonsContainer: {
+    flexDirection: 'column',
+    padding: 15,
+  },
+  textInputContainer: {
+    alignItems: 'center',
+  },
+  textInput: {
+    height: 40,
+    borderWidth: 2,
+    borderColor: '#505054',
+    borderRadius: 10,
+    width: '100%',
+    marginBottom: 15,
+    fontSize: 20,
+  },
+  text: {
+    fontSize: 20,
+    fontWeight: '700',
   },
 });
