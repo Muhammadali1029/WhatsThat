@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import searchUsers from './search';
 import Modal from './modal';
 import ProfileScreen from './otherUsersProfile';
+import globalStyles from './globalStyleSheet';
 
 export default class ChatInfoScreen extends Component
 {
@@ -323,13 +324,19 @@ export default class ChatInfoScreen extends Component
     } = this.state;
 
     return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Chat Info</Text>
+      <View style={globalStyles.container}>
+
+        <View style={globalStyles.headerContainer}>
+          <View style={globalStyles.titleContainer}>
+            <Text style={globalStyles.titleText}>Chat Info</Text>
+          </View>
+        </View>
+
         {showEdit
           ? (
-            <View>
+            <View style={styles.confirmEdit}>
               <TextInput
-                style={{ height: 40, borderWidth: 1, width: '100%' }}
+                style={[globalStyles.textInput, styles.textInput]}
                 placeholder="Enter New Chat Name"
                 onChangeText={(n) => this.setState({ editChatName: n })}
                 defaultValue={chatData.name}
@@ -340,18 +347,18 @@ export default class ChatInfoScreen extends Component
                 this.setState({ showEdit: false });
               }}
               >
-                <View style={styles.button}>
-                  <Text style={styles.buttonText}>Confim</Text>
+                <View style={globalStyles.button}>
+                  <Text style={globalStyles.buttonText}>Confim</Text>
                 </View>
               </TouchableOpacity>
             </View>
           )
           : (
-            <View>
-              <Text>{chatData.name}</Text>
+            <View style={styles.chatName}>
+              <Text style={styles.text}>{chatData.name}</Text>
               <TouchableOpacity onPress={() => this.setState({ showEdit: true })}>
-                <View style={styles.button}>
-                  <Text style={styles.buttonText}>Edit</Text>
+                <View style={globalStyles.button}>
+                  <Text style={globalStyles.buttonText}>Edit</Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -380,11 +387,11 @@ export default class ChatInfoScreen extends Component
                 title="Done"
                 onPress={() => this.setState({ showAddUser: false })}
               />
-              <View>
+              <View style={styles.searchListContainer}>
                 <FlatList
                   data={searchData}
                   renderItem={({ item }) => (
-                    <View style={styles.container}>
+                    <View style={globalStyles.flatListContainer}>
                       <TouchableOpacity onPress={() =>
                       {
                         this.setState({
@@ -418,7 +425,7 @@ export default class ChatInfoScreen extends Component
             </View>
           )
           : (
-            <View>
+            <View style={styles.addUserContainer}>
               <TouchableOpacity onPress={() => this.setState({ showAddUser: true })}>
                 <View style={styles.button}>
                   <Text style={styles.buttonText}>Add New User to Chat</Text>
@@ -499,30 +506,32 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
-    alignItems: 'center',
+    // alignItems: 'center',
     justifyContent: 'flex-start',
     marginTop: 40,
   },
-  title: {
-    marginBottom: 40,
+  chatName: {
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
   },
-  profilebtn: {
-    marginBottom: 10,
+  text: {
+    fontSize: 30,
+    fontWeight: '600',
+    padding: 15,
   },
-  nav: {
-    marginBottom: 5,
+  addUserContainer: {
+    padding: 15,
   },
-  button: {
-    marginBottom: 30,
-    backgroundColor: '#2196F3',
+  searchListContainer: {
+    flex: 1,
+    backgroundColor: '1a1a1as',
+    paddingHorizontal: 10,
   },
-  disableButton: {
-    marginBottom: 30,
-    backgroundColor: 'gray',
+  confirmEdit: {
+    alignItems: 'center',
+    padding: 30,
   },
-  buttonText: {
-    textAlign: 'center',
-    padding: 20,
-    color: 'white',
+  textInput: {
+    alignItems: 'center',
   },
 });

@@ -66,6 +66,15 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     fontSize: 20,
   },
+  flatListContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+    marginTop: 10,
+  },
 });
 
 export default styles;
