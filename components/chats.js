@@ -7,7 +7,7 @@ import { FlatList } from 'react-native-web';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import globalStyles from './globalStyleSheet';
+import globalStyles from '../styles/globalStyleSheet';
 
 export default class ChatsScreen extends Component
 {

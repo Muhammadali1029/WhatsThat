@@ -6,7 +6,7 @@ import { Button } from 'react-native-web';
 import PropTypes from 'prop-types';
 
 import * as EmailValidator from 'email-validator';
-import globalStyles from './globalStyleSheet';
+import globalStyles from '../styles/globalStyleSheet';
 
 export default class SignUpScreen extends Component
 {

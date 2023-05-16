@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 
 import * as EmailValidator from 'email-validator';
 import Modal from './modal';
-import globalStyles from './globalStyleSheet';
+import globalStyles from '../styles/globalStyleSheet';
 
 export default class EditProfileScreen extends Component
 {

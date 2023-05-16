@@ -7,7 +7,7 @@ import { FlatList } from 'react-native-web';
 import PropTypes from 'prop-types';
 
 import Modal from './modal';
-import globalStyles from './globalStyleSheet';
+import globalStyles from '../styles/globalStyleSheet';
 
 export default class BlockedScreen extends Component
 {

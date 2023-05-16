@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 
 import Camera from './camera';
 import DisplayImage from './displayPhoto';
-import globalStyles from './globalStyleSheet';
+import globalStyles from '../styles/globalStyleSheet';
 
 export default class ProfileScreen extends Component
 {

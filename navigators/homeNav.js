@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
-import Icon from 'react-native-vector-icons/Ionicons';
 
 import ChatsNav from './chatsNav';
 import ContactsNav from './contactsNav';

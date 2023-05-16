@@ -2,9 +2,9 @@
 import React, { Component } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import ContactsScreen from './contacts';
-import AddContactsScreen from './addContact';
-import BlockedScreen from './blocked';
+import ContactsScreen from '../components/contacts';
+import AddContactsScreen from '../components/addContact';
+import BlockedScreen from '../components/blocked';
 
 const ContactsStack = createNativeStackNavigator();
 

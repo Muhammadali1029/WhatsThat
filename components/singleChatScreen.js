@@ -5,7 +5,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FlatList } from 'react-native-web';
 import PropTypes from 'prop-types';
-import globalStyles from './globalStyleSheet';
+import globalStyles from '../styles/globalStyleSheet';
 
 export default class SingleChatScreen extends Component
 {

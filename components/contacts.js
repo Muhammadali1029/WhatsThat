@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 
 import getRequest from './getRequest';
 import ProfileScreen from './otherUsersProfile';
-import globalStyles from './globalStyleSheet';
+import globalStyles from '../styles/globalStyleSheet';
 
 export default class ContactsScreen extends Component
 {

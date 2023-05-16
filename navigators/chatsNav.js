@@ -2,8 +2,8 @@
 import React, { Component } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import ChatsScreen from './chats';
-import CreateChatScreen from './createChat';
+import ChatsScreen from '../components/chats';
+import CreateChatScreen from '../components/createChat';
 import SingleChatNav from './singleChatNav';
 
 const ChatsStack = createNativeStackNavigator();
