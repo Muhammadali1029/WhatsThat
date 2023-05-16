@@ -314,38 +314,49 @@ export default class SingleChatScreen extends Component
                     <View style={styles.modalBackground}>
                       <View style={styles.modal}>
                         <View>
-                          <Text>Edit Message</Text>
+                          <Text style={globalStyles.text}>Edit Message</Text>
                           <TextInput
                             style={styles.messageBox}
                             placeholder={selectedMessage}
                             onChangeText={(editMessage) => this.setState({ editMessage })}
                           />
 
-                          <Button
-                            title="Confirm Edit"
-                            onPress={() =>
+                          <View style={styles.buttonsContainer}>
+                            <TouchableOpacity onPress={() =>
                             {
                               this.editMessage();
                               console.log(`Edited Message ID: ${messageId}`);
                               this.setState({ showModal: false });
                             }}
-                          />
+                            >
+                              <View style={styles.button}>
+                                <Text style={styles.buttonText}>Confirm Edit</Text>
+                              </View>
+                            </TouchableOpacity>
+                          </View>
                         </View>
 
-                        <Button
-                          title="Delete"
-                          onPress={() =>
+                        <View style={styles.buttonsContainer}>
+                          <TouchableOpacity onPress={() =>
                           {
                             this.deleteMessage();
                             console.log(`Deleted Message ID: ${messageId}`);
                             this.setState({ showModal: false });
                           }}
-                        />
+                          >
+                            <View style={styles.button}>
+                              <Text style={styles.buttonText}>Delete</Text>
+                            </View>
+                          </TouchableOpacity>
+                        </View>
 
-                        <Button
-                          title="Cancel"
-                          onPress={() => this.setState({ showModal: false })}
-                        />
+                        <View style={styles.buttonsContainer}>
+                          <TouchableOpacity onPress={() => this.setState({ showModal: false })}>
+                            <View style={styles.button}>
+                              <Text style={styles.buttonText}>Cancel</Text>
+                            </View>
+                          </TouchableOpacity>
+                        </View>
                       </View>
                     </View>
                   </Modal>
@@ -459,7 +470,6 @@ const styles = StyleSheet.create({
   modalBackground:
     {
       flex: 1,
-      // backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
   modal:
     {
@@ -473,4 +483,22 @@ const styles = StyleSheet.create({
       position: 'absolute',
       width: '100%',
     },
+  buttonsContainer: {
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    padding: 2,
+  },
+  button: {
+    backgroundColor: '#ff6347',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginHorizontal: 5,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });

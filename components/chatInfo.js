@@ -4,11 +4,10 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
-  FlatList, TextInput, TouchableOpacity, Button,
+  FlatList, TextInput, TouchableOpacity,
 } from 'react-native-web';
 import PropTypes from 'prop-types';
 
-import searchUsers from './search';
 import Modal from './modal';
 import ProfileScreen from './otherUsersProfile';
 import globalStyles from './globalStyleSheet';
@@ -33,6 +32,10 @@ export default class ChatInfoScreen extends Component
       showProfile: false,
       showRespone: false,
       response: '',
+      offset: 0,
+      increment: 10,
+      searchPressed: false,
+      searchResults: '',
     };
   }
 
@@ -249,22 +252,35 @@ export default class ChatInfoScreen extends Component
       }
     });
 
-  searchContactUsers = async (searchTerm, location) =>
+  searchUsers = async (searchTerm, location) =>
   {
-    searchUsers(
-      `http://localhost:3333/api/1.0.0/search?q=${searchTerm}&search_in=${location}`,
-      await AsyncStorage.getItem('whatsthat_session_token'),
-      (resJson) =>
+    const { offset, increment } = this.state;
+    console.log('Contacts search request sent to api');
+    return fetch(
+      `http://localhost:3333/api/1.0.0/search?q=${searchTerm}&search_in=${location}&limit=${increment}&offset=${offset}`,
       {
-        console.log('Search contacts request returned from Api');
-        console.log(resJson);
-        this.setState({ searchData: resJson });
+        method: 'get',
+        headers:
+            {
+              'Content-Type': 'application/json',
+              'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
+            },
       },
-      (status) =>
+    )
+      .then((response) => response.json())
+      .then((responseJson) =>
       {
-        console.log(status);
-      },
-    );
+        console.log('Data returned from api');
+        console.log(responseJson);
+        this.setState({
+          searchData: responseJson,
+          searchResults: responseJson.length,
+        });
+      })
+      .catch((error) =>
+      {
+        console.log(error);
+      });
   };
 
   addToChat = async (chatId, userId) => fetch(
@@ -318,9 +334,9 @@ export default class ChatInfoScreen extends Component
     const { params } = route;
     const { chatItem } = params;
     const {
-      chatData, showEdit, showAddUser, searchTerm, searchData,
+      chatData, showEdit, showAddUser, searchTerm, searchData, increment, offset,
       showLeftChat, showAddedToChat, showAlreadyInChat, showProfile, profileUserId,
-      showRespone, response,
+      showRespone, response, searchPressed, searchResults,
     } = this.state;
 
     return (
@@ -366,27 +382,38 @@ export default class ChatInfoScreen extends Component
 
         {showAddUser
           ? (
-            <View>
+            <View style={styles.searchUsersContainer}>
               <TextInput
-                style={{ height: 40, borderWidth: 1, width: '100%' }}
+                style={globalStyles.textInput}
                 placeholder="Enter Name"
                 onChangeText={(sT) => this.setState({ searchTerm: sT })}
                 defaultValue={searchTerm}
               />
-              <TouchableOpacity onPress={() =>
-              {
-                this.searchContactUsers(searchTerm, 'contacts');
-              }}
-              >
-                <View style={styles.button}>
-                  <Text style={styles.buttonText}>Search</Text>
-                </View>
-              </TouchableOpacity>
 
-              <Button
-                title="Done"
-                onPress={() => this.setState({ showAddUser: false })}
-              />
+              <View style={styles.btnContainer}>
+                <TouchableOpacity onPress={() =>
+                {
+                  this.searchUsers(searchTerm, 'contacts');
+                  this.setState({ searchPressed: true });
+                }}
+                >
+                  <View style={[globalStyles.button, styles.btn]}>
+                    <Text style={globalStyles.buttonText}>Search</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+              {searchResults === 0
+                ? <Text style={globalStyles.text}>No Results...</Text>
+                : null}
+
+              <View style={styles.btnContainer}>
+                <TouchableOpacity onPress={() => this.setState({ showAddUser: false })}>
+                  <View style={globalStyles.button}>
+                    <Text style={globalStyles.buttonText}>Done</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+
               <View style={styles.searchListContainer}>
                 <FlatList
                   data={searchData}
@@ -400,44 +427,83 @@ export default class ChatInfoScreen extends Component
                         });
                       }}
                       >
-                        <View style={styles.profilebtn}>
-                          <Text>
-                            {item.given_name}
-                            {' '}
-                            {item.family_name}
-                          </Text>
-                        </View>
+                        <Text style={styles.searchName}>
+                          {item.given_name}
+                          {' '}
+                          {item.family_name}
+                        </Text>
                       </TouchableOpacity>
                       <TouchableOpacity onPress={
                         () => this.addToChat(chatItem.chat_id, item.user_id)
                       }
                       >
-                        <View style={styles.button}>
-                          <Text style={styles.buttonText}>Add User</Text>
+                        <View style={globalStyles.button}>
+                          <Text style={globalStyles.buttonText}>Add User</Text>
                         </View>
                       </TouchableOpacity>
                     </View>
                   )}
-            // eslint-disable-next-line camelcase
+                  // eslint-disable-next-line camelcase
                   keyExtractor={({ user_id }) => user_id}
                 />
+              </View>
+              <View>
+                {searchPressed
+                  && (
+                  <View style={styles.bottmButtonsContainer}>
+                    <Text>
+                      Page Number:
+                      {(offset + increment) / increment}
+                    </Text>
+                    <TouchableOpacity onPress={() =>
+                    {
+                      this.setState({ offset: (offset + increment) }, () =>
+                      {
+                        console.log(offset);
+                        this.searchUsers(searchTerm, 'contacts');
+                      });
+                    }}
+                    >
+                      <View style={styles.bottomButton}>
+                        <Text style={styles.buttonText}>next page</Text>
+                      </View>
+                    </TouchableOpacity>
+
+                    {offset > 0
+                  && (
+                  <TouchableOpacity onPress={() =>
+                  {
+                    this.setState({ offset: (offset - increment) }, () =>
+                    {
+                      console.log(offset);
+                      this.searchUsers(searchTerm, 'contacts');
+                    });
+                  }}
+                  >
+                    <View style={styles.bottomButton}>
+                      <Text style={styles.buttonText}>previous page</Text>
+                    </View>
+                  </TouchableOpacity>
+                  )}
+                  </View>
+                  )}
               </View>
             </View>
           )
           : (
             <View style={styles.addUserContainer}>
               <TouchableOpacity onPress={() => this.setState({ showAddUser: true })}>
-                <View style={styles.button}>
-                  <Text style={styles.buttonText}>Add New User to Chat</Text>
+                <View style={globalStyles.button}>
+                  <Text style={globalStyles.buttonText}>Add New User to Chat</Text>
                 </View>
               </TouchableOpacity>
 
               <View style={styles.members}>
-                <Text>Members:-</Text>
+                <Text style={[globalStyles.text, { fontSize: 30 }]}>Members:-</Text>
                 <FlatList
                   data={chatData.members}
                   renderItem={({ item }) => (
-                    <View style={styles.membersList}>
+                    <View style={globalStyles.flatListContainer}>
                       <TouchableOpacity onPress={() =>
                       {
                         this.setState({
@@ -446,26 +512,24 @@ export default class ChatInfoScreen extends Component
                         });
                       }}
                       >
-                        <View style={styles.profilebtn}>
-                          <Text>
-                            {item.first_name}
-                            {' '}
-                            {item.last_name}
-                          </Text>
-                        </View>
+                        <Text style={styles.searchName}>
+                          {item.first_name}
+                          {' '}
+                          {item.last_name}
+                        </Text>
                       </TouchableOpacity>
                       <TouchableOpacity onPress={() =>
                       {
                         this.removeFromChat(chatItem.chat_id, item.user_id);
                       }}
                       >
-                        <View style={styles.button}>
-                          <Text style={styles.buttonText}>Remove</Text>
+                        <View style={globalStyles.button}>
+                          <Text style={globalStyles.buttonText}>Remove</Text>
                         </View>
                       </TouchableOpacity>
                     </View>
                   )}
-            // eslint-disable-next-line camelcase
+                  // eslint-disable-next-line camelcase
                   keyExtractor={({ user_id }) => user_id}
                 />
               </View>
@@ -506,7 +570,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
-    // alignItems: 'center',
     justifyContent: 'flex-start',
     marginTop: 40,
   },
@@ -521,6 +584,7 @@ const styles = StyleSheet.create({
   },
   addUserContainer: {
     padding: 15,
+    alignItems: 'center',
   },
   searchListContainer: {
     flex: 1,
@@ -533,5 +597,33 @@ const styles = StyleSheet.create({
   },
   textInput: {
     alignItems: 'center',
+  },
+  searchUsersContainer: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+    marginTop: 10,
+    padding: 10,
+  },
+  btnContainer: {
+    padding: 10,
+  },
+  bottmButtonsContainer: {
+    alignItems: 'center',
+  },
+  bottomButton: {
+    backgroundColor: '#0077be',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginHorizontal: 5,
+    alignItems: 'center',
+  },
+  searchName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
 });
