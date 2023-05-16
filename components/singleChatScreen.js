@@ -3,7 +3,7 @@ import {
   View, Text, TextInput, TouchableOpacity, StyleSheet, Modal,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Button, FlatList } from 'react-native-web';
+import { FlatList } from 'react-native-web';
 import PropTypes from 'prop-types';
 import globalStyles from './globalStyleSheet';
 

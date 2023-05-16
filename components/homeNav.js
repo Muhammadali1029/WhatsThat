@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import ChatsNav from './chatsNav';
 import ContactsNav from './contactsNav';
@@ -45,9 +46,9 @@ export default class HomeNav extends Component
           initialRouteName: 'chatsNav',
         }}
       >
-        <Tab.Screen name="chatsNav" component={ChatsNav} />
-        <Tab.Screen name="contactsNav" component={ContactsNav} />
-        <Tab.Screen name="profileNav" component={ProfileNav} />
+        <Tab.Screen name="chatsNav" options={{ tabBarLabel: 'Chats' }} component={ChatsNav} />
+        <Tab.Screen name="contactsNav" options={{ tabBarLabel: 'Contacts' }} component={ContactsNav} />
+        <Tab.Screen name="profileNav" options={{ tabBarLabel: 'Profile' }} component={ProfileNav} />
       </Tab.Navigator>
     );
   }
