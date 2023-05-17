@@ -21,6 +21,10 @@ export default class SingleChatScreen extends Component
       messageId: '',
       selectedMessage: '',
       userId: '',
+      draftSaved: false,
+      viewDraft: false,
+      editDraft: '',
+      draft: '',
     };
   }
 
@@ -30,6 +34,7 @@ export default class SingleChatScreen extends Component
     const { addListener } = navigation;
     this.getData();
     this.setUserId();
+    this.getDraft();
     this.focusListener = addListener('focus', this.handleFocus);
 
     // Call the getData function every 5 seconds
@@ -112,17 +117,16 @@ export default class SingleChatScreen extends Component
       });
   };
 
-  sendMessage = async () =>
+  sendMessage = async (mes) =>
   {
     const { route } = this.props;
     const { params } = route;
     const { chatItem } = params;
-    const { newMessage } = this.state;
 
     console.log('send message request sent to api');
 
     const toSend = {
-      message: newMessage,
+      message: mes,
     };
 
     return fetch(
@@ -241,7 +245,32 @@ export default class SingleChatScreen extends Component
       });
   };
 
-  saveDraft = async (draft) =>
+  getDraft = async () =>
+  {
+    const { route } = this.props;
+    const { params } = route;
+    const { chatItem } = params;
+
+    try
+    {
+      const draft = await AsyncStorage.getItem(`draft_message${chatItem.chat_id}`);
+      if (draft)
+      {
+        this.setState({ draft });
+      }
+      else
+      {
+        this.setState({ draft: '' });
+      }
+    }
+    catch (error)
+    {
+      console.error(error);
+      this.setState({ draft: '' });
+    }
+  };
+
+  saveOrEditDraft = async (draft) =>
   {
     const { route } = this.props;
     const { params } = route;
@@ -249,11 +278,29 @@ export default class SingleChatScreen extends Component
     console.log(draft);
     try
     {
+      this.setState({ draft });
       await AsyncStorage.setItem(`draft_message${chatItem.chat_id}`, draft);
+      this.getDraft();
     }
     catch
     {
       throw 'Something went wrong';
+    }
+  };
+
+  deleteDraft = async () =>
+  {
+    const { route } = this.props;
+    const { params } = route;
+    const { chatItem } = params;
+    try
+    {
+      await AsyncStorage.removeItem(`draft_message${chatItem.chat_id}`);
+      this.getDraft();
+    }
+    catch
+    {
+      throw 'Something Went Wrong';
     }
   };
 
@@ -264,6 +311,7 @@ export default class SingleChatScreen extends Component
     const { chatItem } = params;
     const {
       chatData, showModal, selectedMessage, messageId, newMessage, userId,
+      draftSaved, viewDraft, editDraft, draft,
     } = this.state;
     const { navigation } = this.props;
     const { navigate } = navigation;
@@ -329,12 +377,12 @@ export default class SingleChatScreen extends Component
                   <Modal transparent visible={showModal}>
                     <View style={styles.modalBackground}>
                       <View style={styles.modal}>
-                        <View>
+                        <View style={styles.allModalButtons}>
                           <Text style={globalStyles.text}>Edit Message</Text>
                           <TextInput
                             style={styles.messageBox}
                             placeholder={selectedMessage}
-                            onChangeText={(editMessage) => this.setState({ editMessage })}
+                            onChangeText={(eM) => this.setState({ editMessage: eM })}
                           />
 
                           <View style={styles.buttonsContainer}>
@@ -350,28 +398,28 @@ export default class SingleChatScreen extends Component
                               </View>
                             </TouchableOpacity>
                           </View>
-                        </View>
 
-                        <View style={styles.buttonsContainer}>
-                          <TouchableOpacity onPress={() =>
-                          {
-                            this.deleteMessage();
-                            console.log(`Deleted Message ID: ${messageId}`);
-                            this.setState({ showModal: false });
-                          }}
-                          >
-                            <View style={styles.button}>
-                              <Text style={styles.buttonText}>Delete</Text>
-                            </View>
-                          </TouchableOpacity>
-                        </View>
+                          <View style={styles.buttonsContainer}>
+                            <TouchableOpacity onPress={() =>
+                            {
+                              this.deleteMessage();
+                              console.log(`Deleted Message ID: ${messageId}`);
+                              this.setState({ showModal: false });
+                            }}
+                            >
+                              <View style={styles.button}>
+                                <Text style={styles.buttonText}>Delete</Text>
+                              </View>
+                            </TouchableOpacity>
+                          </View>
 
-                        <View style={styles.buttonsContainer}>
-                          <TouchableOpacity onPress={() => this.setState({ showModal: false })}>
-                            <View style={styles.button}>
-                              <Text style={styles.buttonText}>Cancel</Text>
-                            </View>
-                          </TouchableOpacity>
+                          <View style={styles.buttonsContainer}>
+                            <TouchableOpacity onPress={() => this.setState({ showModal: false })}>
+                              <View style={styles.button}>
+                                <Text style={styles.buttonText}>Cancel</Text>
+                              </View>
+                            </TouchableOpacity>
+                          </View>
                         </View>
                       </View>
                     </View>
@@ -386,18 +434,38 @@ export default class SingleChatScreen extends Component
             <View>
               <TextInput
                 style={styles.messageBox}
+                value={newMessage}
                 onChangeText={(nM) => this.setState({ newMessage: nM })}
-                defaultValue={newMessage}
               />
 
-              <View>
+              <View style={styles.draftContainer}>
+                {newMessage !== ''
+                && (
+                  <View>
+                    {!draftSaved
+                      && (
+                      <TouchableOpacity onPress={() =>
+                      {
+                        this.saveOrEditDraft(newMessage);
+                        this.setState({ draftSaved: true });
+                      }}
+                      >
+                        <Text style={styles.sendButton}>Save as Draft</Text>
+                      </TouchableOpacity>
+                      )}
+                  </View>
+                )}
+
+                {draft.length !== 0
+                && (
                 <TouchableOpacity onPress={() =>
                 {
-                  this.saveDraft(newMessage);
+                  this.setState({ viewDraft: true });
                 }}
                 >
-                  <Text>Save as Draft</Text>
+                  <Text style={styles.draftButton}>View Draft</Text>
                 </TouchableOpacity>
+                )}
               </View>
 
             </View>
@@ -413,6 +481,76 @@ export default class SingleChatScreen extends Component
                 <Text style={styles.sendButton}>Send</Text>
               </TouchableOpacity>
             </View>
+
+            <Modal transparent visible={viewDraft}>
+              <View style={styles.modalBackground}>
+                <View style={styles.modal}>
+                  <View style={styles.allModalButtons}>
+                    <Text style={globalStyles.text}>Edit Draft</Text>
+                    <TextInput
+                      style={styles.messageBox}
+                      placeholder={draft}
+                      onChangeText={(eD) => this.setState({ editDraft: eD })}
+                    />
+
+                    <View style={styles.buttonsContainer}>
+                      <TouchableOpacity onPress={() =>
+                      {
+                        this.saveOrEditDraft(editDraft);
+                        console.log(`Edited Draft: ${editDraft}`);
+                        this.setState({ viewDraft: false });
+                      }}
+                      >
+                        <View style={styles.button}>
+                          <Text style={styles.buttonText}>Confirm Edit</Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.buttonsContainer}>
+                      <TouchableOpacity onPress={() =>
+                      {
+                        this.deleteDraft();
+                        console.log(`Deleted Draft: ${draft}`);
+                        this.setState({ viewDraft: false });
+                      }}
+                      >
+                        <View style={styles.button}>
+                          <Text style={styles.buttonText}>Delete</Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.buttonsContainer}>
+                      <TouchableOpacity onPress={() =>
+                      {
+                        this.deleteDraft();
+                        this.setState({ viewDraft: false });
+                        this.sendMessage(draft);
+                      }}
+                      >
+                        <View style={styles.button}>
+                          <Text style={styles.buttonText}>Send Draft</Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.buttonsContainer}>
+                      <TouchableOpacity onPress={() =>
+                      {
+                        this.setState({ viewDraft: false });
+                      }}
+                      >
+                        <View style={styles.button}>
+                          <Text style={styles.buttonText}>Cancel</Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </Modal>
+
           </View>
         </View>
 
@@ -529,6 +667,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   textBoxContainer: {
+    alignItems: 'center',
+  },
+  draftContainer: {
+    alignItems: 'center',
+  },
+  draftButton: {
+    color: '#0077be',
+    fontSize: 20,
+    borderBottomWidth: 2,
+    borderBottomColor: '#0077be',
+  },
+  allModalButtons: {
     alignItems: 'center',
   },
 });
