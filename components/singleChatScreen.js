@@ -241,6 +241,22 @@ export default class SingleChatScreen extends Component
       });
   };
 
+  saveDraft = async (draft) =>
+  {
+    const { route } = this.props;
+    const { params } = route;
+    const { chatItem } = params;
+    console.log(draft);
+    try
+    {
+      await AsyncStorage.setItem(`draft_message${chatItem.chat_id}`, draft);
+    }
+    catch
+    {
+      throw 'Something went wrong';
+    }
+  };
+
   render()
   {
     const { route } = this.props;
@@ -373,6 +389,17 @@ export default class SingleChatScreen extends Component
                 onChangeText={(nM) => this.setState({ newMessage: nM })}
                 defaultValue={newMessage}
               />
+
+              <View>
+                <TouchableOpacity onPress={() =>
+                {
+                  this.saveDraft(newMessage);
+                }}
+                >
+                  <Text>Save as Draft</Text>
+                </TouchableOpacity>
+              </View>
+
             </View>
             <View style={styles.sendMessage}>
               <TouchableOpacity onPress={() =>
@@ -500,5 +527,8 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  textBoxContainer: {
+    alignItems: 'center',
   },
 });

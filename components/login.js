@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
 } from 'react-native';
-import { Button } from 'react-native-web';
 import * as EmailValidator from 'email-validator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
