@@ -164,6 +164,7 @@ export default class AddContactsScreen extends Component
               style={{
                 height: 40, borderWidth: 1, width: '100%', borderRadius: 100,
               }}
+              accessibilityLabel="Search Box"
               placeholder="Enter..."
               onChangeText={(sT) => this.setState({ searchTerm: sT })}
               defaultValue={searchTerm}
@@ -171,11 +172,13 @@ export default class AddContactsScreen extends Component
           </View>
 
           <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={() =>
-            {
-              this.searchUsers(searchTerm, 'all');
-              this.setState({ searchPressed: true });
-            }}
+            <TouchableOpacity
+              onPress={() =>
+              {
+                this.searchUsers(searchTerm, 'all');
+                this.setState({ searchPressed: true });
+              }}
+              accessibilityLabel="Search Button"
             >
               <View style={styles.bottomButton}>
                 <Text style={styles.buttonText}>Search</Text>
@@ -192,13 +195,15 @@ export default class AddContactsScreen extends Component
           data={usersData}
           renderItem={({ item }) => (
             <View style={styles.searchContainer}>
-              <TouchableOpacity onPress={() =>
-              {
-                this.setState({
-                  showProfile: true,
-                  profileUserId: item.user_id,
-                });
-              }}
+              <TouchableOpacity
+                onPress={() =>
+                {
+                  this.setState({
+                    showProfile: true,
+                    profileUserId: item.user_id,
+                  });
+                }}
+                accessibilityLabel="Clickable Searched Profile"
               >
                 <Text style={styles.searchName}>
                   {item.given_name}
@@ -206,11 +211,13 @@ export default class AddContactsScreen extends Component
                   {item.family_name}
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() =>
-              {
-                this.addToContacts(item.user_id);
-                this.setState({ addedName: `${item.given_name} ${item.family_name}` });
-              }}
+              <TouchableOpacity
+                onPress={() =>
+                {
+                  this.addToContacts(item.user_id);
+                  this.setState({ addedName: `${item.given_name} ${item.family_name}` });
+                }}
+                accessibilityLabel="Submit Button"
               >
                 <View style={styles.button}>
                   <Text style={styles.buttonText}>Add To Contacts</Text>
@@ -229,14 +236,16 @@ export default class AddContactsScreen extends Component
             Page Number:
             {(offset + increment) / increment}
           </Text>
-          <TouchableOpacity onPress={() =>
-          {
-            this.setState({ offset: (offset + increment) }, () =>
+          <TouchableOpacity
+            onPress={() =>
             {
-              console.log(offset);
-              this.searchUsers(searchTerm, 'all');
-            });
-          }}
+              this.setState({ offset: (offset + increment) }, () =>
+              {
+                console.log(offset);
+                this.searchUsers(searchTerm, 'all');
+              });
+            }}
+            accessibilityLabel="Next Page Button"
           >
             <View style={styles.bottomButton}>
               <Text style={styles.buttonText}>next page</Text>
@@ -245,21 +254,23 @@ export default class AddContactsScreen extends Component
 
           {offset > 0
         && (
-        <TouchableOpacity onPress={() =>
-        {
-          this.setState({ offset: (offset - increment) }, () =>
+        <TouchableOpacity
+          onPress={() =>
           {
-            console.log(offset);
-            this.searchUsers(searchTerm, 'all');
-          });
-        }}
+            this.setState({ offset: (offset - increment) }, () =>
+            {
+              console.log(offset);
+              this.searchUsers(searchTerm, 'all');
+            });
+          }}
+          accessibilityLabel="Previous Page Button"
         >
           <View style={styles.bottomButton}>
             <Text style={styles.buttonText}>previous page</Text>
           </View>
         </TouchableOpacity>
         )}
-          <TouchableOpacity onPress={() => navigation.navigate('contacts')}>
+          <TouchableOpacity onPress={() => navigation.navigate('contacts')} accessibilityLabel="Back Button">
             <View style={styles.bottomButton}>
               <Text style={styles.buttonText}>Go Back</Text>
             </View>

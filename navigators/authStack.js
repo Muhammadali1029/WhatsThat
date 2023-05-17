@@ -21,9 +21,9 @@ export default class AuthorizationStack extends Component
             initialRouteName: 'login',
           }}
         >
-          <AuthStack.Screen name="login" component={LoginScreen} />
-          <AuthStack.Screen name="signup" component={SignUpScreen} />
-          <AuthStack.Screen name="homenav" component={HomeNav} />
+          <AuthStack.Screen name="login" accessibilityLabel="Login Screen" component={LoginScreen} />
+          <AuthStack.Screen name="signup" accessibilityLabel="Sign Up Screen" component={SignUpScreen} />
+          <AuthStack.Screen name="homenav" accessibilityLabel="Chats Navigator" component={HomeNav} />
         </AuthStack.Navigator>
       </NavigationContainer>
     );

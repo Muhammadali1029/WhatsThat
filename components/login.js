@@ -166,6 +166,7 @@ export default class LoginScreen extends Component
               placeholder="Enter email"
               onChangeText={(e) => this.setState({ email: e })}
               defaultValue={email}
+              accessibilityLabel="enter Email textbox"
             />
 
             {submitted && !email
@@ -181,6 +182,7 @@ export default class LoginScreen extends Component
               onChangeText={(p) => this.setState({ password: p })}
               defaultValue={password}
               secureTextEntry
+              accessibilityLabel="Enter Password textbox"
             />
 
             {submitted && !password
@@ -188,7 +190,7 @@ export default class LoginScreen extends Component
           </View>
 
           <View style={globalStyles.buttonsContainer}>
-            <TouchableOpacity onPress={this.onPressButton}>
+            <TouchableOpacity onPress={this.onPressButton} accessibilityLabel="Login button">
               <View style={[globalStyles.button, styles.button]}>
                 <Text style={globalStyles.buttonText}>Login</Text>
               </View>
@@ -200,7 +202,7 @@ export default class LoginScreen extends Component
         </View>
 
         <View style={[globalStyles.headerButtonsContainer, styles.btnContainer]}>
-          <TouchableOpacity onPress={() => navigation.navigate('signup')}>
+          <TouchableOpacity onPress={() => navigation.navigate('signup')} accessibilityLabel="Go to signup screen button">
             <View style={globalStyles.headerButtons}>
               <Text style={styles.buttonText}>Need an account?</Text>
             </View>

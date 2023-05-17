@@ -98,9 +98,11 @@ export default class ChatsScreen extends Component
 
           <View style={styles.headerButtonsContainer}>
             <TouchableOpacity onPress={() => navigation.navigate('createChatScreen')}>
-              <Text style={[
-                globalStyles.headerButtons, styles.headerButtons,
-              ]}
+              <Text
+                style={[
+                  globalStyles.headerButtons, styles.headerButtons,
+                ]}
+                accessibilityLabel="Create new chat Button"
               >
                 Create New Chat
               </Text>
@@ -123,6 +125,7 @@ export default class ChatsScreen extends Component
                   <TouchableOpacity
                     style={{ flex: 1 }}
                     onPress={() => navigation.navigate('singleChatScreenNav', { screen: 'singleChatScreen', params: { chatItem: item } })}
+                    accessibilityLabel="Clickable chats Button"
                   >
                     <Text style={styles.chatName}>{item.name}</Text>
                     <View style={styles.lastMessage}>

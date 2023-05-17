@@ -130,6 +130,7 @@ export default class SignUpScreen extends Component
               placeholder="Enter first name"
               onChangeText={(f) => this.setState({ firstName: f })}
               defaultValue={firstName}
+              accessibilityLabel="Enter First Name Textbox"
             />
 
             {submitted && !firstName
@@ -143,6 +144,7 @@ export default class SignUpScreen extends Component
               placeholder="Enter last name"
               onChangeText={(l) => this.setState({ lastName: l })}
               defaultValue={lastName}
+              accessibilityLabel="Enter Last Name Textbox"
             />
 
             {submitted && !lastName
@@ -156,6 +158,7 @@ export default class SignUpScreen extends Component
               placeholder="Enter email"
               onChangeText={(e) => this.setState({ email: e })}
               defaultValue={email}
+              accessibilityLabel="Enter Email Textbox"
             />
 
             {submitted && !email
@@ -170,6 +173,7 @@ export default class SignUpScreen extends Component
               onChangeText={(p) => this.setState({ password: p })}
               defaultValue={password}
               secureTextEntry
+              accessibilityLabel="Enter Password Textbox"
             />
 
             {submitted && !password
@@ -185,6 +189,7 @@ export default class SignUpScreen extends Component
               onChangeText={(cP) => this.setState({ confirmPassword: cP })}
               defaultValue={confirmPassword}
               secureTextEntry
+              accessibilityLabel="re-Enter Password Textbox"
             />
 
             {submitted && !confirmPassword
@@ -193,7 +198,7 @@ export default class SignUpScreen extends Component
           </View>
 
           <View style={globalStyles.buttonsContainer}>
-            <TouchableOpacity onPress={this.onPressButton}>
+            <TouchableOpacity onPress={this.onPressButton} accessibilityLabel="Create Acount Button">
               <View style={globalStyles.button}>
                 <Text style={globalStyles.buttonText}>Create Account</Text>
               </View>
@@ -205,7 +210,7 @@ export default class SignUpScreen extends Component
         </View>
 
         <View style={[globalStyles.headerButtonsContainer, styles.btnContainer]}>
-          <TouchableOpacity onPress={() => navigation.navigate('login')}>
+          <TouchableOpacity onPress={() => navigation.navigate('login')} accessibilityLabel="Go to login screen Button">
             <View style={globalStyles.headerButtons}>
               <Text style={styles.buttonText}>Have an account? Login</Text>
             </View>

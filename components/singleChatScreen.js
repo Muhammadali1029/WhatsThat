@@ -320,11 +320,13 @@ export default class SingleChatScreen extends Component
       <View style={globalStyles.container}>
 
         <View style={globalStyles.headerContainer}>
-          <TouchableOpacity onPress={() =>
-          {
-            navigate('chatInfoScreen', { chatItem });
-            console.log({ chatData });
-          }}
+          <TouchableOpacity
+            onPress={() =>
+            {
+              navigate('chatInfoScreen', { chatItem });
+              console.log({ chatData });
+            }}
+            accessibilityLabel="Go to chat info screen Button"
           >
             <Text style={globalStyles.titleText}>{chatData.name}</Text>
           </TouchableOpacity>
@@ -360,6 +362,7 @@ export default class SingleChatScreen extends Component
                         this.setState({ showModal: true });
                       }
                     }}
+                    accessibilityLabel="Long press for message options pressable"
                   >
                     <Text
                       style={[
@@ -383,15 +386,18 @@ export default class SingleChatScreen extends Component
                             style={styles.messageBox}
                             placeholder={selectedMessage}
                             onChangeText={(eM) => this.setState({ editMessage: eM })}
+                            accessibilityLabel="Edit message textbox"
                           />
 
                           <View style={styles.buttonsContainer}>
-                            <TouchableOpacity onPress={() =>
-                            {
-                              this.editMessage();
-                              console.log(`Edited Message ID: ${messageId}`);
-                              this.setState({ showModal: false });
-                            }}
+                            <TouchableOpacity
+                              onPress={() =>
+                              {
+                                this.editMessage();
+                                console.log(`Edited Message ID: ${messageId}`);
+                                this.setState({ showModal: false });
+                              }}
+                              accessibilityLabel="Confirm message edit Button"
                             >
                               <View style={styles.button}>
                                 <Text style={styles.buttonText}>Confirm Edit</Text>
@@ -400,12 +406,14 @@ export default class SingleChatScreen extends Component
                           </View>
 
                           <View style={styles.buttonsContainer}>
-                            <TouchableOpacity onPress={() =>
-                            {
-                              this.deleteMessage();
-                              console.log(`Deleted Message ID: ${messageId}`);
-                              this.setState({ showModal: false });
-                            }}
+                            <TouchableOpacity
+                              onPress={() =>
+                              {
+                                this.deleteMessage();
+                                console.log(`Deleted Message ID: ${messageId}`);
+                                this.setState({ showModal: false });
+                              }}
+                              accessibilityLabel="Delete message Button"
                             >
                               <View style={styles.button}>
                                 <Text style={styles.buttonText}>Delete</Text>
@@ -414,7 +422,7 @@ export default class SingleChatScreen extends Component
                           </View>
 
                           <View style={styles.buttonsContainer}>
-                            <TouchableOpacity onPress={() => this.setState({ showModal: false })}>
+                            <TouchableOpacity onPress={() => this.setState({ showModal: false })} accessibilityLabel="Close options Button">
                               <View style={styles.button}>
                                 <Text style={styles.buttonText}>Cancel</Text>
                               </View>
@@ -436,6 +444,7 @@ export default class SingleChatScreen extends Component
                 style={styles.messageBox}
                 value={newMessage}
                 onChangeText={(nM) => this.setState({ newMessage: nM })}
+                accessibilityLabel="New message textbox"
               />
 
               <View style={styles.draftContainer}>
@@ -444,11 +453,13 @@ export default class SingleChatScreen extends Component
                   <View>
                     {!draftSaved
                       && (
-                      <TouchableOpacity onPress={() =>
-                      {
-                        this.saveOrEditDraft(newMessage);
-                        this.setState({ draftSaved: true });
-                      }}
+                      <TouchableOpacity
+                        onPress={() =>
+                        {
+                          this.saveOrEditDraft(newMessage);
+                          this.setState({ draftSaved: true });
+                        }}
+                        accessibilityLabel="Save message draft button Button"
                       >
                         <Text style={styles.sendButton}>Save as Draft</Text>
                       </TouchableOpacity>
@@ -458,10 +469,12 @@ export default class SingleChatScreen extends Component
 
                 {draft.length !== 0
                 && (
-                <TouchableOpacity onPress={() =>
-                {
-                  this.setState({ viewDraft: true });
-                }}
+                <TouchableOpacity
+                  onPress={() =>
+                  {
+                    this.setState({ viewDraft: true });
+                  }}
+                  accessibilityLabel="View Draft messages Button"
                 >
                   <Text style={styles.draftButton}>View Draft</Text>
                 </TouchableOpacity>
@@ -470,13 +483,15 @@ export default class SingleChatScreen extends Component
 
             </View>
             <View style={styles.sendMessage}>
-              <TouchableOpacity onPress={() =>
-              {
-                if (newMessage !== '')
+              <TouchableOpacity
+                onPress={() =>
                 {
-                  this.sendMessage(newMessage);
-                }
-              }}
+                  if (newMessage !== '')
+                  {
+                    this.sendMessage(newMessage);
+                  }
+                }}
+                accessibilityLabel="Send message Button"
               >
                 <Text style={styles.sendButton}>Send</Text>
               </TouchableOpacity>
@@ -491,15 +506,18 @@ export default class SingleChatScreen extends Component
                       style={styles.messageBox}
                       placeholder={draft}
                       onChangeText={(eD) => this.setState({ editDraft: eD })}
+                      accessibilityLabel="Edit draft message textbox"
                     />
 
                     <View style={styles.buttonsContainer}>
-                      <TouchableOpacity onPress={() =>
-                      {
-                        this.saveOrEditDraft(editDraft);
-                        console.log(`Edited Draft: ${editDraft}`);
-                        this.setState({ viewDraft: false });
-                      }}
+                      <TouchableOpacity
+                        onPress={() =>
+                        {
+                          this.saveOrEditDraft(editDraft);
+                          console.log(`Edited Draft: ${editDraft}`);
+                          this.setState({ viewDraft: false });
+                        }}
+                        accessibilityLabel="Condirm edit Button"
                       >
                         <View style={styles.button}>
                           <Text style={styles.buttonText}>Confirm Edit</Text>
@@ -508,12 +526,14 @@ export default class SingleChatScreen extends Component
                     </View>
 
                     <View style={styles.buttonsContainer}>
-                      <TouchableOpacity onPress={() =>
-                      {
-                        this.deleteDraft();
-                        console.log(`Deleted Draft: ${draft}`);
-                        this.setState({ viewDraft: false });
-                      }}
+                      <TouchableOpacity
+                        onPress={() =>
+                        {
+                          this.deleteDraft();
+                          console.log(`Deleted Draft: ${draft}`);
+                          this.setState({ viewDraft: false });
+                        }}
+                        accessibilityLabel="Delete Draft Button"
                       >
                         <View style={styles.button}>
                           <Text style={styles.buttonText}>Delete</Text>
@@ -522,12 +542,14 @@ export default class SingleChatScreen extends Component
                     </View>
 
                     <View style={styles.buttonsContainer}>
-                      <TouchableOpacity onPress={() =>
-                      {
-                        this.deleteDraft();
-                        this.setState({ viewDraft: false });
-                        this.sendMessage(draft);
-                      }}
+                      <TouchableOpacity
+                        onPress={() =>
+                        {
+                          this.deleteDraft();
+                          this.setState({ viewDraft: false, draftSaved: false });
+                          this.sendMessage(draft);
+                        }}
+                        accessibilityLabel="Send drafted message Button"
                       >
                         <View style={styles.button}>
                           <Text style={styles.buttonText}>Send Draft</Text>
@@ -536,10 +558,12 @@ export default class SingleChatScreen extends Component
                     </View>
 
                     <View style={styles.buttonsContainer}>
-                      <TouchableOpacity onPress={() =>
-                      {
-                        this.setState({ viewDraft: false });
-                      }}
+                      <TouchableOpacity
+                        onPress={() =>
+                        {
+                          this.setState({ viewDraft: false });
+                        }}
+                        accessibilityLabel="Close draft options Button"
                       >
                         <View style={styles.button}>
                           <Text style={styles.buttonText}>Cancel</Text>
@@ -627,10 +651,14 @@ const styles = StyleSheet.create({
     flex: 0.5,
   },
   sendButton: {
-    color: '#0077be',
+    color: 'white',
     fontSize: 20,
-    borderBottomWidth: 2,
-    borderBottomColor: '#0077be',
+    fontWeight: '700',
+    borderWidth: 1,
+    borderColor: 'black',
+    borderRadius: 100,
+    padding: 10,
+    backgroundColor: '#0077be',
   },
   modalBackground:
     {
@@ -674,7 +702,7 @@ const styles = StyleSheet.create({
   },
   draftButton: {
     color: '#0077be',
-    fontSize: 20,
+    fontSize: 10,
     borderBottomWidth: 2,
     borderBottomColor: '#0077be',
   },

@@ -356,12 +356,15 @@ export default class ChatInfoScreen extends Component
                 placeholder="Enter New Chat Name"
                 onChangeText={(n) => this.setState({ editChatName: n })}
                 defaultValue={chatData.name}
+                accessibilityLabel="Edit CHat Name Textbox"
               />
-              <TouchableOpacity onPress={() =>
-              {
-                this.updateChatInfo();
-                this.setState({ showEdit: false });
-              }}
+              <TouchableOpacity
+                onPress={() =>
+                {
+                  this.updateChatInfo();
+                  this.setState({ showEdit: false });
+                }}
+                accessibilityLabel="Confirm changes Button"
               >
                 <View style={globalStyles.button}>
                   <Text style={globalStyles.buttonText}>Confim</Text>
@@ -372,7 +375,7 @@ export default class ChatInfoScreen extends Component
           : (
             <View style={styles.chatName}>
               <Text style={styles.text}>{chatData.name}</Text>
-              <TouchableOpacity onPress={() => this.setState({ showEdit: true })}>
+              <TouchableOpacity onPress={() => this.setState({ showEdit: true })} accessibilityLabel="Edit Button">
                 <View style={globalStyles.button}>
                   <Text style={globalStyles.buttonText}>Edit</Text>
                 </View>
@@ -388,14 +391,17 @@ export default class ChatInfoScreen extends Component
                 placeholder="Enter Name"
                 onChangeText={(sT) => this.setState({ searchTerm: sT })}
                 defaultValue={searchTerm}
+                accessibilityLabel="Search Users textbox"
               />
 
               <View style={styles.btnContainer}>
-                <TouchableOpacity onPress={() =>
-                {
-                  this.searchUsers(searchTerm, 'contacts');
-                  this.setState({ searchPressed: true });
-                }}
+                <TouchableOpacity
+                  onPress={() =>
+                  {
+                    this.searchUsers(searchTerm, 'contacts');
+                    this.setState({ searchPressed: true });
+                  }}
+                  accessibilityLabel="Search button"
                 >
                   <View style={[globalStyles.button, styles.btn]}>
                     <Text style={globalStyles.buttonText}>Search</Text>
@@ -407,7 +413,7 @@ export default class ChatInfoScreen extends Component
                 : null}
 
               <View style={styles.btnContainer}>
-                <TouchableOpacity onPress={() => this.setState({ showAddUser: false })}>
+                <TouchableOpacity onPress={() => this.setState({ showAddUser: false })} accessibilityLabel="Done Button">
                   <View style={globalStyles.button}>
                     <Text style={globalStyles.buttonText}>Done</Text>
                   </View>
@@ -419,13 +425,15 @@ export default class ChatInfoScreen extends Component
                   data={searchData}
                   renderItem={({ item }) => (
                     <View style={globalStyles.flatListContainer}>
-                      <TouchableOpacity onPress={() =>
-                      {
-                        this.setState({
-                          showProfile: true,
-                          profileUserId: item.user_id,
-                        });
-                      }}
+                      <TouchableOpacity
+                        onPress={() =>
+                        {
+                          this.setState({
+                            showProfile: true,
+                            profileUserId: item.user_id,
+                          });
+                        }}
+                        accessibilityLabel="Search results clickable profiles"
                       >
                         <Text style={styles.searchName}>
                           {item.given_name}
@@ -433,9 +441,11 @@ export default class ChatInfoScreen extends Component
                           {item.family_name}
                         </Text>
                       </TouchableOpacity>
-                      <TouchableOpacity onPress={
+                      <TouchableOpacity
+                        onPress={
                         () => this.addToChat(chatItem.chat_id, item.user_id)
                       }
+                        accessibilityLabel="Add Users to chat Button"
                       >
                         <View style={globalStyles.button}>
                           <Text style={globalStyles.buttonText}>Add User</Text>
@@ -455,14 +465,16 @@ export default class ChatInfoScreen extends Component
                       Page Number:
                       {(offset + increment) / increment}
                     </Text>
-                    <TouchableOpacity onPress={() =>
-                    {
-                      this.setState({ offset: (offset + increment) }, () =>
+                    <TouchableOpacity
+                      onPress={() =>
                       {
-                        console.log(offset);
-                        this.searchUsers(searchTerm, 'contacts');
-                      });
-                    }}
+                        this.setState({ offset: (offset + increment) }, () =>
+                        {
+                          console.log(offset);
+                          this.searchUsers(searchTerm, 'contacts');
+                        });
+                      }}
+                      accessibilityLabel="Next page of results button"
                     >
                       <View style={styles.bottomButton}>
                         <Text style={styles.buttonText}>next page</Text>
@@ -471,14 +483,16 @@ export default class ChatInfoScreen extends Component
 
                     {offset > 0
                   && (
-                  <TouchableOpacity onPress={() =>
-                  {
-                    this.setState({ offset: (offset - increment) }, () =>
+                  <TouchableOpacity
+                    onPress={() =>
                     {
-                      console.log(offset);
-                      this.searchUsers(searchTerm, 'contacts');
-                    });
-                  }}
+                      this.setState({ offset: (offset - increment) }, () =>
+                      {
+                        console.log(offset);
+                        this.searchUsers(searchTerm, 'contacts');
+                      });
+                    }}
+                    accessibilityLabel="Previous page of results Button"
                   >
                     <View style={styles.bottomButton}>
                       <Text style={styles.buttonText}>previous page</Text>
@@ -492,7 +506,7 @@ export default class ChatInfoScreen extends Component
           )
           : (
             <View style={styles.addUserContainer}>
-              <TouchableOpacity onPress={() => this.setState({ showAddUser: true })}>
+              <TouchableOpacity onPress={() => this.setState({ showAddUser: true })} accessibilityLabel="Open add users option Button">
                 <View style={globalStyles.button}>
                   <Text style={globalStyles.buttonText}>Add New User to Chat</Text>
                 </View>
@@ -504,13 +518,15 @@ export default class ChatInfoScreen extends Component
                   data={chatData.members}
                   renderItem={({ item }) => (
                     <View style={globalStyles.flatListContainer}>
-                      <TouchableOpacity onPress={() =>
-                      {
-                        this.setState({
-                          showProfile: true,
-                          profileUserId: item.user_id,
-                        });
-                      }}
+                      <TouchableOpacity
+                        onPress={() =>
+                        {
+                          this.setState({
+                            showProfile: true,
+                            profileUserId: item.user_id,
+                          });
+                        }}
+                        accessibilityLabel="Results clickable profile button"
                       >
                         <Text style={styles.searchName}>
                           {item.first_name}
@@ -518,10 +534,12 @@ export default class ChatInfoScreen extends Component
                           {item.last_name}
                         </Text>
                       </TouchableOpacity>
-                      <TouchableOpacity onPress={() =>
-                      {
-                        this.removeFromChat(chatItem.chat_id, item.user_id);
-                      }}
+                      <TouchableOpacity
+                        onPress={() =>
+                        {
+                          this.removeFromChat(chatItem.chat_id, item.user_id);
+                        }}
+                        accessibilityLabel="Remove from chat Button"
                       >
                         <View style={globalStyles.button}>
                           <Text style={globalStyles.buttonText}>Remove</Text>

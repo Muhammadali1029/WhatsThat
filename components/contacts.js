@@ -162,23 +162,27 @@ export default class ContactsScreen extends Component
             <Text style={globalStyles.titleText}>Contacts</Text>
           </View>
           <View style={globalStyles.headerButtonsContainer}>
-            <TouchableOpacity onPress={() => navigation.navigate(
-              'blocked',
-              {
-                getData: this.getData,
-                removeFromContacts: this.removeFromConatacts,
-              },
-            )}
+            <TouchableOpacity
+              onPress={() => navigation.navigate(
+                'blocked',
+                {
+                  getData: this.getData,
+                  removeFromContacts: this.removeFromConatacts,
+                },
+              )}
+              accessibilityLabel="Go to blocked screen button"
             >
               <Text style={globalStyles.headerButtons}>Blocked Users</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => navigation.navigate(
-              'addContact',
-              {
-                getData: this.getData,
-              },
-            )}
+            <TouchableOpacity
+              onPress={() => navigation.navigate(
+                'addContact',
+                {
+                  getData: this.getData,
+                },
+              )}
+              accessibilityLabel="Go to add to contacts screen Button"
             >
               <Text style={globalStyles.headerButtons}>Add Contact</Text>
             </TouchableOpacity>
@@ -190,13 +194,15 @@ export default class ContactsScreen extends Component
             data={contactsData}
             renderItem={({ item }) => (
               <View style={styles.contactContainer}>
-                <TouchableOpacity onPress={() =>
-                {
-                  this.setState({
-                    showProfile: true,
-                    profileUserId: item.user_id,
-                  });
-                }}
+                <TouchableOpacity
+                  onPress={() =>
+                  {
+                    this.setState({
+                      showProfile: true,
+                      profileUserId: item.user_id,
+                    });
+                  }}
+                  accessibilityLabel="Clickable profiles"
                 >
                   <Text style={styles.contactName}>
                     {item.first_name}
@@ -205,12 +211,12 @@ export default class ContactsScreen extends Component
                   </Text>
                 </TouchableOpacity>
                 <View style={styles.buttonsContainer}>
-                  <TouchableOpacity onPress={() => this.removeFromConatacts(item.user_id)}>
+                  <TouchableOpacity onPress={() => this.removeFromConatacts(item.user_id)} accessibilityLabel="Remove from chat Button">
                     <View style={styles.button}>
                       <Text style={styles.buttonText}>Remove</Text>
                     </View>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={() => this.blockUser(item.user_id)}>
+                  <TouchableOpacity onPress={() => this.blockUser(item.user_id)} accessibilityLabel="Block user Button">
                     <View style={styles.button}>
                       <Text style={styles.buttonText}>Block</Text>
                     </View>

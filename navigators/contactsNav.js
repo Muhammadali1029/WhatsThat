@@ -19,9 +19,9 @@ export default class ContactsScreenStack extends Component
           initialRouteName: 'contacts',
         }}
       >
-        <ContactsStack.Screen name="contacts" component={ContactsScreen} />
-        <ContactsStack.Screen name="addContact" component={AddContactsScreen} />
-        <ContactsStack.Screen name="blocked" component={BlockedScreen} />
+        <ContactsStack.Screen name="contacts" accessibilityLabel="Contacts Screen" component={ContactsScreen} />
+        <ContactsStack.Screen name="addContact" accessibilityLabel="Add Contacts Screen" component={AddContactsScreen} />
+        <ContactsStack.Screen name="blocked" accessibilityLabel="Blocked Screen" component={BlockedScreen} />
       </ContactsStack.Navigator>
     );
   }

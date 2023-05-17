@@ -110,6 +110,7 @@ export default class OtherUsersProfileScreen extends Component
                 <Button
                   title="Close"
                   onPress={() => this.handleClose()}
+                  accessibilityLabel="Close profile button"
                 />
               </View>
             </View>

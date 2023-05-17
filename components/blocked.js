@@ -166,7 +166,7 @@ export default class BlockedScreen extends Component
                   {' '}
                   {item.last_name}
                 </Text>
-                <TouchableOpacity onPress={() => this.unblockUser(item.user_id)}>
+                <TouchableOpacity onPress={() => this.unblockUser(item.user_id)} accessibilityLabel="Unblock User Button">
                   <View style={styles.button}>
                     <Text style={styles.buttonText}>Unblock</Text>
                   </View>

@@ -73,7 +73,7 @@ export default function cameraTakePhoto()
     <View style={styles.container}>
       <Camera style={styles.camera} type={type} ref={(ref) => setCamera(ref)}>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={() => toggleCameraType()}>
+          <TouchableOpacity style={styles.button} onPress={() => toggleCameraType()} accessibilityLabel="Flip camera Button">
             <Text style={styles.text}>Flip Camera</Text>
           </TouchableOpacity>
         </View>
@@ -85,6 +85,7 @@ export default function cameraTakePhoto()
             {
               takePhoto();
             }}
+            accessibilityLabel="Take Photo Button"
           >
             <Text style={styles.text}>Take Photo</Text>
           </TouchableOpacity>

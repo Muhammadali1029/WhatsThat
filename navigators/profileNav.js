@@ -18,8 +18,8 @@ export default class ProfileScreenStack extends Component
           initialRouteName: 'profile',
         }}
       >
-        <ProfileStack.Screen name="profile" component={ProfileScreen} />
-        <ProfileStack.Screen name="editProfile" component={EditProfileScreen} />
+        <ProfileStack.Screen name="profile" accessibilityLabel="Profile Screen" component={ProfileScreen} />
+        <ProfileStack.Screen name="editProfile" accessibilityLabel="Edit Profile Screen" component={EditProfileScreen} />
       </ProfileStack.Navigator>
     );
   }

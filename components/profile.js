@@ -130,6 +130,7 @@ export default class ProfileScreen extends Component
               <Button
                 title="Go Back"
                 onPress={() => this.setState({ takePhoto: false })}
+                accessibilityLabel="Go back button"
               />
             </View>
           ) : (
@@ -141,15 +142,17 @@ export default class ProfileScreen extends Component
 
                 <View style={globalStyles.headerButtonsContainer}>
                   <TouchableOpacity onPress={() => this.setState({ takePhoto: true })}>
-                    <Text style={[
-                      globalStyles.headerButtons, styles.headerButtons,
-                    ]}
+                    <Text
+                      style={[
+                        globalStyles.headerButtons, styles.headerButtons,
+                      ]}
+                      accessibilityLabel="Go to camera button"
                     >
                       Update Photo
                     </Text>
                   </TouchableOpacity>
 
-                  <TouchableOpacity onPress={() => navigation.navigate('editProfile', { profileData })}>
+                  <TouchableOpacity onPress={() => navigation.navigate('editProfile', { profileData })} accessibilityLabel="go to edit profile screen button">
                     <Text style={[
                       globalStyles.headerButtons, styles.headerButtons,
                     ]}
@@ -178,7 +181,7 @@ export default class ProfileScreen extends Component
               </View>
 
               <View style={styles.logoutButtonContainer}>
-                <TouchableOpacity onPress={() => this.logout()}>
+                <TouchableOpacity onPress={() => this.logout()} accessibilityLabel="Logout of account button">
                   <Text style={[globalStyles.headerButtons, styles.logoutButton]}>Logout?</Text>
                 </TouchableOpacity>
               </View>

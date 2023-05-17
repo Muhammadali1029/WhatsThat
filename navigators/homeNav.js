@@ -45,9 +45,9 @@ export default class HomeNav extends Component
           initialRouteName: 'chatsNav',
         }}
       >
-        <Tab.Screen name="chatsNav" options={{ tabBarLabel: 'Chats' }} component={ChatsNav} />
-        <Tab.Screen name="contactsNav" options={{ tabBarLabel: 'Contacts' }} component={ContactsNav} />
-        <Tab.Screen name="profileNav" options={{ tabBarLabel: 'Profile' }} component={ProfileNav} />
+        <Tab.Screen name="chatsNav" options={{ tabBarLabel: 'Chats' }} accessibilityLabel="Chats Navigator" component={ChatsNav} />
+        <Tab.Screen name="contactsNav" options={{ tabBarLabel: 'Contacts' }} accessibilityLabel="Contacts Navigator" component={ContactsNav} />
+        <Tab.Screen name="profileNav" options={{ tabBarLabel: 'Profile' }} accessibilityLabel="Profile navigator" component={ProfileNav} />
       </Tab.Navigator>
     );
   }

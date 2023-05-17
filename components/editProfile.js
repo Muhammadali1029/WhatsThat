@@ -170,6 +170,7 @@ export default class EditProfileScreen extends Component
               style={styles.textInput}
               value={firstName}
               onChangeText={(val) => this.setState({ firstName: val })}
+              accessibilityLabel="First Name Textbox"
             />
 
             <Text style={styles.text}>Last Name</Text>
@@ -177,6 +178,7 @@ export default class EditProfileScreen extends Component
               style={styles.textInput}
               value={lastName}
               onChangeText={(val) => this.setState({ lastName: val })}
+              accessibilityLabel="Last Name Textbox"
             />
 
             <Text style={styles.text}>Email</Text>
@@ -184,6 +186,7 @@ export default class EditProfileScreen extends Component
               style={styles.textInput}
               value={email}
               onChangeText={(val) => this.setState({ email: val })}
+              accessibilityLabel="email Textbox"
             />
 
             <Text style={styles.text}>Password</Text>
@@ -192,6 +195,7 @@ export default class EditProfileScreen extends Component
               placeholder="Enter password"
               onChangeText={(p) => this.setState({ password: p, passwordChanged: true })}
               defaultValue={password}
+              accessibilityLabel="Password Textbox"
             />
 
             {passwordChanged
@@ -203,6 +207,7 @@ export default class EditProfileScreen extends Component
               placeholder="Re-enter password"
               onChangeText={(cP) => this.setState({ confirmPassword: cP })}
               defaultValue={confirmPassword}
+              accessibilityLabel="confirm password Textbox"
             />
           </View>
         )}
@@ -215,12 +220,12 @@ export default class EditProfileScreen extends Component
           && <Text style={styles.error}>{error}</Text>}
 
           <View style={[globalStyles.buttonsContainer, styles.buttonsContainer]}>
-            <TouchableOpacity onPress={() => this.updateProfile()}>
+            <TouchableOpacity onPress={() => this.updateProfile()} accessibilityLabel="Update profile button">
               <View style={[globalStyles.button, styles.button]}>
                 <Text style={globalStyles.buttonText}>Update</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigate('profile')}>
+            <TouchableOpacity onPress={() => navigate('profile')} accessibilityLabel="Go back button">
               <View style={globalStyles.button}>
                 <Text style={globalStyles.buttonText}>Go Back</Text>
               </View>

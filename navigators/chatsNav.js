@@ -19,9 +19,9 @@ export default class ChatsScreenStack extends Component
           initialRouteName: 'chats',
         }}
       >
-        <ChatsStack.Screen name="chats" component={ChatsScreen} />
-        <ChatsStack.Screen name="createChatScreen" component={CreateChatScreen} />
-        <ChatsStack.Screen name="singleChatScreenNav" component={SingleChatNav} />
+        <ChatsStack.Screen name="chats" accessibilityLabel="All Chats Screen" component={ChatsScreen} />
+        <ChatsStack.Screen name="createChatScreen" accessibilityLabel="Create Chat Screen" component={CreateChatScreen} />
+        <ChatsStack.Screen name="singleChatScreenNav" accessibilityLabel="Single Chat Navigator" component={SingleChatNav} />
       </ChatsStack.Navigator>
     );
   }
