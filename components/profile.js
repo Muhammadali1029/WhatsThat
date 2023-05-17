@@ -26,13 +26,30 @@ export default class ProfileScreen extends Component
 
   async componentDidMount()
   {
-    this.getData();
+    const { navigation } = this.props;
+    const { addListener } = navigation;
 
+    this.getData();
     await AsyncStorage.getItem('whatsthat_user_id').then((id) =>
     {
       this.setState({ userId: parseInt(id, 10) });
     });
+    this.focusListener = addListener('focus', this.handleFocus);
   }
+
+  componentWillUnmount()
+  {
+    // Remove the focus listener
+    if (this.focusListener)
+    {
+      this.focusListener();
+    }
+  }
+
+  handleFocus = () =>
+  {
+    this.getData();
+  };
 
   getData = async () =>
   {

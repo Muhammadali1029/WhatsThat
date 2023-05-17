@@ -112,7 +112,6 @@ export default class ChatsScreen extends Component
 
         <View style={styles.chatsList}>
           <FlatList
-            inverted
             data={allChatsData}
             renderItem={({ item }) => (
               <View style={styles.chatsContainer}>

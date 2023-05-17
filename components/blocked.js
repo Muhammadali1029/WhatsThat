@@ -90,12 +90,12 @@ export default class BlockedScreen extends Component
         console.log(`User ${userID} Unblocked`);
         this.getData();
         params.getData();
-        params.removeFromContacts(userID);
         this.setState({ showResponse: true, response: 'User Unblocked Successfuly' });
         setTimeout(() =>
         {
           this.setState({ showResponse: false });
         }, 2000);
+        params.removeFromContacts(userID);
       }
       else if (response.status === 400)
       {

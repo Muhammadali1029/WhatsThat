@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
 } from 'react-native';
-import { Button } from 'react-native-web';
 import PropTypes from 'prop-types';
 
 import * as EmailValidator from 'email-validator';
 import globalStyles from '../styles/globalStyleSheet';
+import Modal from './modal';
 
 export default class SignUpScreen extends Component
 {
@@ -22,6 +22,8 @@ export default class SignUpScreen extends Component
       confirmPassword: '',
       error: '',
       submitted: false,
+      showAlert: false,
+      response: '',
     };
 
     this.onPressButton = this.onPressButton.bind(this);
@@ -59,6 +61,7 @@ export default class SignUpScreen extends Component
     if (password !== confirmPassword)
     {
       this.setState({ error: 'Password does not match, re-enter' });
+      return;
     }
 
     console.log(`Button clicked: ${firstName} ${lastName} ${email} ${password}`);
@@ -89,14 +92,29 @@ export default class SignUpScreen extends Component
         if (response.status === 201)
         {
           console.log('Account created');
+          this.setState({ showAlert: true, response: 'Account Created' });
+          setTimeout(() =>
+          {
+            this.setState({ showAlert: false });
+          }, 2000);
           return response.json();
         }
         if (response.status === 400)
         {
+          this.setState({ showAlert: true, response: 'Account Already Exists' });
+          setTimeout(() =>
+          {
+            this.setState({ showAlert: false });
+          }, 2000);
           throw 'Account already exists';
         }
         else
         {
+          this.setState({ showAlert: true, response: 'Server Error' });
+          setTimeout(() =>
+          {
+            this.setState({ showAlert: false });
+          }, 2000);
           throw 'Something went wrong';
         }
       })
@@ -117,6 +135,7 @@ export default class SignUpScreen extends Component
   {
     const {
       firstName, lastName, email, password, confirmPassword, submitted, error,
+      showAlert, response,
     } = this.state;
     const { navigation } = this.props;
 
@@ -216,6 +235,9 @@ export default class SignUpScreen extends Component
             </View>
           </TouchableOpacity>
         </View>
+
+        {showAlert
+          && <Modal alert={response} />}
       </View>
     );
   }

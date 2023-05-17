@@ -41,7 +41,7 @@ export default class SingleChatScreen extends Component
     this.interval = setInterval(() =>
     {
       this.getData();
-    }, 5000);
+    }, 3000);
   }
 
   componentDidUpdate(prevProps, prevState)
@@ -461,7 +461,7 @@ export default class SingleChatScreen extends Component
                         }}
                         accessibilityLabel="Save message draft button Button"
                       >
-                        <Text style={styles.sendButton}>Save as Draft</Text>
+                        <Text style={styles.draftButton}>Save as Draft</Text>
                       </TouchableOpacity>
                       )}
                   </View>
@@ -702,7 +702,7 @@ const styles = StyleSheet.create({
   },
   draftButton: {
     color: '#0077be',
-    fontSize: 10,
+    fontSize: 15,
     borderBottomWidth: 2,
     borderBottomColor: '#0077be',
   },
