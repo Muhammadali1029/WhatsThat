@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import getRequest from './getRequest';
 import ProfileScreen from './otherUsersProfile';
 import globalStyles from '../styles/globalStyleSheet';
+import Modal from './modal';
 
 export default class ContactsScreen extends Component
 {
@@ -21,6 +22,8 @@ export default class ContactsScreen extends Component
       contactsData: [],
       profileUserId: '',
       showProfile: false,
+      showAlert: false,
+      response: '',
     };
   }
 
@@ -91,17 +94,37 @@ export default class ContactsScreen extends Component
       {
         console.log(`User ${userID} removed from contacts`);
         this.getData();
+        this.setState({ showAlert: true, response: 'User Removed from Contacts' });
+        setTimeout(() =>
+        {
+          this.setState({ showAlert: false });
+        }, 2000);
       }
       else if (response.status === 400)
       {
         console.log('You cannot remove yourself');
+        this.setState({ showAlert: true, response: 'Cannot Remove Yourself' });
+        setTimeout(() =>
+        {
+          this.setState({ showAlert: false });
+        }, 2000);
       }
       else if (response.status === 404)
       {
         console.log('User does not exist');
+        this.setState({ showAlert: true, response: 'User doesnot exist' });
+        setTimeout(() =>
+        {
+          this.setState({ showAlert: false });
+        }, 2000);
       }
       else
       {
+        this.setState({ showAlert: true, response: 'Server Error' });
+        setTimeout(() =>
+        {
+          this.setState({ showAlert: false });
+        }, 2000);
         throw 'Something went wrong';
       }
     });
@@ -124,17 +147,37 @@ export default class ContactsScreen extends Component
       {
         console.log(`User ${userID} Blocked`);
         this.getData();
+        this.setState({ showAlert: true, response: 'user Blocked' });
+        setTimeout(() =>
+        {
+          this.setState({ showAlert: false });
+        }, 2000);
       }
       else if (response.status === 400)
       {
         console.log('You cannot Block yourself');
+        this.setState({ showAlert: true, response: 'Cannot Block Yourself' });
+        setTimeout(() =>
+        {
+          this.setState({ showAlert: false });
+        }, 2000);
       }
       else if (response.status === 404)
       {
         console.log('User does not exist');
+        this.setState({ showAlert: true, response: 'User Does not exist' });
+        setTimeout(() =>
+        {
+          this.setState({ showAlert: false });
+        }, 2000);
       }
       else
       {
+        this.setState({ showAlert: true, response: 'Server Error' });
+        setTimeout(() =>
+        {
+          this.setState({ showAlert: false });
+        }, 2000);
         throw 'Something went wrong';
       }
     });
@@ -142,7 +185,7 @@ export default class ContactsScreen extends Component
   render()
   {
     const {
-      isLoading, contactsData, showProfile, profileUserId,
+      isLoading, contactsData, showProfile, profileUserId, showAlert, response,
     } = this.state;
     const { navigation } = this.props;
 
@@ -235,6 +278,8 @@ export default class ContactsScreen extends Component
             onClose={() => this.setState({ showProfile: false })}
           />
           ) }
+        {showAlert
+          && <Modal alert={response} />}
       </View>
     );
   }
